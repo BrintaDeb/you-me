@@ -1,0 +1,53 @@
+:root {
+  /* Color Palette - Refined Dark Cinematic */
+  --bg-primary: #090807;
+  --bg-surface: #14100F;
+  --bg-elevated: #1D1716;
+  --bg-card: rgba(26, 21, 20, 0.7);
+  --bg-glass: rgba(15, 12, 11, 0.82);
+  --bg-glass-card: rgba(29, 23, 22, 0.55);
+
+  --text-primary: #F3E8DF;
+  --text-secondary: #D4C9BF;
+  --text-muted: #9C8E84;
+  --text-subtle: #685E57;
+
+  --accent-wine: #731F36;
+  --accent-wine-light: #8E2B45;
+  --accent-rose: #B97B82;
+  --accent-gold: #C8A46B;
+  --accent-gold-light: #E0C18E;
+  --accent-crimson: #E5253A;
+
+  --border-subtle: rgba(243, 232, 223, 0.08);
+  --border-medium: rgba(243, 232, 223, 0.16);
+  --border-gold: rgba(200, 164, 107, 0.35);
+
+  /* Typography */
+  --font-serif: 'Gloock', 'Fraunces', Georgia, serif;
+  --font-heading: 'Fraunces', 'Gloock', serif;
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* Shadows & Glows */
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.55);
+  --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.75);
+  --glow-gold: 0 0 40px rgba(200, 164, 107, 0.15);
+  --glow-rose: 0 0 35px rgba(185, 123, 130, 0.18);
+
+  /* Transitions */
+  --ease-cinematic: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-smooth: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --transition-fast: 0.25s var(--ease-smooth);
+  --transition-normal: 0.45s var(--ease-cinematic);
+  --transition-slow: 0.8s var(--ease-cinematic);
+
+  /* Perspective */
+  --perspective-deep: 1400px;
+  --perspective-normal: 1000px;
+
+  /* Spacing & Sizes */
+  --nav-height: 80px;
+  --container-max: 1320px;
+  --container-wide: 1540px;
+}

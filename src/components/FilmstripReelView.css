@@ -1,0 +1,386 @@
+/* 35mm Panoramic Horizon Filmstrip Component */
+.filmstrip-reel-component {
+  position: relative;
+  width: 100%;
+  margin: 30px 0 60px;
+  background: #080605;
+  border-radius: 16px;
+  border: 1px solid rgba(200, 164, 107, 0.2);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.85);
+  overflow: hidden;
+}
+
+/* Filmstrip HUD Header */
+.filmstrip-hud {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 28px;
+  background: rgba(14, 11, 10, 0.95);
+  border-bottom: 1px solid rgba(200, 164, 107, 0.15);
+}
+
+.filmstrip-hud-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.filmstrip-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(200, 164, 107, 0.12);
+  border: 1px solid rgba(200, 164, 107, 0.3);
+  color: var(--accent-gold);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.76rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.filmstrip-frame-counter {
+  font-size: 0.82rem;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+}
+
+.filmstrip-frame-counter strong {
+  color: #FFFFFF;
+}
+
+.filmstrip-hud-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filmstrip-arrow-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(20, 16, 15, 0.8);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.filmstrip-arrow-btn:hover:not(:disabled) {
+  background: var(--accent-gold);
+  color: #090807;
+  border-color: var(--accent-gold);
+  transform: scale(1.05);
+}
+
+.filmstrip-arrow-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Panoramic Curved Horizon Viewport */
+.filmstrip-viewport-curved {
+  position: relative;
+  width: 100%;
+  background: #050403;
+  perspective: 1200px;
+  overflow: hidden;
+}
+
+/* Vignettes on sides for curved depth */
+.filmstrip-viewport-curved::before,
+.filmstrip-viewport-curved::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 90px;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.filmstrip-viewport-curved::before {
+  left: 0;
+  background: linear-gradient(to right, #050403 0%, transparent 100%);
+}
+
+.filmstrip-viewport-curved::after {
+  right: 0;
+  background: linear-gradient(to left, #050403 0%, transparent 100%);
+}
+
+/* Sprocket Hole Perforation Bars */
+.filmstrip-perforation-bar {
+  background: #0B0908;
+  padding: 8px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  user-select: none;
+}
+
+.top-perforations {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.bottom-perforations {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.filmstrip-leader-code {
+  font-family: monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.22em;
+  color: var(--accent-gold);
+  opacity: 0.65;
+  text-transform: uppercase;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.sprocket-track {
+  display: flex;
+  gap: 12px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.sprocket-hole {
+  flex: 0 0 16px;
+  height: 12px;
+  background: #000000;
+  border-radius: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+/* Scrollable Track */
+.filmstrip-scroll-track {
+  display: flex;
+  gap: 28px;
+  overflow-x: auto;
+  padding: 32px 80px;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  cursor: grab;
+  user-select: none;
+}
+
+.filmstrip-scroll-track::-webkit-scrollbar {
+  display: none;
+}
+
+.filmstrip-scroll-track.is-dragging {
+  cursor: grabbing;
+  scroll-behavior: auto;
+}
+
+/* Individual 35mm Film Frame */
+.film-frame-container {
+  flex: 0 0 360px;
+  height: 480px;
+  background: #0E0B0A;
+  border-radius: 6px;
+  border: 1px solid rgba(200, 164, 107, 0.25);
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.75);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.4s var(--ease-cinematic), border-color 0.3s ease, box-shadow 0.4s ease;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.film-frame-container:hover {
+  transform: translateY(-6px) scale(1.02);
+  border-color: var(--accent-gold);
+  box-shadow: 0 25px 65px rgba(0, 0, 0, 0.9), 0 0 30px rgba(200, 164, 107, 0.18);
+}
+
+.film-frame-container.is-center-frame {
+  border-color: var(--accent-gold);
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.95), 0 0 35px rgba(200, 164, 107, 0.25);
+}
+
+/* Frame Negative Top/Bottom Metadata */
+.frame-meta-header,
+.frame-meta-footer {
+  padding: 6px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  color: #D4A359;
+  background: #090706;
+  opacity: 0.85;
+}
+
+.frame-number-stamp {
+  font-weight: 700;
+  color: #E5A855;
+}
+
+.frame-iso-stamp {
+  font-size: 0.62rem;
+  opacity: 0.7;
+}
+
+/* Photo Mount */
+.film-photo-mount {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  overflow: hidden;
+  background: #000000;
+}
+
+.film-frame-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.7s var(--ease-cinematic);
+}
+
+.film-frame-container:hover .film-frame-image {
+  transform: scale(1.05);
+}
+
+.film-frame-gradient-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba(9, 8, 7, 0.6) 70%, rgba(9, 8, 7, 0.98) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 20px;
+}
+
+.film-frame-category {
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent-gold);
+  margin-bottom: 6px;
+  display: block;
+}
+
+.film-frame-couple {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  line-height: 1.2;
+  color: #FFFFFF;
+  margin-bottom: 10px;
+}
+
+.film-frame-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.film-frame-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--accent-gold);
+  font-weight: 500;
+}
+
+/* Scrubber Bar */
+.filmstrip-scrubber-container {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 28px;
+  background: rgba(14, 11, 10, 0.95);
+  border-top: 1px solid rgba(200, 164, 107, 0.15);
+}
+
+.scrubber-label {
+  font-family: monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+}
+
+.scrubber-bar-track {
+  flex: 1;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+}
+
+.scrubber-bar-fill {
+  height: 100%;
+  background: linear-gradient(to right, var(--accent-gold), var(--accent-wine-light));
+  border-radius: 3px;
+  transition: width 0.1s linear;
+}
+
+/* Mobile & Tablet */
+@media (max-width: 768px) {
+  .filmstrip-reel-component {
+    border-radius: 12px;
+    margin: 20px 0 40px;
+  }
+  .film-frame-container {
+    flex: 0 0 280px;
+    height: 400px;
+  }
+  .filmstrip-scroll-track {
+    padding: 16px 20px;
+    gap: 16px;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x;
+  }
+  .filmstrip-hud {
+    padding: 12px 16px;
+  }
+  .filmstrip-pill {
+    font-size: 0.7rem;
+    padding: 4px 10px;
+  }
+  .filmstrip-frame-counter {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .filmstrip-hud {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .filmstrip-hud-left {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    width: 100%;
+  }
+  .filmstrip-hud-actions {
+    align-self: flex-end;
+  }
+  .film-frame-container {
+    flex: 0 0 250px;
+    height: 360px;
+  }
+  .film-frame-couple {
+    font-size: 1.25rem;
+  }
+  .filmstrip-scrubber-container {
+    padding: 10px 14px;
+    gap: 10px;
+  }
+}
+

@@ -1,0 +1,327 @@
+.enquiry-section {
+  padding: 140px 0;
+  background-color: var(--bg-surface);
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.enquiry-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 70px;
+  align-items: flex-start;
+}
+
+.enquiry-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.enquiry-title {
+  font-size: clamp(2.4rem, 5vw, 3.8rem);
+  line-height: 1.1;
+  background: linear-gradient(180deg, #FFFFFF 0%, #F3E8DF 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.enquiry-desc {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.enquiry-direct-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.enquiry-direct-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  transition: all var(--transition-fast);
+}
+.enquiry-direct-item:hover {
+  background: rgba(200, 164, 107, 0.08);
+  border-color: var(--accent-gold);
+}
+
+.enquiry-direct-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(200, 164, 107, 0.15);
+  color: var(--accent-gold-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.enquiry-direct-label {
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.enquiry-direct-val {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+/* Enquiry Form Container */
+.enquiry-form-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  padding: clamp(28px, 5vw, 48px);
+  box-shadow: var(--shadow-md);
+  position: relative;
+}
+
+.enquiry-form {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.form-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.form-label {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  letter-spacing: 0.02em;
+}
+
+.btn-calendar-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(200, 164, 107, 0.12);
+  border: 1px solid rgba(200, 164, 107, 0.35);
+  color: var(--accent-gold);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-calendar-trigger:hover {
+  background: var(--accent-gold);
+  color: #090807;
+  transform: translateY(-1px);
+}
+
+.date-availability-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  background: rgba(52, 211, 153, 0.15);
+  border: 1px solid rgba(52, 211, 153, 0.35);
+  color: #34D399;
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 6px;
+  animation: fadeIn 0.3s ease;
+}
+
+.form-required {
+  color: var(--accent-crimson);
+  margin-left: 2px;
+}
+
+.form-input, .form-textarea, .form-select {
+  width: 100%;
+  background: rgba(10, 8, 7, 0.6);
+  border: 1px solid var(--border-medium);
+  border-radius: 8px;
+  padding: 14px 16px;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: all var(--transition-fast);
+}
+
+.form-input:focus, .form-textarea:focus, .form-select:focus {
+  border-color: var(--accent-gold);
+  background: rgba(10, 8, 7, 0.9);
+  box-shadow: 0 0 0 3px rgba(200, 164, 107, 0.15);
+}
+
+.form-input.error, .form-textarea.error {
+  border-color: var(--accent-crimson);
+}
+
+.form-error-msg {
+  font-size: 0.8rem;
+  color: #FF6B7A;
+  margin-top: 4px;
+}
+
+.form-textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* Honeypot hidden from humans */
+.form-hp {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+.form-submit-btn {
+  width: 100%;
+  padding: 16px;
+  margin-top: 8px;
+  font-size: 1rem;
+}
+
+.form-success-alert {
+  text-align: center;
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.form-success-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(200, 164, 107, 0.2);
+  color: var(--accent-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.form-success-title {
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  color: #fff;
+}
+
+.form-success-desc {
+  color: var(--text-secondary);
+  max-width: 440px;
+  line-height: 1.6;
+}
+
+@media (max-width: 960px) {
+  .enquiry-section {
+    padding: 90px 0;
+  }
+  .enquiry-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+}
+
+/* Calendar Modal Overlay */
+.calendar-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(9, 8, 7, 0.85);
+  backdrop-filter: blur(12px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.25s ease;
+}
+
+.calendar-modal-dialog {
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 16px;
+  animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes scaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 600px) {
+  .enquiry-section {
+    padding: 70px 0;
+  }
+  .enquiry-desc {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 28px;
+  }
+  .enquiry-direct-item {
+    padding: 12px 14px;
+    gap: 12px;
+  }
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  /* 16px font-size prevents iOS Safari zoom on focus */
+  .form-input,
+  .form-select,
+  .form-textarea {
+    font-size: 16px !important;
+    min-height: 48px;
+    padding: 12px 14px;
+  }
+  .form-textarea {
+    min-height: 100px;
+  }
+  .form-submit-btn {
+    min-height: 50px;
+    font-size: 0.95rem;
+  }
+  .calendar-modal-backdrop {
+    padding: 12px;
+  }
+  .calendar-modal-dialog {
+    max-height: 94vh;
+  }
+}
+
