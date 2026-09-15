@@ -30,15 +30,16 @@ export const VideoModal: React.FC<VideoModalProps> = ({
       };
       window.addEventListener('keydown', handleKeyDown);
 
-      if (videoRef.current) {
-        videoRef.current.play().catch(() => {});
+      const videoEl = videoRef.current;
+      if (videoEl) {
+        videoEl.play().catch(() => {});
       }
 
       return () => {
         document.body.style.overflow = '';
         window.removeEventListener('keydown', handleKeyDown);
-        if (videoRef.current) {
-          videoRef.current.pause();
+        if (videoEl) {
+          videoEl.pause();
         }
       };
     }
@@ -68,17 +69,42 @@ export const VideoModal: React.FC<VideoModalProps> = ({
       </div>
 
       <div className="video-modal-container" onClick={(e) => e.stopPropagation()}>
-        <video
-          ref={videoRef}
-          src={videoUrl}
-          poster={posterUrl}
-          controls
-          playsInline
-          className="video-modal-player"
-        >
-          Your browser does not support HTML5 video.
-        </video>
+        {videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be') ? (
+          <iframe
+            src={
+              videoUrl.includes('watch?v=')
+                ? `https://www.youtube.com/embed/${videoUrl.split('v=')[1]?.split('&')[0]}?autoplay=1&rel=0`
+                : `https://www.youtube.com/embed/${videoUrl.split('youtu.be/')[1]?.split('?')[0]}?autoplay=1&rel=0`
+            }
+            title={title}
+            className="video-modal-player"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            style={{ border: 'none', width: '100%', aspectRatio: '16/9' }}
+          />
+        ) : videoUrl.includes('vimeo.com') ? (
+          <iframe
+            src={`https://player.vimeo.com/video/${videoUrl.split('vimeo.com/')[1]?.split('?')[0]}?autoplay=1`}
+            title={title}
+            className="video-modal-player"
+            allow="autoplay; fullscreen; picture-in-picture"
+            allowFullScreen
+            style={{ border: 'none', width: '100%', aspectRatio: '16/9' }}
+          />
+        ) : (
+          <video
+            ref={videoRef}
+            src={videoUrl}
+            poster={posterUrl}
+            controls
+            playsInline
+            className="video-modal-player"
+          >
+            Your browser does not support HTML5 video.
+          </video>
+        )}
       </div>
     </div>
   );
 };
+

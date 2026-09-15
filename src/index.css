@@ -46,7 +46,7 @@ body {
 }
 
 /* Typography Hierarchy */
-h1, h2, h3, h4, .font-serif {
+h1, h2, h3, h4 {
   font-family: var(--font-serif);
   font-weight: 400;
   line-height: 1.15;
@@ -157,25 +157,20 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   transform: translateY(-2px);
 }
 
-.btn-wine {
-  background: linear-gradient(135deg, var(--accent-wine) 0%, #4D1222 100%);
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .btn-outline {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: var(--border-medium);
   color: var(--text-primary);
-  border: 1px solid rgba(185, 123, 130, 0.3);
-}
-.btn-wine:hover {
-  background: linear-gradient(135deg, var(--accent-wine-light) 0%, #63182C 100%);
-  box-shadow: 0 6px 25px rgba(115, 31, 54, 0.4);
-  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(45, 30, 22, 0.06);
 }
 
-/* Glass Panels */
-.glass-panel {
-  background: var(--bg-glass-card);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--border-subtle);
-  border-radius: 16px;
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .btn-outline:hover {
+  border-color: var(--accent-gold);
+  background: #FFFFFF;
+  color: var(--accent-gold);
+  box-shadow: 0 4px 14px rgba(142, 101, 35, 0.18);
 }
+
 
 /* Section Tag & Eyebrow */
 .eyebrow {
@@ -198,6 +193,12 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   opacity: 0.6;
 }
 
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .eyebrow {
+  color: var(--accent-gold);
+  text-shadow: 0 1px 3px rgba(142, 101, 35, 0.16);
+  letter-spacing: 0.24em;
+}
+
 /* Custom Subtle Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
@@ -206,7 +207,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   background: var(--bg-primary);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(243, 232, 223, 0.18);
+  background: var(--border-medium);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
@@ -249,4 +250,41 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
     padding-right: 24px;
   }
 }
+
+/* Native View Transitions (1C) */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root) {
+  animation: 0.32s cubic-bezier(0.16, 1, 0.3, 1) both viewTransitionFadeOut;
+}
+
+::view-transition-new(root) {
+  animation: 0.38s cubic-bezier(0.16, 1, 0.3, 1) both viewTransitionFadeIn;
+}
+
+@keyframes viewTransitionFadeOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.994);
+  }
+}
+
+@keyframes viewTransitionFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(1.006);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+
 

@@ -1,6 +1,8 @@
 import React, { useEffect, useRef } from 'react';
-import { X, Phone, Mail, ArrowRight } from 'lucide-react';
+import { X, Phone, Mail, ArrowRight, Lock } from 'lucide-react';
 import { businessInfo } from '../data/businessData';
+import { ThemeToggle } from './ThemeToggle';
+import { useTheme } from '../context/useTheme';
 import './MobileMenu.css';
 
 interface MobileMenuProps {
@@ -11,6 +13,7 @@ interface MobileMenuProps {
 
 export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose, onNavigate }) => {
   const closeBtnRef = useRef<HTMLButtonElement>(null);
+  const { theme } = useTheme();
 
   useEffect(() => {
     if (isOpen) {
@@ -52,33 +55,25 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose, onNavig
     >
       <div className="mobile-menu-header">
         <img
-          src="/assets/brand/logo_white.png"
+          src={theme === 'white' ? "/assets/brand/logo_black.png" : "/assets/brand/logo_white.png"}
           alt="YOU & ME"
           className="mobile-logo"
         />
-        <button
-          ref={closeBtnRef}
-          type="button"
-          className="mobile-close-btn"
-          onClick={onClose}
-          aria-label="Close navigation menu"
-        >
-          <X size={24} />
-        </button>
+        <div className="mobile-header-actions">
+          <ThemeToggle />
+          <button
+            ref={closeBtnRef}
+            type="button"
+            className="mobile-close-btn"
+            onClick={onClose}
+            aria-label="Close navigation menu"
+          >
+            <X size={24} />
+          </button>
+        </div>
       </div>
 
       <ul className="mobile-nav-list">
-        <li className="mobile-nav-item">
-          <a
-            href="#stories"
-            onClick={(e) => {
-              e.preventDefault();
-              handleNavClick('home', 'stories');
-            }}
-          >
-            Stories <ArrowRight size={20} opacity={0.6} />
-          </a>
-        </li>
         <li className="mobile-nav-item">
           <a
             href="/portfolio"
@@ -109,18 +104,18 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose, onNavig
               handleNavClick('about');
             }}
           >
-            About Team <ArrowRight size={20} opacity={0.6} />
+            About Us <ArrowRight size={20} opacity={0.6} />
           </a>
         </li>
         <li className="mobile-nav-item">
           <a
-            href="#faq"
+            href="/client-lounge"
             onClick={(e) => {
               e.preventDefault();
-              handleNavClick('home', 'faq');
+              handleNavClick('client-lounge');
             }}
           >
-            FAQ &amp; Details <ArrowRight size={20} opacity={0.6} />
+            Client Lounge (VIP) <ArrowRight size={20} opacity={0.6} />
           </a>
         </li>
         <li className="mobile-nav-item">
@@ -171,6 +166,17 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose, onNavig
           >
             YouTube
           </a>
+        </div>
+
+        <div className="mobile-admin-row">
+          <button
+            type="button"
+            className="mobile-admin-btn"
+            onClick={() => handleNavClick('admin')}
+            title="Studio Administration Panel"
+          >
+            <Lock size={13} className="admin-lock-icon" /> Studio Admin Panel
+          </button>
         </div>
       </div>
     </div>

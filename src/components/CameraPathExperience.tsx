@@ -3,6 +3,7 @@ import { Play, ArrowRight, Sparkles, Film, Image as ImageIcon, ChevronRight } fr
 import { featuredStories } from '../data/couplesData';
 import type { WeddingStory } from '../data/couplesData';
 import { businessInfo } from '../data/businessData';
+import { useTheme } from '../context/useTheme';
 import './CameraPathExperience.css';
 
 interface CameraPathExperienceProps {
@@ -54,11 +55,35 @@ export const CameraPathExperience: React.FC<CameraPathExperienceProps> = ({
   onSelectStory,
   onPlayFilm
 }) => {
+  const { theme } = useTheme();
   const trackRef = useRef<HTMLDivElement>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [activeStoryIdx, setActiveStoryIdx] = useState(0);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [letterboxActive, setLetterboxActive] = useState(false);
+  const [heroRevealed, setHeroRevealed] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setHeroRevealed(true);
+    }, 120);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Activate letterbox bars when 3D storyboard is in view
+  useEffect(() => {
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced) return;
+    const target = document.getElementById('camera-journey');
+    if (!target) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setLetterboxActive(entry.isIntersecting),
+      { threshold: 0.05 }
+    );
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, []);
 
   // Auto-advance hero background images in intervals of 5 seconds
   useEffect(() => {
@@ -130,7 +155,10 @@ export const CameraPathExperience: React.FC<CameraPathExperienceProps> = ({
   const totalStories = featuredStories.length;
 
   return (
-    <div className="camera-path-container" id="stories">
+    <div className={`camera-path-container${letterboxActive ? ' letterbox-active' : ''}`} id="stories">
+      {/* Cinematic letterbox bars */}
+      <div className="letterbox-bar letterbox-bar-top" aria-hidden="true" />
+      <div className="letterbox-bar letterbox-bar-bottom" aria-hidden="true" />
       {/* Scene 1 — Cinematic Opening */}
       <section className="hero-scene" aria-label="Hero Wedding Showcase">
         <div className="hero-background-wrapper" aria-hidden="true">
@@ -146,7 +174,7 @@ export const CameraPathExperience: React.FC<CameraPathExperienceProps> = ({
                   alt={slide.alt}
                   className="hero-slide-img"
                   loading={idx === 0 ? 'eager' : 'lazy'}
-                  fetchPriority={idx === 0 ? 'high' : 'auto'}
+                  fetchPriority={idx === 0 ? 'high' : undefined}
                 />
               </div>
             );
@@ -154,10 +182,10 @@ export const CameraPathExperience: React.FC<CameraPathExperienceProps> = ({
           <div className="hero-overlay-gradient" />
         </div>
 
-        <div className="hero-content">
+        <div className={`hero-content ${heroRevealed ? 'text-revealed' : ''}`}>
           <div className="hero-logo-badge">
             <img
-              src="/assets/brand/logo_white.png"
+              src={theme === 'white' ? "/assets/brand/logo_black.png" : "/assets/brand/logo_white.png"}
               alt={businessInfo.name}
               className="hero-logo-img"
               width="240"

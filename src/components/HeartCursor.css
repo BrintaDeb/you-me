@@ -12,6 +12,44 @@
   user-select: none;
 }
 
+/* 0. Ambient Champagne Luminescence Halo (Gentle Spring Drift) */
+.clean-cursor-glow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(
+    circle,
+    rgba(212, 175, 55, 0.08) 0%,
+    rgba(212, 175, 55, 0.025) 45%,
+    transparent 70%
+  );
+  transform: translate3d(-100px, -100px, 0);
+  will-change: transform;
+  mix-blend-mode: screen;
+  transition: opacity 0.3s ease, width 0.4s ease, height 0.4s ease;
+  z-index: 999995;
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .clean-cursor-glow {
+  background: radial-gradient(
+    circle,
+    rgba(180, 130, 60, 0.06) 0%,
+    rgba(180, 130, 60, 0.02) 45%,
+    transparent 70%
+  );
+  mix-blend-mode: multiply;
+}
+
+.clean-cursor-glow.is-hovered {
+  width: 360px;
+  height: 360px;
+  opacity: 0.85;
+}
+
 /* 1. Trailing Minimalist Glass Ring (Spring Lerp) */
 .clean-cursor-ring {
   position: fixed;
@@ -153,6 +191,29 @@
   }
 }
 
+/* Trail Micro-Hearts */
+.cursor-trail-heart {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 10px;
+  height: 10px;
+  pointer-events: none;
+  z-index: 999996;
+  animation: trailFade 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes trailFade {
+  0% {
+    opacity: 0.75;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.2);
+  }
+}
+
 /* Reduced motion accessibility */
 @media (prefers-reduced-motion: reduce) {
   .clean-heart-svg {
@@ -162,6 +223,9 @@
     display: none !important;
   }
   .clean-cursor-ripple {
+    display: none !important;
+  }
+  .cursor-trail-heart {
     display: none !important;
   }
 }

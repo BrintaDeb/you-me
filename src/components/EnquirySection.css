@@ -119,7 +119,66 @@
   font-weight: 500;
   color: var(--text-secondary);
   letter-spacing: 0.02em;
+  transition: color 0.2s ease;
 }
+
+/* Floating label wrapper */
+.form-float-group {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-float-group .form-label {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.92rem;
+  font-weight: 400;
+  color: var(--text-muted);
+  pointer-events: none;
+  transform-origin: left top;
+  transition: top 0.22s ease,
+              transform 0.22s ease,
+              font-size 0.22s ease,
+              color 0.22s ease;
+  z-index: 1;
+}
+
+/* Label floats up when input is focused OR has content */
+.form-float-group .form-input:focus ~ .form-label,
+.form-float-group .form-input:not(:placeholder-shown) ~ .form-label {
+  top: 12px;
+  transform: translateY(0) scale(0.75);
+  color: var(--accent-gold);
+  font-weight: 500;
+}
+
+/* Shift input text down to not overlap floating label */
+.form-float-group .form-input {
+  padding-top: 22px;
+  padding-bottom: 10px;
+}
+
+/* Gold shimmer bottom border on focus */
+.form-float-group .form-input:focus {
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 0 3px rgba(200, 164, 107, 0.15),
+              0 2px 0 0 var(--accent-gold) inset;
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .form-float-group .form-input:focus ~ .form-label,
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .form-float-group .form-input:not(:placeholder-shown) ~ .form-label {
+  color: #8c6b24;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .form-float-group .form-label {
+    transition: none;
+  }
+}
+
 
 .btn-calendar-trigger {
   display: inline-flex;
@@ -324,4 +383,83 @@
     max-height: 94vh;
   }
 }
+
+/* White / Light Theme Optimizations */
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .enquiry-title {
+  background: linear-gradient(180deg, #14100E 0%, #362B26 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .enquiry-form-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border-medium);
+  box-shadow: var(--shadow-md);
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .form-label {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .btn-calendar-trigger {
+  background: rgba(142, 101, 35, 0.12);
+  border-color: rgba(142, 101, 35, 0.35);
+  color: var(--accent-gold);
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .btn-calendar-trigger:hover {
+  background: var(--accent-gold);
+  color: #FFFFFF;
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .enquiry-direct-item {
+  background: #FFFFFF;
+  border-color: var(--border-medium);
+  box-shadow: var(--shadow-sm);
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .enquiry-direct-item:hover {
+  background: rgba(142, 101, 35, 0.08);
+  border-color: var(--accent-gold);
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .enquiry-direct-label {
+  color: var(--text-muted);
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .enquiry-direct-val {
+  color: var(--text-primary);
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .form-input,
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .form-textarea,
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .form-select {
+  background: #FAF8F5;
+  border: 1.5px solid var(--border-medium);
+  color: var(--text-primary);
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .form-input::placeholder,
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .form-textarea::placeholder {
+  color: var(--text-muted);
+  opacity: 0.8;
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .form-input:focus,
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .form-textarea:focus,
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .form-select:focus {
+  background: #FFFFFF;
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 0 3px rgba(142, 101, 35, 0.18);
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .form-success-title {
+  color: #14100E;
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .calendar-modal-backdrop {
+  background: rgba(20, 16, 14, 0.65);
+}
+
 

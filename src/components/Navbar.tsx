@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X, Calendar } from 'lucide-react';
 import { AudioToggle } from './AudioToggle';
+import { ThemeToggle } from './ThemeToggle';
+import { useTheme } from '../context/useTheme';
 import './Navbar.css';
 
 interface NavbarProps {
@@ -17,6 +19,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onNavigate
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const { theme } = useTheme();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -68,7 +71,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           aria-label="YOU & ME Wedding Photography Home"
         >
           <img
-            src="/assets/brand/logo_white.png"
+            src={theme === 'white' ? "/assets/brand/logo_black.png" : "/assets/brand/logo_white.png"}
             alt="YOU & ME"
             className="navbar-logo"
             width="180"
@@ -78,15 +81,6 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         <nav className="navbar-navigation" aria-label="Main Navigation">
           <ul className="navbar-nav">
-            <li>
-              <a
-                href="#stories"
-                className={`nav-link ${currentView === 'home' ? 'active' : ''}`}
-                onClick={(e) => handleLinkClick(e, 'stories')}
-              >
-                Stories
-              </a>
-            </li>
             <li>
               <a
                 href="/portfolio"
@@ -111,16 +105,20 @@ export const Navbar: React.FC<NavbarProps> = ({
                 className={`nav-link ${currentView === 'about' ? 'active' : ''}`}
                 onClick={(e) => handleLinkClick(e, 'about')}
               >
-                About Team
+                About Us
               </a>
             </li>
             <li>
               <a
-                href="#faq"
-                className="nav-link"
-                onClick={(e) => handleLinkClick(e, 'faq')}
+                href="/client-lounge"
+                className={`nav-link ${currentView === 'client-lounge' ? 'active' : ''}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (onNavigate) onNavigate('client-lounge');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
               >
-                FAQ
+                Client Lounge
               </a>
             </li>
             <li>
@@ -136,6 +134,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         </nav>
 
         <div className="navbar-actions">
+          <ThemeToggle />
           <AudioToggle />
 
           <a

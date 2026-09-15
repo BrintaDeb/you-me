@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Sparkles, Phone, Mail, MessageSquare, Send, CheckCircle, AlertCircle, Calendar as CalendarIcon } from 'lucide-react';
 import { businessInfo } from '../data/businessData';
 import { AvailabilityCalendar } from './AvailabilityCalendar';
@@ -25,15 +25,25 @@ interface FormErrors {
 const STORAGE_KEY = 'youandme_enquiry_draft_v1';
 
 export const EnquirySection: React.FC = () => {
-  const [values, setValues] = useState<FormValues>({
-    fullName: '',
-    email: '',
-    phone: '',
-    weddingDate: '',
-    weddingLocation: '',
-    referralSource: '',
-    visionDetails: '',
-    botTrap: ''
+  const [values, setValues] = useState<FormValues>(() => {
+    const initial: FormValues = {
+      fullName: '',
+      email: '',
+      phone: '',
+      weddingDate: '',
+      weddingLocation: '',
+      referralSource: '',
+      visionDetails: '',
+      botTrap: ''
+    };
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return { ...initial, ...parsed, botTrap: '' };
+      }
+    } catch {}
+    return initial;
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
@@ -43,19 +53,6 @@ export const EnquirySection: React.FC = () => {
   const [showCalendar, setShowCalendar] = useState(false);
   const [selectedDateNote, setSelectedDateNote] = useState('');
 
-  // Load draft from localStorage on mount
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        setValues(prev => ({ ...prev, ...parsed, botTrap: '' }));
-      }
-    } catch (e) {
-      // Ignore storage errors
-    }
-  }, []);
-
   // Save draft on change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -63,7 +60,7 @@ export const EnquirySection: React.FC = () => {
       const updated = { ...prev, [name]: value };
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-      } catch (err) {}
+      } catch {}
       return updated;
     });
 
@@ -124,7 +121,7 @@ export const EnquirySection: React.FC = () => {
 
       setSubmitStatus('success');
       localStorage.removeItem(STORAGE_KEY);
-    } catch (err) {
+    } catch {
       setSubmitStatus('error');
       setErrorMessage('A connection error occurred while sending your enquiry. Your data has been preserved. Please try again or reach out via WhatsApp.');
     } finally {
@@ -197,25 +194,38 @@ export const EnquirySection: React.FC = () => {
                 <p className="form-success-desc">
                   Thank you, <strong>{values.fullName}</strong>. Team You &amp; Me has received your details for <strong>{values.weddingDate}</strong>. We will check our availability and respond to <strong>{values.email}</strong> within 24 hours.
                 </p>
-                <button
-                  type="button"
-                  className="btn btn-outline"
-                  onClick={() => {
-                    setSubmitStatus('idle');
-                    setValues({
-                      fullName: '',
-                      email: '',
-                      phone: '',
-                      weddingDate: '',
-                      weddingLocation: '',
-                      referralSource: '',
-                      visionDetails: '',
-                      botTrap: ''
-                    });
-                  }}
-                >
-                  Send Another Note
-                </button>
+                <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap', marginTop: 20 }}>
+                  <a
+                    href={`https://wa.me/918240502120?text=${encodeURIComponent(
+                      `Hello YOU & ME Studio! I just submitted an enquiry for our wedding.\n\nNames: ${values.fullName}\nDate: ${values.weddingDate}\nLocation: ${values.weddingLocation || 'To be confirmed'}`
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn btn-primary"
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}
+                  >
+                    <MessageSquare size={16} /> Chat Instantly on WhatsApp
+                  </a>
+                  <button
+                    type="button"
+                    className="btn btn-outline"
+                    onClick={() => {
+                      setSubmitStatus('idle');
+                      setValues({
+                        fullName: '',
+                        email: '',
+                        phone: '',
+                        weddingDate: '',
+                        weddingLocation: '',
+                        referralSource: '',
+                        visionDetails: '',
+                        botTrap: ''
+                      });
+                    }}
+                  >
+                    Send Another Note
+                  </button>
+                </div>
               </div>
             ) : (
               <form
@@ -243,10 +253,7 @@ export const EnquirySection: React.FC = () => {
                   </div>
                 )}
 
-                <div className="form-group">
-                  <label htmlFor="form-name" className="form-label">
-                    Your Name <span className="form-required">*</span>
-                  </label>
+                <div className="form-group form-float-group">
                   <input
                     id="form-name"
                     type="text"
@@ -254,13 +261,16 @@ export const EnquirySection: React.FC = () => {
                     autoComplete="name"
                     value={values.fullName}
                     onChange={handleChange}
-                    placeholder="e.g. Shirsha &amp; Arnab"
+                    placeholder=" "
                     className={`form-input ${errors.fullName ? 'error' : ''}`}
                     aria-required="true"
                     aria-invalid={!!errors.fullName}
                     aria-describedby={errors.fullName ? 'form-name-err' : undefined}
                     disabled={isSubmitting}
                   />
+                  <label htmlFor="form-name" className="form-label">
+                    Your Name <span className="form-required">*</span>
+                  </label>
                   {errors.fullName && (
                     <span id="form-name-err" className="form-error-msg">
                       {errors.fullName}
@@ -269,10 +279,7 @@ export const EnquirySection: React.FC = () => {
                 </div>
 
                 <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="form-email" className="form-label">
-                      Email Address <span className="form-required">*</span>
-                    </label>
+                  <div className="form-group form-float-group">
                     <input
                       id="form-email"
                       type="email"
@@ -280,13 +287,16 @@ export const EnquirySection: React.FC = () => {
                       autoComplete="email"
                       value={values.email}
                       onChange={handleChange}
-                      placeholder="you@domain.com"
+                      placeholder=" "
                       className={`form-input ${errors.email ? 'error' : ''}`}
                       aria-required="true"
                       aria-invalid={!!errors.email}
                       aria-describedby={errors.email ? 'form-email-err' : undefined}
                       disabled={isSubmitting}
                     />
+                    <label htmlFor="form-email" className="form-label">
+                      Email Address <span className="form-required">*</span>
+                    </label>
                     {errors.email && (
                       <span id="form-email-err" className="form-error-msg">
                         {errors.email}
@@ -294,10 +304,7 @@ export const EnquirySection: React.FC = () => {
                     )}
                   </div>
 
-                  <div className="form-group">
-                    <label htmlFor="form-phone" className="form-label">
-                      Phone Number <span className="form-required">*</span>
-                    </label>
+                  <div className="form-group form-float-group">
                     <input
                       id="form-phone"
                       type="tel"
@@ -305,13 +312,16 @@ export const EnquirySection: React.FC = () => {
                       autoComplete="tel"
                       value={values.phone}
                       onChange={handleChange}
-                      placeholder="(+91) 98765 43210"
+                      placeholder=" "
                       className={`form-input ${errors.phone ? 'error' : ''}`}
                       aria-required="true"
                       aria-invalid={!!errors.phone}
                       aria-describedby={errors.phone ? 'form-phone-err' : undefined}
                       disabled={isSubmitting}
                     />
+                    <label htmlFor="form-phone" className="form-label">
+                      Phone Number <span className="form-required">*</span>
+                    </label>
                     {errors.phone && (
                       <span id="form-phone-err" className="form-error-msg">
                         {errors.phone}
@@ -319,6 +329,7 @@ export const EnquirySection: React.FC = () => {
                     )}
                   </div>
                 </div>
+
 
                 <div className="form-row">
                   <div className="form-group">
@@ -366,20 +377,20 @@ export const EnquirySection: React.FC = () => {
                     )}
                   </div>
 
-                  <div className="form-group">
-                    <label htmlFor="form-location" className="form-label">
-                      Wedding Location / Venue
-                    </label>
+                  <div className="form-group form-float-group">
                     <input
                       id="form-location"
                       type="text"
                       name="weddingLocation"
                       value={values.weddingLocation}
                       onChange={handleChange}
-                      placeholder="City, State, or Resort"
+                      placeholder=" "
                       className="form-input"
                       disabled={isSubmitting}
                     />
+                    <label htmlFor="form-location" className="form-label">
+                      Wedding Location / Venue
+                    </label>
                   </div>
                 </div>
 

@@ -167,6 +167,16 @@ export const FilmstripReelView: React.FC<FilmstripReelViewProps> = ({
                     onSelectStory(story);
                   }
                 }}
+                onMouseMove={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const x = ((e.clientX - rect.left) / rect.width) * 100;
+                  const y = ((e.clientY - rect.top) / rect.height) * 100;
+                  const mount = e.currentTarget.querySelector<HTMLElement>('.film-photo-mount');
+                  if (mount) {
+                    mount.style.setProperty('--spot-x', `${x}%`);
+                    mount.style.setProperty('--spot-y', `${y}%`);
+                  }
+                }}
                 role="button"
                 tabIndex={0}
                 aria-label={`View story of ${story.title}`}

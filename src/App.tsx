@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { Navbar } from './components/Navbar';
 import { MobileMenu } from './components/MobileMenu';
 import { Footer } from './components/Footer';
@@ -8,24 +8,76 @@ import { PortfolioShowcase } from './components/PortfolioShowcase';
 import { WeddingFilmsSection } from './components/WeddingFilmsSection';
 import { FaqSection } from './components/FaqSection';
 import { EnquirySection } from './components/EnquirySection';
-import { VideoModal } from './components/VideoModal';
-import { PortfolioPage } from './pages/PortfolioPage';
-import { StoryGalleryPage } from './pages/StoryGalleryPage';
-import { AboutPage } from './pages/AboutPage';
-import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
-import { AccessibilityPage } from './pages/AccessibilityPage';
-import { couplesData } from './data/couplesData';
+import { couplesData, getStoryBySlug } from './data/couplesData';
 import type { WeddingStory } from './data/couplesData';
 import { audioAtmosphere } from './utils/audioAtmosphere';
 import { HeartCursor } from './components/HeartCursor';
+import { PwaInstallPrompt } from './components/PwaInstallPrompt';
+
+// Route code-splitting: isolate heavy dependencies (jszip, rich lounges, modals) to demand
+const PortfolioPage = lazy(() => import('./pages/PortfolioPage').then(m => ({ default: m.PortfolioPage })));
+const StoryGalleryPage = lazy(() => import('./pages/StoryGalleryPage').then(m => ({ default: m.StoryGalleryPage })));
+const AboutPage = lazy(() => import('./pages/AboutPage').then(m => ({ default: m.AboutPage })));
+const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage').then(m => ({ default: m.PrivacyPolicyPage })));
+const AccessibilityPage = lazy(() => import('./pages/AccessibilityPage').then(m => ({ default: m.AccessibilityPage })));
+const ClientLoungePage = lazy(() => import('./pages/ClientLoungePage').then(m => ({ default: m.ClientLoungePage })));
+const AdminPanelPage = lazy(() => import('./pages/AdminPanelPage').then(m => ({ default: m.AdminPanelPage })));
+const VideoModal = lazy(() => import('./components/VideoModal').then(m => ({ default: m.VideoModal })));
+
+const RouteLoadingFallback = () => (
+  <div
+    style={{
+      minHeight: '75vh',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 16,
+      backgroundColor: 'var(--bg-primary)',
+      color: 'var(--accent-gold)'
+    }}
+    aria-label="Loading page"
+  >
+    <div
+      style={{
+        width: 38,
+        height: 38,
+        border: '2px solid rgba(212, 175, 55, 0.2)',
+        borderTopColor: '#D4AF37',
+        borderRadius: '50%',
+        animation: 'spin 0.8s linear infinite'
+      }}
+    />
+    <span
+      style={{
+        fontFamily: 'var(--font-serif)',
+        fontStyle: 'italic',
+        fontSize: '0.9rem',
+        letterSpacing: '0.12em',
+        color: 'var(--text-muted)'
+      }}
+    >
+      YOU &amp; ME
+    </span>
+  </div>
+);
 
 export function App() {
-  const [currentView, setCurrentView] = useState<'home' | 'portfolio' | 'story' | 'about' | 'privacy' | 'accessibility'>('home');
+  const [currentView, setCurrentView] = useState<'home' | 'portfolio' | 'story' | 'about' | 'privacy' | 'accessibility' | 'client-lounge' | 'admin'>('home');
   const [selectedStory, setSelectedStory] = useState<WeddingStory | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeFilmStory, setActiveFilmStory] = useState<WeddingStory | null>(null);
 
-  // Smart audio ducking when wedding film modal is playing
+  // Native View Transition Helper
+  const transitionView = (updateFn: () => void) => {
+    if (typeof document !== 'undefined' && 'startViewTransition' in document) {
+      (document as unknown as { startViewTransition: (cb: () => void) => void }).startViewTransition(updateFn);
+    } else {
+      updateFn();
+    }
+  };
+
+  // Sync background music ducking when modal video plays
   useEffect(() => {
     audioAtmosphere.setDucked(!!activeFilmStory);
   }, [activeFilmStory]);
@@ -40,7 +92,7 @@ export function App() {
         setSelectedStory(null);
       } else if (pathname.startsWith('/portfolio/')) {
         const slug = pathname.replace('/portfolio/', '');
-        const found = couplesData.find(c => c.slug === slug);
+        const found = getStoryBySlug(slug);
         if (found) {
           setSelectedStory(found);
           setCurrentView('story');
@@ -49,6 +101,12 @@ export function App() {
         }
       } else if (pathname === '/about' || pathname === '/contact') {
         setCurrentView('about');
+        setSelectedStory(null);
+      } else if (pathname === '/client-lounge') {
+        setCurrentView('client-lounge');
+        setSelectedStory(null);
+      } else if (pathname === '/admin') {
+        setCurrentView('admin');
         setSelectedStory(null);
       } else if (pathname === '/privacy-policy') {
         setCurrentView('privacy');
@@ -86,7 +144,11 @@ export function App() {
     } else if (currentView === 'portfolio') {
       document.title = 'Portfolio & Archive | YOU & ME Wedding Photography';
     } else if (currentView === 'about') {
-      document.title = 'About Team & Contact | YOU & ME Wedding Photography';
+      document.title = 'About Us & Team | YOU & ME Wedding Photography';
+    } else if (currentView === 'client-lounge') {
+      document.title = 'VIP Client Lounge & Album Curation | YOU & ME';
+    } else if (currentView === 'admin') {
+      document.title = 'Studio Admin Suite | YOU & ME';
     } else if (currentView === 'privacy') {
       document.title = 'Privacy Policy | YOU & ME';
     } else if (currentView === 'accessibility') {
@@ -97,41 +159,53 @@ export function App() {
   }, [currentView, selectedStory]);
 
   const navigateTo = (view: string, slug?: string) => {
-    if (view === 'story' && slug) {
-      const found = couplesData.find(c => c.slug === slug);
-      if (found) {
-        setSelectedStory(found);
-        setCurrentView('story');
-        window.history.pushState(null, '', `/portfolio/${slug}`);
+    transitionView(() => {
+      if (view === 'story' && slug) {
+        const found = couplesData.find(c => c.slug === slug);
+        if (found) {
+          setSelectedStory(found);
+          setCurrentView('story');
+          window.history.pushState(null, '', `/portfolio/${slug}`);
+        }
+      } else if (view === 'portfolio') {
+        setCurrentView('portfolio');
+        setSelectedStory(null);
+        window.history.pushState(null, '', '/portfolio');
+      } else if (view === 'about') {
+        setCurrentView('about');
+        setSelectedStory(null);
+        window.history.pushState(null, '', '/about');
+      } else if (view === 'client-lounge') {
+        setCurrentView('client-lounge');
+        setSelectedStory(null);
+        window.history.pushState(null, '', '/client-lounge');
+      } else if (view === 'admin') {
+        setCurrentView('admin');
+        setSelectedStory(null);
+        window.history.pushState(null, '', '/admin');
+      } else if (view === 'privacy') {
+        setCurrentView('privacy');
+        setSelectedStory(null);
+        window.history.pushState(null, '', '/privacy-policy');
+      } else if (view === 'accessibility') {
+        setCurrentView('accessibility');
+        setSelectedStory(null);
+        window.history.pushState(null, '', '/accessibility-statement');
+      } else {
+        setCurrentView('home');
+        setSelectedStory(null);
+        window.history.pushState(null, '', '/');
       }
-    } else if (view === 'portfolio') {
-      setCurrentView('portfolio');
-      setSelectedStory(null);
-      window.history.pushState(null, '', '/portfolio');
-    } else if (view === 'about') {
-      setCurrentView('about');
-      setSelectedStory(null);
-      window.history.pushState(null, '', '/about');
-    } else if (view === 'privacy') {
-      setCurrentView('privacy');
-      setSelectedStory(null);
-      window.history.pushState(null, '', '/privacy-policy');
-    } else if (view === 'accessibility') {
-      setCurrentView('accessibility');
-      setSelectedStory(null);
-      window.history.pushState(null, '', '/accessibility-statement');
-    } else {
-      setCurrentView('home');
-      setSelectedStory(null);
-      window.history.pushState(null, '', '/');
-    }
+    });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleSelectStory = (story: WeddingStory) => {
-    setSelectedStory(story);
-    setCurrentView('story');
-    window.history.pushState(null, '', `/portfolio/${story.slug}`);
+    transitionView(() => {
+      setSelectedStory(story);
+      setCurrentView('story');
+      window.history.pushState(null, '', `/portfolio/${story.slug}`);
+    });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -188,56 +262,79 @@ export function App() {
         </main>
       )}
 
-      {currentView === 'portfolio' && (
-        <PortfolioPage
-          onSelectStory={handleSelectStory}
-        />
-      )}
+      <Suspense fallback={<RouteLoadingFallback />}>
+        {currentView === 'portfolio' && (
+          <PortfolioPage
+            onSelectStory={handleSelectStory}
+          />
+        )}
 
-      {currentView === 'story' && selectedStory && (
-        <StoryGalleryPage
-          story={selectedStory}
-          onBackToPortfolio={() => navigateTo('portfolio')}
-          onSelectStory={handleSelectStory}
-          onPlayFilm={(story) => setActiveFilmStory(story)}
-          onCheckDate={() => {
-            navigateTo('home');
-            setTimeout(() => {
-              const el = document.getElementById('contact');
-              if (el) el.scrollIntoView({ behavior: 'smooth' });
-            }, 100);
-          }}
-        />
-      )}
+        {currentView === 'story' && selectedStory && (
+          <StoryGalleryPage
+            story={selectedStory}
+            onBackToPortfolio={() => navigateTo('portfolio')}
+            onSelectStory={handleSelectStory}
+            onPlayFilm={(story) => setActiveFilmStory(story)}
+            onCheckDate={() => {
+              navigateTo('home');
+              setTimeout(() => {
+                const el = document.getElementById('contact');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              }, 100);
+            }}
+          />
+        )}
 
-      {currentView === 'about' && (
-        <AboutPage />
-      )}
+        {currentView === 'about' && (
+          <AboutPage />
+        )}
 
-      {currentView === 'privacy' && (
-        <PrivacyPolicyPage
-          onBackToHome={() => navigateTo('home')}
-        />
-      )}
+        {currentView === 'client-lounge' && (
+          <ClientLoungePage
+            onBackToHome={() => navigateTo('home')}
+          />
+        )}
 
-      {currentView === 'accessibility' && (
-        <AccessibilityPage
-          onBackToHome={() => navigateTo('home')}
-        />
-      )}
+        {currentView === 'admin' && (
+          <AdminPanelPage
+            onBackToHome={() => navigateTo('home')}
+            onNavigateToClientLounge={(pin) => {
+              if (pin) {
+                window.history.pushState(null, '', `/client-lounge?pin=${encodeURIComponent(pin)}`);
+              }
+              navigateTo('client-lounge');
+            }}
+          />
+        )}
+
+        {currentView === 'privacy' && (
+          <PrivacyPolicyPage
+            onBackToHome={() => navigateTo('home')}
+          />
+        )}
+
+        {currentView === 'accessibility' && (
+          <AccessibilityPage
+            onBackToHome={() => navigateTo('home')}
+          />
+        )}
+
+        {/* Wedding Film Player Modal */}
+        {activeFilmStory && activeFilmStory.videoUrl && (
+          <VideoModal
+            videoUrl={activeFilmStory.videoUrl}
+            posterUrl={activeFilmStory.videoPoster}
+            title={activeFilmStory.title}
+            isOpen={true}
+            onClose={() => setActiveFilmStory(null)}
+          />
+        )}
+      </Suspense>
 
       <Footer onNavigate={navigateTo} />
 
-      {/* Wedding Film Player Modal */}
-      {activeFilmStory && activeFilmStory.videoUrl && (
-        <VideoModal
-          videoUrl={activeFilmStory.videoUrl}
-          posterUrl={activeFilmStory.videoPoster}
-          title={activeFilmStory.title}
-          isOpen={true}
-          onClose={() => setActiveFilmStory(null)}
-        />
-      )}
+      {/* PWA Install Prompt for Mobile & Desktop */}
+      <PwaInstallPrompt />
     </div>
   );
 }

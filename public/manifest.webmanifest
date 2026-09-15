@@ -1,0 +1,37 @@
+{
+  "name": "YOU & ME — Cinematic Wedding Photography",
+  "short_name": "YOU & ME",
+  "description": "Documentary wedding photography and cinematography shaped by warmth, emotion, and artistry.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#14100E",
+  "theme_color": "#14100E",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/assets/brand/double_heart.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/brand/double_heart.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["lifestyle", "photography", "entertainment"],
+  "shortcuts": [
+    {
+      "name": "Portfolio Archive",
+      "url": "/portfolio",
+      "description": "Browse full wedding stories archive"
+    },
+    {
+      "name": "Client Lounge",
+      "url": "/client-lounge",
+      "description": "Access private VIP client proofing lounge"
+    }
+  ]
+}

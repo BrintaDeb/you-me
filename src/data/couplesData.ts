@@ -4,8 +4,6 @@ export interface WeddingImage {
   url: string;
   alt: string;
   caption?: string;
-  width?: number;
-  height?: number;
 }
 
 export interface WeddingStory {
@@ -20,6 +18,8 @@ export interface WeddingStory {
   isFeatured: boolean;
   videoUrl?: string;
   videoPoster?: string;
+  location?: string;
+  date?: string;
   imageCount: number;
   images: WeddingImage[];
 }

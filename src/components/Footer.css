@@ -6,6 +6,37 @@
   overflow: hidden;
 }
 
+/* Ghosted brand watermark */
+.footer::before {
+  content: "YOU & ME";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, calc(-50% + var(--footer-parallax, 0px)));
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: clamp(5rem, 14vw, 13rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+  color: var(--text-primary);
+  opacity: 0.035;
+  pointer-events: none;
+  z-index: 0;
+  user-select: none;
+  will-change: transform;
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .footer::before {
+  opacity: 0.055;
+}
+
+/* All footer content sits above watermark */
+.footer-top,
+.footer-bottom {
+  position: relative;
+  z-index: 1;
+}
+
 .footer-top {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1.5fr;
@@ -78,6 +109,19 @@
   color: var(--text-muted);
 }
 
+.footer-bottom-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.footer-bottom-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
 .footer-legal-links {
   display: flex;
   align-items: center;
@@ -86,6 +130,44 @@
 
 .footer-legal-links a:hover {
   color: var(--text-primary);
+}
+
+.footer-admin-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 14px;
+  font-family: var(--font-sans);
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-gold);
+  background: rgba(212, 175, 55, 0.09);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.footer-admin-btn:hover {
+  background: var(--accent-gold);
+  color: #0A0807;
+  border-color: var(--accent-gold);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.28);
+}
+
+.footer-admin-btn:active {
+  transform: scale(0.97);
+}
+
+.footer-admin-btn .admin-lock-icon {
+  transition: transform 0.2s ease;
+}
+
+.footer-admin-btn:hover .admin-lock-icon {
+  transform: scale(1.15);
 }
 
 .footer-attribution {
@@ -107,5 +189,11 @@
   .footer-bottom {
     flex-direction: column;
     align-items: flex-start;
+    gap: 18px;
+  }
+  .footer-bottom-right {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
   }
 }

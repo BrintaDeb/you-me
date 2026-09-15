@@ -33,7 +33,7 @@ declare global {
   }
 }
 
-export interface YTPlayerInstance {
+interface YTPlayerInstance {
   playVideo: () => void;
   pauseVideo: () => void;
   stopVideo: () => void;
@@ -43,15 +43,6 @@ export interface YTPlayerInstance {
   getCurrentTime: () => number;
   getDuration: () => number;
   destroy: () => void;
-}
-
-export interface AudioTrackInfo {
-  title: string;
-  artist: string;
-  sourceUrl: string;
-  volume: number;
-  isPlaying: boolean;
-  isDucked: boolean;
 }
 
 class AudioAtmosphereManager {
@@ -360,16 +351,7 @@ class AudioAtmosphereManager {
     }
   }
 
-  public getTrackInfo(): AudioTrackInfo {
-    return {
-      title: 'Indian Wedding Instrumental Music',
-      artist: 'RA Entertainment',
-      sourceUrl: 'https://youtu.be/nR83Exjd4_4',
-      volume: this.currentVolume,
-      isPlaying: this.isPlaying,
-      isDucked: this.isDucked,
-    };
-  }
+
 
   public getStatus(): { isPlaying: boolean; isDucked: boolean } {
     return { isPlaying: this.isPlaying, isDucked: this.isDucked };

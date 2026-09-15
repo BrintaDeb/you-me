@@ -22,14 +22,14 @@ export const AccessibilityPage: React.FC<AccessibilityPageProps> = ({ onBackToHo
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '28px', color: 'var(--text-secondary)', lineHeight: 1.8 }}>
         <section>
-          <h2 style={{ fontSize: '1.4rem', color: '#fff', marginBottom: '12px' }}>Our Commitment</h2>
+          <h2 style={{ fontSize: '1.4rem', color: 'var(--text-primary)', marginBottom: '12px' }}>Our Commitment</h2>
           <p>
             <strong>YOU &amp; ME</strong> is committed to ensuring digital accessibility for people with disabilities. We are continually improving the user experience for everyone, and applying the relevant accessibility standards to achieve conformance with Web Content Accessibility Guidelines (WCAG) 2.1 Level AA.
           </p>
         </section>
 
         <section>
-          <h2 style={{ fontSize: '1.4rem', color: '#fff', marginBottom: '12px' }}>Measures Taken to Support Accessibility</h2>
+          <h2 style={{ fontSize: '1.4rem', color: 'var(--text-primary)', marginBottom: '12px' }}>Measures Taken to Support Accessibility</h2>
           <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '12px' }}>
             <li style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
               <CheckCircle2 size={18} color="var(--accent-gold)" style={{ flexShrink: 0, marginTop: 4 }} />
@@ -51,7 +51,7 @@ export const AccessibilityPage: React.FC<AccessibilityPageProps> = ({ onBackToHo
         </section>
 
         <section>
-          <h2 style={{ fontSize: '1.4rem', color: '#fff', marginBottom: '12px' }}>Feedback &amp; Assistance</h2>
+          <h2 style={{ fontSize: '1.4rem', color: 'var(--text-primary)', marginBottom: '12px' }}>Feedback &amp; Assistance</h2>
           <p>
             We welcome your feedback on the accessibility of the YOU &amp; ME website. If you encounter accessibility barriers, please let us know:
           </p>

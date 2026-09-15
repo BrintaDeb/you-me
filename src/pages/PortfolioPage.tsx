@@ -1,32 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Sparkles, Image as ImageIcon, ArrowRight, LayoutGrid, Film } from 'lucide-react';
 import { couplesData } from '../data/couplesData';
 import type { WeddingStory } from '../data/couplesData';
 import { FilmstripReelView } from '../components/FilmstripReelView';
+import { galleryStorage } from '../utils/galleryStorage';
 import './PortfolioPage.css';
 
 interface PortfolioPageProps {
   onSelectStory: (story: WeddingStory) => void;
 }
 
-const filterCategories = [
-  'All',
-  'Candid & Documentary',
-  'Traditional Wedding',
-  'Destination Wedding',
-  'Bengali Wedding'
-];
-
 export const PortfolioPage: React.FC<PortfolioPageProps> = ({ onSelectStory }) => {
-  const [activeFilter, setActiveFilter] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'filmstrip'>('grid');
+  const [allStories, setAllStories] = useState<WeddingStory[]>(couplesData);
 
-  const filteredStories = couplesData.filter(story => {
-    const matchesFilter = activeFilter === 'All' || story.category.toLowerCase().includes(activeFilter.toLowerCase());
-    const matchesSearch = story.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          story.category.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesFilter && matchesSearch;
+  useEffect(() => {
+    let isMounted = true;
+    galleryStorage.getUnifiedStories().then(stories => {
+      if (isMounted && stories && stories.length > 0) {
+        setAllStories(stories);
+      }
+    }).catch(err => {
+      console.warn('Could not fetch custom stories for portfolio:', err);
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const filteredStories = allStories.filter(story => {
+    return story.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+           story.category.toLowerCase().includes(searchQuery.toLowerCase());
   });
 
   return (
@@ -58,19 +63,15 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({ onSelectStory }) =
       <section className="portfolio-main-grid-section">
         <div className="container-wide">
           <div className="portfolio-controls-bar">
-            <div className="portfolio-filters" role="tablist" aria-label="Filter weddings by ceremony type">
-              {filterCategories.map(cat => (
-                <button
-                  key={cat}
-                  type="button"
-                  role="tab"
-                  aria-selected={activeFilter === cat}
-                  className={`filter-pill ${activeFilter === cat ? 'active' : ''}`}
-                  onClick={() => setActiveFilter(cat)}
-                >
-                  {cat}
-                </button>
-              ))}
+            <div className="portfolio-filters" role="tablist" aria-label="Portfolio gallery filter">
+              <button
+                type="button"
+                role="tab"
+                aria-selected={true}
+                className="filter-pill active"
+              >
+                All Works
+              </button>
             </div>
 
             <div className="portfolio-actions-right">
@@ -115,7 +116,7 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({ onSelectStory }) =
           <div className="portfolio-count-badge" style={{ marginBottom: 24 }}>
             {searchQuery
               ? `Celebrations matching "${searchQuery}"`
-              : (activeFilter === 'All' ? 'Curated Wedding Stories & Celebrations' : `${activeFilter} Celebrations`)}
+              : 'All Wedding Stories & Celebrations'}
           </div>
 
           {viewMode === 'filmstrip' ? (
@@ -170,11 +171,10 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({ onSelectStory }) =
                 type="button"
                 className="btn btn-outline"
                 onClick={() => {
-                  setActiveFilter('All');
                   setSearchQuery('');
                 }}
               >
-                Reset Search Filters
+                Reset Search
               </button>
             </div>
           )}

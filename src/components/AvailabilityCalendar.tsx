@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Calendar, ChevronLeft, ChevronRight, Sparkles, X } from 'lucide-react';
 import './AvailabilityCalendar.css';
 
-export interface DateAvailability {
+interface DateAvailability {
   date: string; // YYYY-MM-DD
   status: 'available' | 'in-discussion' | 'booked';
   note?: string;

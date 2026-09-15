@@ -7,30 +7,59 @@ interface ClickRipple {
   y: number;
 }
 
+interface TrailHeart {
+  id: number;
+  x: number;
+  y: number;
+  rotate: number;
+}
+
 export const HeartCursor: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
   const [isTextInput, setIsTextInput] = useState(false);
   const [ripples, setRipples] = useState<ClickRipple[]>([]);
+  const [trailHearts, setTrailHearts] = useState<TrailHeart[]>([]);
 
   const mousePos = useRef({ x: -100, y: -100 });
   const ringPos = useRef({ x: -100, y: -100 });
+  const glowPos = useRef({ x: -100, y: -100 });
   const animFrameId = useRef<number | null>(null);
 
   const heartRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
+  const glowRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Only enable custom cursor on devices with fine pointer (mouse/trackpad), not touchscreens
     const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
     if (!hasFinePointer) return;
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     // Apply custom cursor class to document body
     document.documentElement.classList.add('custom-heart-cursor-active');
 
+    let lastX = -100;
+    let lastY = -100;
+    let lastTime = performance.now();
+    let velocityScale = 1;
+
     const handleMouseMove = (e: MouseEvent) => {
+      const now = performance.now();
+      const dt = Math.max(1, now - lastTime);
+      const dx = e.clientX - lastX;
+      const dy = e.clientY - lastY;
+      const speed = Math.sqrt(dx * dx + dy * dy) / dt;
+
+      // Scale heart size based on velocity (clamped 1x – 1.35x)
+      velocityScale = Math.min(1.35, 1 + speed * 0.3);
+
       mousePos.current = { x: e.clientX, y: e.clientY };
+      lastX = e.clientX;
+      lastY = e.clientY;
+      lastTime = now;
+
       if (!isVisible) setIsVisible(true);
 
       const target = e.target;
@@ -50,6 +79,20 @@ export const HeartCursor: React.FC = () => {
         'a, button, [role="button"], .clickable, .gallery-item, .filmstrip-frame, input[type="range"]'
       );
       setIsHovered(!!clickable && !isInput);
+
+      // Emit trail micro-heart if moving fast enough & motion allowed
+      if (!prefersReduced && speed > 0.8) {
+        const trail: TrailHeart = {
+          id: Date.now() + Math.random(),
+          x: e.clientX,
+          y: e.clientY,
+          rotate: Math.round((Math.random() - 0.5) * 30),
+        };
+        setTrailHearts(prev => [...prev.slice(-4), trail]);
+        setTimeout(() => {
+          setTrailHearts(prev => prev.filter(t => t.id !== trail.id));
+        }, 420);
+      }
     };
 
     const handleMouseDown = (e: MouseEvent) => {
@@ -87,11 +130,11 @@ export const HeartCursor: React.FC = () => {
     document.addEventListener('mouseleave', handleMouseLeave);
     document.addEventListener('mouseenter', handleMouseEnter);
 
-    // Ultra-smooth lerp loop for the trailing glass ring
+    // Ultra-smooth lerp loop for the trailing glass ring & ambient luminescence
     const renderLoop = () => {
       // Main heart locks directly to mouse position for instant, razor-sharp response
       if (heartRef.current) {
-        heartRef.current.style.transform = `translate3d(${mousePos.current.x}px, ${mousePos.current.y}px, 0) translate(-50%, -50%)`;
+        heartRef.current.style.transform = `translate3d(${mousePos.current.x}px, ${mousePos.current.y}px, 0) translate(-50%, -50%) scale(${velocityScale})`;
       }
 
       // Smooth trailing ring follows with fluid damping
@@ -100,6 +143,14 @@ export const HeartCursor: React.FC = () => {
 
       if (ringRef.current) {
         ringRef.current.style.transform = `translate3d(${ringPos.current.x}px, ${ringPos.current.y}px, 0) translate(-50%, -50%)`;
+      }
+
+      // Ambient champagne glow floats with dreamy gentle inertia
+      glowPos.current.x += (mousePos.current.x - glowPos.current.x) * 0.08;
+      glowPos.current.y += (mousePos.current.y - glowPos.current.y) * 0.08;
+
+      if (glowRef.current) {
+        glowRef.current.style.transform = `translate3d(${glowPos.current.x}px, ${glowPos.current.y}px, 0) translate(-50%, -50%)`;
       }
 
       animFrameId.current = requestAnimationFrame(renderLoop);
@@ -122,6 +173,12 @@ export const HeartCursor: React.FC = () => {
 
   return (
     <div className="clean-cursor-container" aria-hidden="true">
+      {/* 0. Ambient Champagne Luminescence Halo */}
+      <div
+        ref={glowRef}
+        className={`clean-cursor-glow ${isHovered ? 'is-hovered' : ''}`}
+      />
+
       {/* 1. Trailing Elegant Glass Aura Ring */}
       <div
         ref={ringRef}
@@ -153,6 +210,24 @@ export const HeartCursor: React.FC = () => {
           />
         </svg>
       </div>
+
+      {/* 2.5 Trail micro-hearts */}
+      {trailHearts.map(t => (
+        <div
+          key={t.id}
+          className="cursor-trail-heart"
+          style={{
+            transform: `translate3d(${t.x}px, ${t.y}px, 0) translate(-50%, -50%) rotate(${t.rotate}deg)`,
+          }}
+        >
+          <svg viewBox="0 0 24 24" width="10" height="10">
+            <path
+              d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+              fill="rgba(200, 164, 107, 0.75)"
+            />
+          </svg>
+        </div>
+      ))}
 
       {/* 3. Subtle Click Shockwave Ripple */}
       {ripples.map(r => (

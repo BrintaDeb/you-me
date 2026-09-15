@@ -4,6 +4,18 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/assets/brand/double_heart.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark light" />
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('youandme_theme') || localStorage.getItem('theme');
+          var theme = (saved === 'burgundy') ? 'burgundy' : 'white';
+          document.documentElement.setAttribute('data-theme', theme);
+          document.documentElement.setAttribute('data-color-scheme', theme === 'white' ? 'light' : 'dark');
+          document.documentElement.style.colorScheme = theme === 'white' ? 'light' : 'dark';
+        } catch (e) {}
+      })();
+    </script>
     
     <!-- Primary Meta Tags -->
     <title>YOU &amp; ME — Cinematic Wedding Photography</title>
@@ -26,10 +38,87 @@
     <meta property="twitter:description" content="Documentary wedding photography shaped by warmth, emotion, and artistry." />
     <meta property="twitter:image" content="/assets/posters/ankita_subhadeep.jpg" />
 
+    <!-- PWA & Mobile Web App Capabilities -->
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#14100E" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="YOU &amp; ME" />
+    <link rel="apple-touch-icon" href="/assets/brand/double_heart.png" />
+
     <!-- Preconnect & Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Gloock&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+    <!-- Structured Data: PhotographyBusiness & LocalBusiness (5B) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "PhotographyBusiness",
+      "name": "YOU & ME — Cinematic Wedding Photography",
+      "image": "https://www.teamyouandme.net/assets/posters/ankita_subhadeep.jpg",
+      "description": "Documentary wedding photography shaped by warmth, emotion, and artistry. Authentic visual love stories captured with cinematic elegance.",
+      "url": "https://www.teamyouandme.net/",
+      "telephone": "+919123827488",
+      "priceRange": "$$$$",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Kolkata",
+        "addressRegion": "West Bengal",
+        "addressCountry": "IN"
+      },
+      "founder": {
+        "@type": "Person",
+        "name": "Brinta Deb",
+        "jobTitle": "Creative Director & Lead Photographer"
+      },
+      "areaServed": [
+        "Kolkata", "Delhi", "Mumbai", "Udaipur", "Jaipur", "Goa", "Worldwide"
+      ],
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.98",
+        "reviewCount": "250",
+        "bestRating": "5"
+      }
+    }
+    </script>
+
+    <!-- Structured Data: FAQPage (5B) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How would you describe your photographic style?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Our style is documentary and emotive. We focus on real moments, genuine expressions, and the subtle, unscripted beauty of your celebration without excessive posing."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do you travel for destination weddings?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, absolutely! We love documenting love stories across India and internationally. Travel and accommodation are arranged seamlessly with your wedding schedule."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the typical turnaround time for wedding photographs and films?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "We provide a curated preview gallery within 7-10 days. The complete collection of handcrafted, high-resolution photographs and cinematic films is delivered within 6 to 8 weeks."
+          }
+        }
+      ]
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>

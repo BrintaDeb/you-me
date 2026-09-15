@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
-import { ArrowLeft, ArrowRight, ZoomIn, Play, Calendar } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ArrowLeft, ArrowRight, ZoomIn, Play, Calendar, Sparkles } from 'lucide-react';
 import { couplesData } from '../data/couplesData';
 import type { WeddingStory } from '../data/couplesData';
 import { Lightbox } from '../components/Lightbox';
+import { CinemaWalkthroughModal } from '../components/CinemaWalkthroughModal';
+import { ResponsiveImage } from '../components/ResponsiveImage';
+import { triggerHaptic } from '../utils/haptics';
+import { galleryStorage } from '../utils/galleryStorage';
 import './StoryGalleryPage.css';
 
 interface StoryGalleryPageProps {
@@ -21,12 +25,27 @@ export const StoryGalleryPage: React.FC<StoryGalleryPageProps> = ({
   onCheckDate
 }) => {
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [walkthroughOpen, setWalkthroughOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [allStories, setAllStories] = useState<WeddingStory[]>(couplesData);
 
-  // Find index of current story in couplesData
-  const currentIndex = couplesData.findIndex(c => c.id === story.id);
-  const prevStory = couplesData[(currentIndex - 1 + couplesData.length) % couplesData.length];
-  const nextStory = couplesData[(currentIndex + 1) % couplesData.length];
+  useEffect(() => {
+    let isMounted = true;
+    galleryStorage.getUnifiedStories().then(stories => {
+      if (isMounted && stories && stories.length > 0) {
+        setAllStories(stories);
+      }
+    }).catch(() => {});
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Find index of current story in allStories
+  const currentIndex = allStories.findIndex(c => c.id === story.id);
+  const validIndex = currentIndex !== -1 ? currentIndex : 0;
+  const prevStory = allStories[(validIndex - 1 + allStories.length) % allStories.length];
+  const nextStory = allStories[(validIndex + 1) % allStories.length];
 
   const handleOpenLightbox = (index: number) => {
     setCurrentImageIndex(index);
@@ -56,6 +75,18 @@ export const StoryGalleryPage: React.FC<StoryGalleryPageProps> = ({
             <span>{story.category}</span>
             <span>•</span>
             <span>{story.imageCount} Curated Photographs</span>
+            <span>•</span>
+            <button
+              type="button"
+              className="cinema-walkthrough-btn"
+              onClick={() => {
+                triggerHaptic('medium');
+                setWalkthroughOpen(true);
+              }}
+              title="Launch full-screen immersive slideshow"
+            >
+              <Sparkles size={14} className="sparkle-icon" /> Cinema Walkthrough
+            </button>
             {story.videoUrl && onPlayFilm && (
               <>
                 <span>•</span>
@@ -79,21 +110,25 @@ export const StoryGalleryPage: React.FC<StoryGalleryPageProps> = ({
               <figure
                 key={img.id}
                 className="gallery-item"
-                onClick={() => handleOpenLightbox(idx)}
+                onClick={() => {
+                  triggerHaptic('light');
+                  handleOpenLightbox(idx);
+                }}
                 role="button"
                 tabIndex={0}
                 aria-label={`Enlarge photograph ${idx + 1} of ${story.images.length}`}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' || e.key === ' ') {
+                    triggerHaptic('light');
                     handleOpenLightbox(idx);
                   }
                 }}
               >
-                <img
+                <ResponsiveImage
                   src={img.url}
                   alt={img.alt}
                   className="gallery-item-img"
-                  loading={idx < 6 ? 'eager' : 'lazy'}
+                  priority={idx < 4}
                 />
                 <figcaption className="gallery-item-overlay" aria-hidden="true">
                   <ZoomIn size={28} />
@@ -107,6 +142,7 @@ export const StoryGalleryPage: React.FC<StoryGalleryPageProps> = ({
               type="button"
               className="gallery-nav-btn"
               onClick={() => {
+                triggerHaptic('light');
                 onSelectStory(prevStory);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
@@ -118,7 +154,10 @@ export const StoryGalleryPage: React.FC<StoryGalleryPageProps> = ({
               <button
                 type="button"
                 className="btn btn-primary"
-                onClick={onCheckDate}
+                onClick={() => {
+                  triggerHaptic('medium');
+                  onCheckDate();
+                }}
               >
                 <Calendar size={16} /> Check Your Date for Similar Story
               </button>
@@ -128,6 +167,7 @@ export const StoryGalleryPage: React.FC<StoryGalleryPageProps> = ({
               type="button"
               className="gallery-nav-btn"
               onClick={() => {
+                triggerHaptic('light');
                 onSelectStory(nextStory);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
@@ -145,6 +185,14 @@ export const StoryGalleryPage: React.FC<StoryGalleryPageProps> = ({
         onClose={() => setLightboxOpen(false)}
         onNavigate={setCurrentImageIndex}
       />
+
+      {walkthroughOpen && (
+        <CinemaWalkthroughModal
+          story={story}
+          isOpen={walkthroughOpen}
+          onClose={() => setWalkthroughOpen(false)}
+        />
+      )}
     </main>
   );
 };

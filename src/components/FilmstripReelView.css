@@ -196,9 +196,45 @@
 }
 
 .film-frame-container:hover {
-  transform: translateY(-6px) scale(1.02);
+  transform: translateY(-6px) scale(1.03);
   border-color: var(--accent-gold);
   box-shadow: 0 25px 65px rgba(0, 0, 0, 0.9), 0 0 30px rgba(200, 164, 107, 0.18);
+}
+
+/* Dim all sibling frames when one is hovered */
+@supports selector(:has(a)) {
+  .filmstrip-scroll-track:has(.film-frame-container:hover) .film-frame-container:not(:hover) {
+    filter: brightness(0.55) saturate(0.65);
+    transform: scale(0.97);
+    transition: filter 0.35s ease, transform 0.35s ease;
+  }
+}
+
+/* Radial spotlight overlay inside each frame */
+.film-photo-mount::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle 120px at var(--spot-x, 50%) var(--spot-y, 50%),
+    rgba(212, 175, 55, 0.12) 0%,
+    transparent 70%
+  );
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 3;
+}
+
+.film-frame-container:hover .film-photo-mount::after {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .filmstrip-scroll-track:has(.film-frame-container:hover) .film-frame-container:not(:hover) {
+    filter: none;
+    transform: none;
+  }
 }
 
 .film-frame-container.is-center-frame {
@@ -382,5 +418,32 @@
     padding: 10px 14px;
     gap: 10px;
   }
+}
+
+/* White / Light Theme Optimizations */
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .filmstrip-reel-component {
+  box-shadow: 0 20px 60px rgba(45, 30, 22, 0.14);
+  border-color: rgba(142, 101, 35, 0.35);
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .filmstrip-hud {
+  background: rgba(255, 255, 255, 0.96);
+  border-bottom: 1px solid var(--border-medium);
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .filmstrip-frame-counter strong {
+  color: #14100E;
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .filmstrip-arrow-btn {
+  background: #FAF8F5;
+  border-color: var(--border-medium);
+  color: var(--text-primary);
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .filmstrip-arrow-btn:hover:not(:disabled) {
+  background: var(--accent-gold);
+  color: #FFFFFF;
+  border-color: var(--accent-gold);
 }
 

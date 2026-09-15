@@ -1,6 +1,7 @@
-import React from 'react';
-import { Phone, Mail } from 'lucide-react';
+import React, { useEffect, useRef } from 'react';
+import { Phone, Mail, Lock } from 'lucide-react';
 import { businessInfo } from '../data/businessData';
+import { useTheme } from '../context/useTheme';
 import './Footer.css';
 
 interface FooterProps {
@@ -8,6 +9,27 @@ interface FooterProps {
 }
 
 export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
+  const { theme } = useTheme();
+  const footerRef = useRef<HTMLElement>(null);
+
+  // Parallax watermark: shifts slightly on scroll
+  useEffect(() => {
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced) return;
+    const handleScroll = () => {
+      const footer = footerRef.current;
+      if (!footer) return;
+      const rect = footer.getBoundingClientRect();
+      const viewportH = window.innerHeight;
+      const progress = Math.max(0, Math.min(1, (viewportH - rect.top) / (viewportH + rect.height)));
+      const offset = (progress - 0.5) * 60; // ±30px parallax shift
+      footer.style.setProperty('--footer-parallax', `${offset}px`);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, view: string, hash?: string) => {
     e.preventDefault();
     if (onNavigate) {
@@ -24,12 +46,12 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
   };
 
   return (
-    <footer className="footer" role="contentinfo">
+    <footer className="footer" role="contentinfo" ref={footerRef}>
       <div className="container-wide">
         <div className="footer-top">
           <div className="footer-brand-col">
             <img
-              src="/assets/brand/logo_white.png"
+              src={theme === 'white' ? "/assets/brand/logo_black.png" : "/assets/brand/logo_white.png"}
               alt="YOU & ME"
               className="footer-logo"
             />
@@ -58,12 +80,17 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               </li>
               <li>
                 <a href="#about" onClick={(e) => handleLinkClick(e, 'about')}>
-                  About Team You &amp; Me
+                  About Us
                 </a>
               </li>
               <li>
                 <a href="#faq" onClick={(e) => handleLinkClick(e, 'home', 'faq')}>
                   FAQ &amp; Packages
+                </a>
+              </li>
+              <li>
+                <a href="/client-lounge" onClick={(e) => handleLinkClick(e, 'client-lounge')}>
+                  VIP Client Lounge
                 </a>
               </li>
             </ul>
@@ -141,19 +168,41 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         </div>
 
         <div className="footer-bottom">
-          <p>© {new Date().getFullYear()} by YOU &amp; ME. All rights reserved.</p>
-          <div className="footer-legal-links">
-            <a href="/privacy-policy" onClick={(e) => handleLinkClick(e, 'privacy')}>
-              Privacy Policy
-            </a>
-            <span>•</span>
-            <a href="/accessibility-statement" onClick={(e) => handleLinkClick(e, 'accessibility')}>
-              Accessibility Statement
-            </a>
+          <div className="footer-bottom-left">
+            <p>© {new Date().getFullYear()} by YOU &amp; ME. All rights reserved.</p>
+            <p className="footer-attribution">
+              {businessInfo.attribution}
+            </p>
           </div>
-          <p className="footer-attribution">
-            {businessInfo.attribution}
-          </p>
+
+          <div className="footer-bottom-right">
+            <div className="footer-legal-links">
+              <a href="/privacy-policy" onClick={(e) => handleLinkClick(e, 'privacy')}>
+                Privacy Policy
+              </a>
+              <span>•</span>
+              <a href="/accessibility-statement" onClick={(e) => handleLinkClick(e, 'accessibility')}>
+                Accessibility Statement
+              </a>
+            </div>
+
+            <button
+              type="button"
+              className="footer-admin-btn"
+              onClick={(e) => {
+                e.preventDefault();
+                if (onNavigate) {
+                  onNavigate('admin');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+              }}
+              aria-label="Access Studio Admin Panel"
+              title="Studio Administration & Media Manager"
+            >
+              <Lock size={13} className="admin-lock-icon" />
+              <span>Admin Panel</span>
+            </button>
+          </div>
         </div>
       </div>
     </footer>

@@ -146,3 +146,21 @@
   }
 }
 
+/* White / Light Theme Optimizations */
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .films-title {
+  background: linear-gradient(135deg, #14100E 0%, #3D2F29 55%, var(--accent-gold) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 10px rgba(142, 101, 35, 0.1));
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .film-card {
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-subtle);
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .film-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--accent-gold);
+}
+

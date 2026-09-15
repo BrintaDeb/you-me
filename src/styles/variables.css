@@ -1,53 +1,89 @@
-:root {
-  /* Color Palette - Refined Dark Cinematic */
-  --bg-primary: #090807;
-  --bg-surface: #14100F;
-  --bg-elevated: #1D1716;
-  --bg-card: rgba(26, 21, 20, 0.7);
-  --bg-glass: rgba(15, 12, 11, 0.82);
-  --bg-glass-card: rgba(29, 23, 22, 0.55);
+/* ==========================================================================
+   Design System Variables & Theme Palettes
+   YOU & ME — Luxury Editorial Photography & Cinematic Films
+   Themes: White (Default) & Burgundy
+   ========================================================================== */
 
-  --text-primary: #F3E8DF;
-  --text-secondary: #D4C9BF;
-  --text-muted: #9C8E84;
-  --text-subtle: #685E57;
-
-  --accent-wine: #731F36;
-  --accent-wine-light: #8E2B45;
-  --accent-rose: #B97B82;
-  --accent-gold: #C8A46B;
-  --accent-gold-light: #E0C18E;
-  --accent-crimson: #E5253A;
-
-  --border-subtle: rgba(243, 232, 223, 0.08);
-  --border-medium: rgba(243, 232, 223, 0.16);
-  --border-gold: rgba(200, 164, 107, 0.35);
+/* Shared Base Tokens & Default White Editorial Theme */
+:root,
+:root[data-theme="white"],
+[data-theme="white"],
+:root[data-theme="light"],
+[data-theme="light"],
+:root[data-theme="champagne"],
+[data-theme="champagne"] {
+  /* Color Scheme declaration */
+  color-scheme: light;
 
   /* Typography */
   --font-serif: 'Gloock', 'Fraunces', Georgia, serif;
   --font-heading: 'Fraunces', 'Gloock', serif;
   --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
 
-  /* Shadows & Glows */
-  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.35);
-  --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.55);
-  --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.75);
-  --glow-gold: 0 0 40px rgba(200, 164, 107, 0.15);
-  --glow-rose: 0 0 35px rgba(185, 123, 130, 0.18);
-
   /* Transitions */
   --ease-cinematic: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-smooth: cubic-bezier(0.25, 0.1, 0.25, 1);
-  --transition-fast: 0.25s var(--ease-smooth);
+  --transition-fast: 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
   --transition-normal: 0.45s var(--ease-cinematic);
-  --transition-slow: 0.8s var(--ease-cinematic);
-
-  /* Perspective */
-  --perspective-deep: 1400px;
-  --perspective-normal: 1000px;
 
   /* Spacing & Sizes */
   --nav-height: 80px;
   --container-max: 1320px;
   --container-wide: 1540px;
+
+  /* Color Palette - White / Light / Alabaster Editorial Palette */
+  --bg-primary: #FAF7F2;
+  --bg-surface: #FFFFFF;
+  --bg-elevated: #F4EDE2;
+  --bg-glass: rgba(250, 247, 242, 0.94);
+  --bg-glass-card: rgba(255, 255, 255, 0.96);
+
+  --text-primary: #14100E;
+  --text-secondary: #332722;
+  --text-muted: #574A43;
+  --text-subtle: #6E5F57;
+
+  --accent-wine: #6D1B31;
+  --accent-wine-light: #8E2843;
+  --accent-gold: #8E6523;
+  --accent-gold-light: #B08238;
+  --accent-crimson: #C81E32;
+
+  --border-subtle: rgba(26, 20, 18, 0.14);
+  --border-medium: rgba(26, 20, 18, 0.22);
+  --border-gold: rgba(142, 101, 35, 0.45);
+
+  --shadow-sm: 0 4px 16px rgba(45, 30, 22, 0.08), 0 1px 3px rgba(45, 30, 22, 0.04);
+  --shadow-md: 0 12px 32px rgba(45, 30, 22, 0.11), 0 3px 8px rgba(45, 30, 22, 0.05);
+  --shadow-lg: 0 20px 48px rgba(45, 30, 22, 0.14);
+}
+
+/* Royal Burgundy Theme (Imperial Velvet Wine & Antique Gold) */
+:root[data-theme="burgundy"],
+[data-theme="burgundy"] {
+  color-scheme: dark;
+
+  --bg-primary: #12050A;
+  --bg-surface: #1E0A12;
+  --bg-elevated: #2B0F1B;
+  --bg-glass: rgba(18, 5, 10, 0.88);
+  --bg-glass-card: rgba(30, 10, 18, 0.65);
+
+  --text-primary: #FAF2EB;
+  --text-secondary: #E3D1C8;
+  --text-muted: #B3958F;
+  --text-subtle: #7A5C57;
+
+  --accent-wine: #871932;
+  --accent-wine-light: #A82441;
+  --accent-gold: #D4AF37;
+  --accent-gold-light: #EAC765;
+  --accent-crimson: #E01E37;
+
+  --border-subtle: rgba(250, 242, 235, 0.09);
+  --border-medium: rgba(250, 242, 235, 0.18);
+  --border-gold: rgba(212, 175, 55, 0.4);
+
+  --shadow-sm: 0 4px 14px rgba(10, 2, 6, 0.45);
+  --shadow-md: 0 12px 36px rgba(10, 2, 6, 0.7);
+  --shadow-lg: 0 20px 48px rgba(10, 2, 6, 0.85);
 }
