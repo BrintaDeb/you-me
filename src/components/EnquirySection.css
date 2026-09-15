@@ -367,6 +367,21 @@
   }
 }
 
+/* iPad (601–768px) - ensure form card has comfortable padding */
+@media (min-width: 601px) and (max-width: 768px) {
+  .enquiry-form-card {
+    padding: clamp(22px, 4vw, 32px);
+  }
+  .enquiry-info-col {
+    gap: 20px;
+  }
+  .enquiry-direct-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+}
+
 /* Calendar Modal Overlay */
 .calendar-modal-backdrop {
   position: fixed;

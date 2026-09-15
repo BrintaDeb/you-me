@@ -388,3 +388,38 @@
   gap: 8px;
   padding: 10px 20px;
 }
+
+/* Mobile Responsive */
+@media (max-width: 600px) {
+  .download-tier-overlay {
+    padding: 12px;
+    align-items: flex-end;
+  }
+  .download-tier-card {
+    width: 100%;
+    max-width: 100%;
+    border-radius: 16px 16px 0 0;
+    padding: 22px 18px calc(20px + env(safe-area-inset-bottom, 0px));
+  }
+  .download-tier-title {
+    font-size: 1.3rem;
+  }
+  .download-tier-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .download-tier-actions .btn,
+  .tier-download-cta {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .download-tier-title {
+    font-size: 1.15rem;
+  }
+  .download-tier-card {
+    padding: 18px 14px calc(18px + env(safe-area-inset-bottom, 0px));
+  }
+}

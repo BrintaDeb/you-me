@@ -145,18 +145,29 @@
 }
 
 @media (max-width: 600px) {
+  .footer {
+    padding: 52px 0 calc(32px + env(safe-area-inset-bottom, 0px));
+  }
   .footer-top {
     grid-template-columns: 1fr;
-    gap: 36px;
+    gap: 32px;
+    margin-bottom: 40px;
   }
   .footer-bottom {
     flex-direction: column;
     align-items: flex-start;
-    gap: 18px;
+    gap: 14px;
+    padding-top: 24px;
   }
   .footer-bottom-right {
     flex-direction: column;
     align-items: flex-start;
-    gap: 14px;
+    gap: 12px;
+  }
+  .footer-logo {
+    height: 34px;
+  }
+  .footer-tagline {
+    font-size: 0.88rem;
   }
 }

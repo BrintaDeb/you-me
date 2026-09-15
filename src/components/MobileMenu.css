@@ -8,7 +8,8 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 24px clamp(20px, 5vw, 40px);
+  padding: max(24px, env(safe-area-inset-top)) clamp(20px, 5vw, 40px)
+           max(24px, env(safe-area-inset-bottom)) clamp(20px, 5vw, 40px);
   opacity: 0;
   visibility: hidden;
   transition: all var(--transition-normal);
@@ -119,4 +120,16 @@
   color: var(--accent-gold);
 }
 
-
+/* Very small phones */
+@media (max-width: 480px) {
+  .mobile-nav-item a {
+    font-size: clamp(1.5rem, 8vw, 2rem);
+    padding: 6px 0;
+  }
+  .mobile-nav-list {
+    gap: 12px;
+  }
+  .mobile-logo {
+    height: 28px;
+  }
+}

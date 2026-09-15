@@ -1,0 +1,44 @@
+name: Deploy YOU & ME to Hostinger via FTP
+
+on:
+  push:
+    branches:
+      - main          # Auto-deploy on every push to main
+  workflow_dispatch:  # Allow manual deploy from GitHub Actions UI
+
+jobs:
+  build-and-deploy:
+    name: Build & Deploy to Hostinger
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🟩 Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 📦 Install Dependencies
+        run: npm ci
+
+      - name: 🔨 Build Production Bundle
+        run: npm run build
+
+      - name: 🚀 Upload dist/ to Hostinger via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./dist/
+          server-dir: /public_html/
+          protocol: ftps                  # FTPS (encrypted) — required for Hostinger
+          port: 21
+          dangerous-clean-slate: false    # SAFETY: do not wipe server before upload
+          exclude: |
+            **/.git*
+            **/node_modules/**
+            **/src/**

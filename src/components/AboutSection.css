@@ -50,7 +50,7 @@
   line-height: 1.7;
   color: var(--text-secondary);
   margin-bottom: 1.25rem;
-  max-width: 62ch;
+  max-width: min(62ch, 100%);
 }
 
 /* Highlight Box */
@@ -1489,6 +1489,23 @@
   }
 }
 
+/* iPad Portrait / Landscape (601px–900px) */
+@media (min-width: 601px) and (max-width: 900px) {
+  .about-intro-text {
+    max-width: 100%;
+  }
+  .about-media-composition {
+    max-width: 380px;
+    margin: 0 auto;
+  }
+  .about-metrics-bar {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .metric-item:nth-child(3) {
+    border-right: none;
+  }
+}
+
 @media (max-width: 900px) {
   .about-intro-grid {
     grid-template-columns: 1fr;
@@ -1535,6 +1552,7 @@
 
   .about-metrics-bar {
     grid-template-columns: repeat(2, 1fr);
+    padding: 0.85rem 0.65rem;
   }
 
   .metric-item:nth-child(2) {
@@ -1562,5 +1580,22 @@
 
   .modal-signature-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Very small mobile (<=480px): metrics bar to single column */
+@media (max-width: 480px) {
+  .about-metrics-bar {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.25rem;
+  }
+  .metric-value {
+    font-size: 1.2rem;
+  }
+  .metric-label {
+    font-size: 0.62rem;
+  }
+  .metric-detail {
+    display: none;
   }
 }

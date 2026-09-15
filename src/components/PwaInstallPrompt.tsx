@@ -136,10 +136,9 @@ export const PwaInstallPrompt: React.FC = () => {
         className={`pwa-prompt-banner${isStoryboardActive ? ' pwa-suppressed-storyboard' : ''}`}
         aria-label="Install Web Application"
       >
-        <div className="pwa-ring-accent" aria-hidden="true" />
         <div className="pwa-prompt-content">
           <div className="pwa-prompt-icon">
-            <Sparkles size={18} className="gold-icon" />
+            <Sparkles size={20} className="gold-icon" />
           </div>
           <div className="pwa-prompt-text">
             <div className="pwa-prompt-title-row">

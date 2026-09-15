@@ -17,6 +17,7 @@
   border-bottom: 1px solid var(--border-subtle);
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
   height: 70px;
+  padding-top: env(safe-area-inset-top, 0px);
 }
 
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .navbar.scrolled {
@@ -125,6 +126,15 @@
   }
   .navbar-actions {
     gap: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    height: 64px;
+  }
+  .navbar.scrolled {
+    height: 58px;
   }
 }
 

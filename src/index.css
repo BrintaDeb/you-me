@@ -22,6 +22,7 @@ body {
   color: var(--text-primary);
   line-height: 1.65;
   overflow-x: hidden;
+  overscroll-behavior-y: none;   /* prevent iOS bounce on main body */
   position: relative;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -279,9 +280,21 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   -webkit-tap-highlight-color: transparent;
 }
 
+/* iOS momentum scrolling for scrollable containers */
+.portfolio-filters,
+.filmstrip-scroll-track,
+.album-thumbnail-track,
+.workbench-search-box,
+[class*="scroll"] {
+  -webkit-overflow-scrolling: touch;
+}
+
 @media (max-width: 768px) {
   html {
     font-size: 15px;
+  }
+  :root {
+    --nav-height: 64px; /* reduce nav height on mobile */
   }
   .container, .container-wide {
     padding-left: 16px;
@@ -291,6 +304,19 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
     min-height: 46px;
     padding: 12px 24px;
     font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  html {
+    font-size: 14px;
+  }
+  :root {
+    --nav-height: 60px;
+  }
+  .container, .container-wide {
+    padding-left: 14px;
+    padding-right: 14px;
   }
 }
 

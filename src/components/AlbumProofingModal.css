@@ -15,10 +15,13 @@
 .album-modal-container {
   width: 100vw;
   height: 100vh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   padding: 16px 24px;
+  padding-top: max(16px, env(safe-area-inset-top));
+  padding-bottom: max(16px, env(safe-area-inset-bottom));
 }
 
 /* Header */
@@ -954,6 +957,8 @@
 @media (max-width: 768px) {
   .album-modal-container {
     padding: 8px;
+    padding-top: max(8px, env(safe-area-inset-top));
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
   }
 
   .album-top-bar {
@@ -966,7 +971,7 @@
 
   .album-book-wrap {
     width: 95vw;
-    height: 52vh;
+    height: 52svh;
   }
 
   .album-page {
@@ -985,5 +990,36 @@
 
   .album-footer-actions {
     justify-content: space-between;
+  }
+}
+
+/* Extra-small phones (<=480px) */
+@media (max-width: 480px) {
+  .album-top-bar {
+    padding: 4px 8px;
+  }
+  .album-modal-title {
+    font-size: 0.85rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 180px;
+  }
+  .album-header-actions {
+    gap: 8px;
+  }
+  .material-trigger-btn {
+    display: none; /* hide material picker on tiny screens */
+  }
+  .album-book-wrap {
+    width: 100vw;
+    height: 48svh;
+  }
+  .album-page {
+    padding: 8px 10px;
+  }
+  .album-footer-actions button {
+    padding: 8px 10px;
+    font-size: 0.75rem;
   }
 }
