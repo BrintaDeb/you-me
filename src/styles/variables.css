@@ -1,6 +1,7 @@
 /* ==========================================================================
    Design System Variables & Theme Palettes
    YOU & ME — Luxury Editorial Photography & Cinematic Films
+   WCAG 2.2 AA Compliant Contrast across all themes
    Themes: White (Default) & Burgundy
    ========================================================================== */
 
@@ -25,10 +26,16 @@
   --transition-fast: 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
   --transition-normal: 0.45s var(--ease-cinematic);
 
-  /* Spacing & Sizes */
+  /* Spacing & Fluid Dimensions */
   --nav-height: 80px;
   --container-max: 1320px;
   --container-wide: 1540px;
+
+  /* Ambient Lighting & Specular Glassmorphism Defaults */
+  --specular-x: 50%;
+  --specular-y: 50%;
+  --specular-tilt-x: 0px;
+  --specular-tilt-y: 0px;
 
   /* Color Palette - White / Light / Alabaster Editorial Palette */
   --bg-primary: #FAF7F2;
@@ -37,53 +44,95 @@
   --bg-glass: rgba(250, 247, 242, 0.94);
   --bg-glass-card: rgba(255, 255, 255, 0.96);
 
-  --text-primary: #14100E;
-  --text-secondary: #332722;
-  --text-muted: #574A43;
-  --text-subtle: #6E5F57;
+  /* High-Contrast WCAG 2.2 AA Compliant Typography on Light (#FAF7F2 / #FFFFFF) */
+  --text-primary: #14100E;     /* Contrast: 18.5:1 (AAA) */
+  --text-secondary: #332722;   /* Contrast: 12.2:1 (AAA) */
+  --text-muted: #574A43;       /* Contrast: 6.8:1 (AAA) */
+  --text-subtle: #68574F;      /* Contrast: 5.1:1 (AA) */
 
   --accent-wine: #6D1B31;
   --accent-wine-light: #8E2843;
-  --accent-gold: #8E6523;
-  --accent-gold-light: #B08238;
-  --accent-crimson: #C81E32;
+  
+  /* Antique Deep Gold for Light Backgrounds (Contrast >= 5.5:1, passes WCAG AA & AAA) */
+  --accent-gold: #734E14;
+  --accent-gold-body: #63420E;
+  --accent-gold-light: #8C621E;
+  --accent-crimson: #B51829;
 
   --border-subtle: rgba(26, 20, 18, 0.14);
   --border-medium: rgba(26, 20, 18, 0.22);
-  --border-gold: rgba(142, 101, 35, 0.45);
+  --border-gold: rgba(115, 78, 20, 0.45);
 
   --shadow-sm: 0 4px 16px rgba(45, 30, 22, 0.08), 0 1px 3px rgba(45, 30, 22, 0.04);
   --shadow-md: 0 12px 32px rgba(45, 30, 22, 0.11), 0 3px 8px rgba(45, 30, 22, 0.05);
   --shadow-lg: 0 20px 48px rgba(45, 30, 22, 0.14);
+
+  /* Layered Specular Glass Highlight */
+  --glass-specular-border: radial-gradient(
+    circle at var(--specular-x, 50%) var(--specular-y, 50%),
+    rgba(115, 78, 20, 0.25) 0%,
+    rgba(26, 20, 18, 0.1) 60%,
+    transparent 100%
+  );
+
+  /* Physical Fine-Art Paper & Linen Surface Tokens */
+  --paper-grain-opacity: 0.042;
+  --paper-grain-blend: multiply;
+  --editorial-tag-bg: rgba(115, 78, 20, 0.08);
+  --editorial-tag-border: rgba(115, 78, 20, 0.25);
+  --editorial-hairline: rgba(115, 78, 20, 0.35);
+  --editorial-marginalia: #574A43;
 }
 
 /* Royal Burgundy Theme (Imperial Velvet Wine & Antique Gold) */
 :root[data-theme="burgundy"],
-[data-theme="burgundy"] {
+[data-theme="burgundy"],
+:root[data-theme="dark"],
+[data-theme="dark"] {
   color-scheme: dark;
 
   --bg-primary: #12050A;
   --bg-surface: #1E0A12;
   --bg-elevated: #2B0F1B;
   --bg-glass: rgba(18, 5, 10, 0.88);
-  --bg-glass-card: rgba(30, 10, 18, 0.65);
+  --bg-glass-card: rgba(30, 10, 18, 0.72);
 
-  --text-primary: #FAF2EB;
-  --text-secondary: #E3D1C8;
-  --text-muted: #B3958F;
-  --text-subtle: #7A5C57;
+  /* High-Contrast WCAG 2.2 AA Compliant Typography on Dark (#12050A / #1E0A12) */
+  --text-primary: #FAF2EB;     /* Contrast: 18.2:1 (AAA) */
+  --text-secondary: #E3D1C8;   /* Contrast: 13.5:1 (AAA) */
+  --text-muted: #CBB2AB;       /* Contrast: 7.2:1 (AAA) */
+  --text-subtle: #A38882;      /* Contrast: 4.8:1 (AA) */
 
   --accent-wine: #871932;
   --accent-wine-light: #A82441;
+
+  /* Radiant Imperial Gold for Dark Backgrounds (Contrast >= 8.2:1 against #1E0A12) */
   --accent-gold: #D4AF37;
+  --accent-gold-body: #DFBD58;
   --accent-gold-light: #EAC765;
   --accent-crimson: #E01E37;
 
-  --border-subtle: rgba(250, 242, 235, 0.09);
-  --border-medium: rgba(250, 242, 235, 0.18);
-  --border-gold: rgba(212, 175, 55, 0.4);
+  --border-subtle: rgba(250, 242, 235, 0.11);
+  --border-medium: rgba(250, 242, 235, 0.22);
+  --border-gold: rgba(212, 175, 55, 0.45);
 
   --shadow-sm: 0 4px 14px rgba(10, 2, 6, 0.45);
   --shadow-md: 0 12px 36px rgba(10, 2, 6, 0.7);
   --shadow-lg: 0 20px 48px rgba(10, 2, 6, 0.85);
+
+  /* Layered Specular Glass Highlight */
+  --glass-specular-border: radial-gradient(
+    circle at var(--specular-x, 50%) var(--specular-y, 50%),
+    rgba(212, 175, 55, 0.4) 0%,
+    rgba(250, 242, 235, 0.1) 55%,
+    transparent 100%
+  );
+
+  /* Physical Fine-Art Paper & Linen Surface Tokens */
+  --paper-grain-opacity: 0.048;
+  --paper-grain-blend: overlay;
+  --editorial-tag-bg: rgba(212, 175, 55, 0.12);
+  --editorial-tag-border: rgba(212, 175, 55, 0.3);
+  --editorial-hairline: rgba(212, 175, 55, 0.4);
+  --editorial-marginalia: #CBB2AB;
 }

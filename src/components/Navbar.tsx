@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Calendar } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { AudioToggle } from './AudioToggle';
 import { ThemeToggle } from './ThemeToggle';
 import { useTheme } from '../context/useTheme';
@@ -136,15 +136,6 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="navbar-actions">
           <ThemeToggle />
           <AudioToggle />
-
-          <a
-            href="#contact"
-            className="btn btn-primary nav-cta-btn"
-            onClick={(e) => handleLinkClick(e, 'contact')}
-          >
-            <Calendar size={15} />
-            Check Your Date
-          </a>
 
           <button
             type="button"

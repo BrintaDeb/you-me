@@ -25,6 +25,18 @@ export interface TeamMember {
   gear?: string;
   experienceYears?: string;
   signatureWorks?: SignatureWork[];
+  infoPanels?: {
+    roleScope: {
+      title: string;
+      description: string;
+      focus: string;
+    };
+    bookingPolicy: {
+      title: string;
+      description: string;
+      status: string;
+    };
+  };
 }
 
 export interface DynamicAboutPhoto {
@@ -69,7 +81,7 @@ export const dynamicAboutPhotos: DynamicAboutPhoto[] = [
     craft: "Fine-Art Editorial Portraiture",
     tag: "Bengali Wedding",
     gear: "Documentary Prime Lens • Natural Sidelight",
-    url: "/assets/posters/ankita_subhadeep.jpg",
+    url: "https://static.wixstatic.com/media/62230b_f0bc2d2a2e5c41b9bfd0053698a00da7~mv2.jpg",
     storyNote: "A timeless bridal portrait capturing the crimson grandeur of traditional Benarasi silk, intricate gold ornaments, and authentic quiet grace."
   },
   {
@@ -79,7 +91,7 @@ export const dynamicAboutPhotos: DynamicAboutPhoto[] = [
     craft: "Heritage Architectural Portrait",
     tag: "Heritage Couple",
     gear: "35mm Documentary Framing",
-    url: "/assets/posters/avik_binita.jpg",
+    url: "https://static.wixstatic.com/media/62230b_c0671b336e7348a39d51e50e72279e4c~mv2.jpg",
     storyNote: "Framed against classic red brick arches, celebrating the timeless elegance of Bengali wedding attire with natural documentary poise."
   },
   {
@@ -89,7 +101,7 @@ export const dynamicAboutPhotos: DynamicAboutPhoto[] = [
     craft: "Atmospheric Destination Portrait",
     tag: "Golden Hour",
     gear: "Ambient Twilight Illumination",
-    url: "/assets/posters/suchi_hira.jpg",
+    url: "https://static.wixstatic.com/media/62230b_150ef4e5f69c47238c1f0c62ef789699~mv2.jpg",
     storyNote: "Capturing the poetic silence of mountain twilight, where gentle mountain mist and golden sunset light embrace the couple."
   },
   {
@@ -99,7 +111,7 @@ export const dynamicAboutPhotos: DynamicAboutPhoto[] = [
     craft: "Spontaneous Night Celebration",
     tag: "Candid Emotion",
     gear: "Fast Low-Light Prime • Ambient Festoons",
-    url: "/assets/posters/urmi_jasraj.jpg",
+    url: "https://static.wixstatic.com/media/62230b_39a6777bb28c45ab9adffecd4e091276~mv2.jpg",
     storyNote: "Pure unscripted joy and sparkling night ambiance as the couple celebrates with family amidst celebratory sparkles and laughter."
   },
   {
@@ -109,7 +121,7 @@ export const dynamicAboutPhotos: DynamicAboutPhoto[] = [
     craft: "Ceremonial Documentary",
     tag: "Sacred Rituals",
     gear: "Natural Candlelight & Mandap Flame",
-    url: "/assets/posters/paraj_mrinmoyee.jpg",
+    url: "https://static.wixstatic.com/media/62230b_9158582685344752b92aa9237bcd8d02~mv2.jpg",
     storyNote: "Unobtrusive coverage of sacred Hindu wedding rituals under warm evening mandap lighting, preserving solemn emotion without flash interference."
   },
   {
@@ -191,10 +203,22 @@ export const teamMembers: TeamMember[] = [
     gear: "Leica M11 & Hasselblad X2D 100C • 50mm Summilux",
     experienceYears: "8+ Years Directing Weddings",
     signatureWorks: [
-      { id: "sig-b1", title: "Ankita & Subhadeep — Editorial Portrait", category: "Bengali Wedding", url: "/assets/posters/ankita_subhadeep.jpg" },
-      { id: "sig-b2", title: "Avik & Binita — Heritage Architecture", category: "Heritage Couple", url: "/assets/posters/avik_binita.jpg" },
-      { id: "sig-b3", title: "Suchi & Hira — Twilight Horizon", category: "Destination Portrait", url: "/assets/posters/suchi_hira.jpg" }
-    ]
+      { id: "sig-b1", title: "Ankita & Subhadeep — Editorial Portrait", category: "Bengali Wedding", url: "https://static.wixstatic.com/media/62230b_f0bc2d2a2e5c41b9bfd0053698a00da7~mv2.jpg" },
+      { id: "sig-b2", title: "Avik & Binita — Heritage Architecture", category: "Heritage Couple", url: "https://static.wixstatic.com/media/62230b_c0671b336e7348a39d51e50e72279e4c~mv2.jpg" },
+      { id: "sig-b3", title: "Suchi & Hira — Twilight Horizon", category: "Destination Portrait", url: "https://static.wixstatic.com/media/62230b_150ef4e5f69c47238c1f0c62ef789699~mv2.jpg" }
+    ],
+    infoPanels: {
+      roleScope: {
+        title: "Atelier Role & Direction",
+        description: "Personally directs visual narrative, couple editorial portraiture, and master story sequencing for every commissioned celebration.",
+        focus: "Lead Direction • Editorial Portraits • Narrative Arc"
+      },
+      bookingPolicy: {
+        title: "Collective Atelier Booking",
+        description: "YOU & ME commissions are booked for our complete creative collective. Dates are secured for the full atelier rather than individual crew bookings.",
+        status: "Dedicated Lead on All Atelier Dates"
+      }
+    }
   },
   {
     id: "sayan-mukherjee",
@@ -210,10 +234,22 @@ export const teamMembers: TeamMember[] = [
     gear: "Sony Cinema Line FX3 & FX6 • Anamorphic Cine Primes",
     experienceYears: "7+ Years in Motion Cinema",
     signatureWorks: [
-      { id: "sig-s1", title: "Jasraj & Urmi — Night Celebration", category: "Motion Color Still", url: "/assets/posters/urmi_jasraj.jpg" },
-      { id: "sig-s2", title: "Paraj & Mrinmoyee — Mandap Motion", category: "Documentary Film", url: "/assets/posters/paraj_mrinmoyee.jpg" },
-      { id: "sig-s3", title: "Arnab & Shirsha — Golden Light", category: "Destination Cinema", url: "https://static.wixstatic.com/media/62230b_93a1874f42494eb78aac00dbcf896ff3~mv2.jpg" }
-    ]
+      { id: "sig-s1", title: "Jasraj & Urmi — Celebration Still", category: "Candid Still", url: "https://static.wixstatic.com/media/62230b_39a6777bb28c45ab9adffecd4e091276~mv2.jpg" },
+      { id: "sig-s2", title: "Paraj & Mrinmoyee — Mandap Portrait", category: "Documentary Still", url: "https://static.wixstatic.com/media/62230b_9158582685344752b92aa9237bcd8d02~mv2.jpg" },
+      { id: "sig-s3", title: "Arnab & Shirsha — Golden Light", category: "Destination Portrait", url: "https://static.wixstatic.com/media/62230b_93a1874f42494eb78aac00dbcf896ff3~mv2.jpg" }
+    ],
+    infoPanels: {
+      roleScope: {
+        title: "Atelier Role & Motion",
+        description: "Directs multi-camera 4K cinema coverage, aerial framing, and ambient acoustic soundscapes in synchronized harmony with the photography team.",
+        focus: "4K Motion Capture • Anamorphic Primes • Custom Sound Design"
+      },
+      bookingPolicy: {
+        title: "Collective Atelier Booking",
+        description: "Motion storytelling is seamlessly integrated into your wedding package. All cinema commissions feature unified direction with our photography crew.",
+        status: "Integral Lead on All Cinema Commissions"
+      }
+    }
   },
   {
     id: "anirban-roy",
@@ -229,10 +265,22 @@ export const teamMembers: TeamMember[] = [
     gear: "Sony A7R V & Leica Q3 • 35mm f/1.4 GM",
     experienceYears: "6+ Years Documentary Field Experience",
     signatureWorks: [
-      { id: "sig-a1", title: "Jasraj & Urmi — Spontaneous Joy", category: "Candid Emotion", url: "/assets/posters/urmi_jasraj.jpg" },
-      { id: "sig-a2", title: "Avik & Binita — Decisive Frame", category: "Unposed Mandap", url: "/assets/posters/avik_binita.jpg" },
-      { id: "sig-a3", title: "Paraj & Mrinmoyee — Sacred Flame", category: "Ceremonial Ritual", url: "/assets/posters/paraj_mrinmoyee.jpg" }
-    ]
+      { id: "sig-a1", title: "Jasraj & Urmi — Spontaneous Joy", category: "Candid Emotion", url: "https://static.wixstatic.com/media/62230b_669876f3c423429a86a5811c0658ecb1~mv2.jpg" },
+      { id: "sig-a2", title: "Avik & Binita — Decisive Frame", category: "Unposed Mandap", url: "https://static.wixstatic.com/media/62230b_7f2c09302c3b404eacc7c85a95aff72e~mv2.jpg" },
+      { id: "sig-a3", title: "Paraj & Mrinmoyee — Sacred Flame", category: "Ceremonial Ritual", url: "https://static.wixstatic.com/media/62230b_019e6537a70840b5b7ed80f4e77bad72~mv2.jpg" }
+    ],
+    infoPanels: {
+      roleScope: {
+        title: "Atelier Role & Candid Coverage",
+        description: "Full-day documentary presence dedicated exclusively to unscripted emotions, familial rituals, and spontaneous joy without artificial posing.",
+        focus: "Documentary Immersion • Decisive Emotion • Ceremonial Heritage"
+      },
+      bookingPolicy: {
+        title: "Collective Atelier Booking",
+        description: "Our candid storytellers work in unobtrusive tandem with lead directors, ensuring complete multi-angle coverage of both bride and groom parties.",
+        status: "Full-Day Presence on All Studio Commissions"
+      }
+    }
   },
   {
     id: "debolina-sen",
@@ -248,10 +296,22 @@ export const teamMembers: TeamMember[] = [
     gear: "DaVinci Resolve Studio & EIZO ColorEdge 4K • Calibrated IPS",
     experienceYears: "6+ Years Fine-Art Color Grading",
     signatureWorks: [
-      { id: "sig-d1", title: "Ankita & Subhadeep — Crimson Silk Tones", category: "Color Alchemy", url: "/assets/posters/ankita_subhadeep.jpg" },
-      { id: "sig-d2", title: "Suchi & Hira — Twilight Warmth", category: "Color Science", url: "/assets/posters/suchi_hira.jpg" },
-      { id: "sig-d3", title: "Jasraj & Urmi — Midnight Color Science", category: "Night Grade", url: "/assets/posters/urmi_jasraj.jpg" }
-    ]
+      { id: "sig-d1", title: "Ankita & Subhadeep — Crimson Silk Tones", category: "Color Alchemy", url: "https://static.wixstatic.com/media/62230b_ea8e74edd8f04eb7920b4d2b3b425611~mv2.jpg" },
+      { id: "sig-d2", title: "Suchi & Hira — Twilight Warmth", category: "Color Science", url: "https://static.wixstatic.com/media/62230b_85222df8c6dc4d72931d5f6693fbbafe~mv2.jpg" },
+      { id: "sig-d3", title: "Jasraj & Urmi — Midnight Color Science", category: "Night Grade", url: "https://static.wixstatic.com/media/62230b_b391745b40ba442c85ae8644563dc857~mv2.jpg" }
+    ],
+    infoPanels: {
+      roleScope: {
+        title: "Atelier Role & Post-Production",
+        description: "Personally develops the warm, painterly film tones, custom color grading, and archival album layouts for every wedding commissioned with YOU & ME.",
+        focus: "Color Alchemy • Film Tone Emulation • Archival Album Design"
+      },
+      bookingPolicy: {
+        title: "Collective Atelier Booking",
+        description: "Every wedding story undergoes rigorous fine-art finishing in-house. Post-production and print mastery are included with all studio commissions.",
+        status: "Dedicated Mastery for All Atelier Clients"
+      }
+    }
   }
 ];
 

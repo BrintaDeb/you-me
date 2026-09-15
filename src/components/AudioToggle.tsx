@@ -3,6 +3,8 @@ import { Volume2, Music } from 'lucide-react';
 import { audioAtmosphere } from '../utils/audioAtmosphere';
 import './AudioToggle.css';
 
+import { triggerHaptic } from '../utils/haptics';
+
 export const AudioToggle: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(audioAtmosphere.getStatus().isPlaying);
 
@@ -13,15 +15,20 @@ export const AudioToggle: React.FC = () => {
     return unsub;
   }, []);
 
+  const handleToggle = () => {
+    triggerHaptic('light');
+    audioAtmosphere.toggle();
+  };
+
   return (
     <button
       type="button"
       className={`audio-atmosphere-toggle ${isPlaying ? 'is-playing' : ''}`}
-      onClick={() => audioAtmosphere.toggle()}
+      onClick={handleToggle}
       title={
         isPlaying
           ? 'Mute Indian Wedding Instrumental Music'
-          : 'Listen to Indian Wedding Instrumental Music (Audio Only)'
+          : 'Play Indian Wedding Instrumental Music'
       }
       aria-label={
         isPlaying
@@ -30,18 +37,12 @@ export const AudioToggle: React.FC = () => {
       }
       aria-pressed={isPlaying}
     >
-      <div className="audio-icon-wrap">
-        {isPlaying ? <Volume2 size={15} /> : <Music size={14} />}
-      </div>
-
-      <div className="audio-wave-bars" aria-hidden="true">
-        <span className="wave-bar bar-1" />
-        <span className="wave-bar bar-2" />
-        <span className="wave-bar bar-3" />
-      </div>
-
-      <span className="audio-toggle-text">
-        {isPlaying ? 'Playing Audio' : 'Wedding Music'}
+      <span className="audio-icon-slot">
+        {isPlaying ? (
+          <Volume2 size={18} className="audio-icon icon-playing" />
+        ) : (
+          <Music size={18} className="audio-icon icon-idle" />
+        )}
       </span>
     </button>
   );

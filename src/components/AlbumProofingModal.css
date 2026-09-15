@@ -118,7 +118,7 @@
   height: 12px;
   border-radius: 50%;
   border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow: 0 1px 4px rgba(0,0,0,0.5);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
 }
 
 .material-dropdown-card {
@@ -255,6 +255,38 @@
   border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
+/* Topbar Download Button */
+.album-topbar-download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(30, 20, 16, 0.9);
+  border: 1px solid rgba(212, 175, 55, 0.5);
+  color: #FFFFFF;
+  padding: 5px 14px;
+  border-radius: 9999px;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: all 0.25s ease;
+}
+
+.album-topbar-download-btn:hover {
+  background: linear-gradient(135deg, #D4AF37 0%, #B8860B 100%);
+  color: #14100E;
+  border-color: #D4AF37;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.35);
+}
+
+.album-topbar-download-btn:hover .gold-icon {
+  color: #14100E;
+}
+
 .album-modal-close {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.15);
@@ -322,8 +354,8 @@
   background: #FAF8F5;
   border-radius: 6px;
   box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85),
-              0 0 0 1px rgba(0, 0, 0, 0.4),
-              inset 0 0 15px rgba(0, 0, 0, 0.04);
+    0 0 0 1px rgba(0, 0, 0, 0.4),
+    inset 0 0 15px rgba(0, 0, 0, 0.04);
   position: relative;
   display: flex;
   transform-style: preserve-3d;
@@ -346,14 +378,12 @@
   bottom: 0;
   width: 32px;
   transform: translateX(-50%);
-  background: linear-gradient(
-    90deg,
-    rgba(0,0,0,0.18) 0%,
-    rgba(0,0,0,0.02) 42%,
-    rgba(0,0,0,0.22) 50%,
-    rgba(0,0,0,0.02) 58%,
-    rgba(0,0,0,0.18) 100%
-  );
+  background: linear-gradient(90deg,
+      rgba(0, 0, 0, 0.18) 0%,
+      rgba(0, 0, 0, 0.02) 42%,
+      rgba(0, 0, 0, 0.22) 50%,
+      rgba(0, 0, 0, 0.02) 58%,
+      rgba(0, 0, 0, 0.18) 100%);
   z-index: 5;
   pointer-events: none;
 }
@@ -368,7 +398,7 @@
   align-items: center;
   justify-content: center;
   padding: 40px;
-  box-shadow: inset 0 0 40px rgba(0,0,0,0.7);
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.7);
 }
 
 .cover-gold-border {
@@ -395,7 +425,7 @@
   letter-spacing: 0.15em;
   color: #D4AF37;
   margin: 0 0 10px;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
 }
 
 .cover-subtitle {
@@ -466,7 +496,7 @@
   border-radius: 2px;
   background: #EDE8E2;
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
 
 .album-photo-frame.full-bleed {
@@ -492,29 +522,115 @@
   transform: scale(1.02);
 }
 
-.photo-pin-trigger {
+/* Photo Frame Action Triggers in Album Spreads */
+.photo-frame-actions {
   position: absolute;
   bottom: 12px;
   right: 12px;
-  background: rgba(18, 14, 12, 0.85);
-  border: 1px solid #D4AF37;
-  color: #D4AF37;
-  border-radius: 9999px;
-  padding: 5px 12px;
-  font-size: 0.75rem;
-  font-family: var(--font-sans);
-  font-weight: 500;
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
+  z-index: 5;
   opacity: 0;
-  transform: translateY(4px);
-  transition: all 0.2s ease;
+  transform: translateY(6px);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.album-photo-frame:hover .photo-pin-trigger {
+.album-photo-frame:hover .photo-frame-actions {
   opacity: 1;
   transform: translateY(0);
+}
+
+.photo-frame-actions.panoramic-actions {
+  bottom: 18px;
+  right: 18px;
+}
+
+.photo-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 9999px;
+  padding: 6px 13px;
+  font-size: 0.74rem;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.photo-action-btn.photo-download-trigger {
+  background: rgba(22, 14, 16, 0.92);
+  border: 1px solid rgba(240, 198, 85, 0.75);
+  color: #F8D988;
+}
+
+.photo-action-btn.photo-download-trigger:hover {
+  background: linear-gradient(135deg, #ECC150 0%, #D19C35 100%);
+  color: #14100E;
+  border-color: #ECC150;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(212, 175, 55, 0.45);
+}
+
+.photo-action-btn.photo-pin-trigger {
+  background: rgba(18, 14, 12, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
+}
+
+.photo-action-btn.photo-pin-trigger:hover {
+  background: rgba(212, 175, 55, 0.25);
+  border-color: #D4AF37;
+  color: #D4AF37;
+}
+
+/* Touch & Mobile support: ensure action triggers are accessible */
+@media (hover: none),
+(max-width: 900px) {
+  .photo-frame-actions {
+    opacity: 0.95;
+    transform: translateY(0);
+  }
+}
+
+/* Download Feedback Toast */
+.album-download-toast {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(20, 12, 15, 0.95);
+  border: 1px solid rgba(212, 175, 55, 0.7);
+  color: #FFFFFF;
+  padding: 10px 22px;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 600;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.7), 0 0 20px rgba(212, 175, 55, 0.2);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  z-index: 100;
+  animation: slideUpToast 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes slideUpToast {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
 }
 
 .album-photo-caption {
@@ -693,17 +809,17 @@
 
 .album-cover-surface.material-tuscan-leather {
   background: radial-gradient(circle at 50% 50%, #442416 0%, #29140A 100%);
-  box-shadow: inset 0 0 50px rgba(0,0,0,0.85);
+  box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.85);
 }
 
 .album-cover-surface.material-silk-velvet {
   background: radial-gradient(circle at 50% 50%, #561626 0%, #2E0711 100%);
-  box-shadow: inset 0 0 60px rgba(0,0,0,0.9);
+  box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.9);
 }
 
 .album-cover-surface.material-obsidian-leather {
   background: radial-gradient(circle at 50% 50%, #1A1715 0%, #0B0908 100%);
-  box-shadow: inset 0 0 50px rgba(0,0,0,0.95);
+  box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.95);
 }
 
 .album-cover-surface.material-ivory-linen {
@@ -743,7 +859,7 @@
   border: 1px solid #D4AF37;
   border-radius: 8px;
   padding: 24px;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
 }
 
 .note-dialog-header {
@@ -839,27 +955,34 @@
   .album-modal-container {
     padding: 8px;
   }
+
   .album-top-bar {
     padding: 6px 10px;
   }
+
   .album-modal-title {
     font-size: 0.95rem;
   }
+
   .album-book-wrap {
     width: 95vw;
     height: 52vh;
   }
+
   .album-page {
     padding: 12px 14px;
   }
+
   .album-bottom-bar {
     flex-direction: column;
     gap: 10px;
     align-items: stretch;
   }
+
   .album-thumbnail-track {
     max-width: 100%;
   }
+
   .album-footer-actions {
     justify-content: space-between;
   }

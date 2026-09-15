@@ -1,5 +1,5 @@
 .enquiry-section {
-  padding: 140px 0;
+  padding: 130px 0;
   background-color: var(--bg-surface);
   position: relative;
   overflow: hidden;
@@ -8,27 +8,27 @@
 
 .enquiry-grid {
   display: grid;
-  grid-template-columns: 1fr 1.2fr;
-  gap: 70px;
+  grid-template-columns: 1fr 1.25fr;
+  gap: 64px;
   align-items: flex-start;
 }
 
 .enquiry-info-col {
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 26px;
 }
 
 .enquiry-title {
-  font-size: clamp(2.4rem, 5vw, 3.8rem);
-  line-height: 1.1;
+  font-size: clamp(2.4rem, 5vw, 3.6rem);
+  line-height: 1.12;
   background: linear-gradient(180deg, #FFFFFF 0%, #F3E8DF 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .enquiry-desc {
-  font-size: 1.05rem;
+  font-size: 1.02rem;
   color: var(--text-secondary);
   line-height: 1.7;
 }
@@ -36,8 +36,8 @@
 .enquiry-direct-cards {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  margin-top: 8px;
+  gap: 14px;
+  margin-top: 6px;
 }
 
 .enquiry-direct-item {
@@ -46,160 +46,137 @@
   gap: 16px;
   padding: 16px 20px;
   background: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--border-subtle);
-  border-radius: 12px;
-  transition: all var(--transition-fast);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+  text-decoration: none;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
+
 .enquiry-direct-item:hover {
-  background: rgba(200, 164, 107, 0.08);
-  border-color: var(--accent-gold);
+  background: rgba(212, 175, 55, 0.06);
+  border-color: rgba(212, 175, 55, 0.32);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
 }
 
 .enquiry-direct-icon {
-  width: 44px;
-  height: 44px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
-  background: rgba(200, 164, 107, 0.15);
-  color: var(--accent-gold-light);
+  background: rgba(212, 175, 55, 0.08);
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  color: #E8C882;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.enquiry-direct-item:hover .enquiry-direct-icon {
+  transform: scale(1.05);
 }
 
 .enquiry-direct-label {
-  font-size: 0.78rem;
-  letter-spacing: 0.1em;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-muted);
+  font-weight: 500;
+  margin-bottom: 2px;
 }
 
 .enquiry-direct-val {
-  font-size: 1rem;
+  font-size: 0.98rem;
   font-weight: 500;
   color: var(--text-primary);
 }
 
 /* Enquiry Form Container */
 .enquiry-form-card {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-subtle);
-  border-radius: 16px;
-  padding: clamp(28px, 5vw, 48px);
-  box-shadow: var(--shadow-md);
+  background: linear-gradient(155deg, rgba(28, 16, 21, 0.75) 0%, rgba(16, 9, 13, 0.85) 100%);
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  border-radius: 20px;
+  padding: clamp(28px, 4.5vw, 44px);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   position: relative;
 }
 
 .enquiry-form {
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 18px;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
+  position: relative;
 }
 
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  gap: 16px;
+  align-items: start;
 }
 
 .form-label-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 8px;
+  min-height: 24px;
+  height: 24px;
 }
 
 .form-label {
-  font-size: 0.88rem;
+  font-size: 0.76rem;
   font-weight: 500;
-  color: var(--text-secondary);
-  letter-spacing: 0.02em;
+  color: rgba(243, 232, 223, 0.72);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
   transition: color 0.2s ease;
 }
 
-/* Floating label wrapper */
-.form-float-group {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-}
-
-.form-float-group .form-label {
-  position: absolute;
-  left: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 0.92rem;
+.form-required {
+  color: #e07a7a;
   font-weight: 400;
-  color: var(--text-muted);
-  pointer-events: none;
-  transform-origin: left top;
-  transition: top 0.22s ease,
-              transform 0.22s ease,
-              font-size 0.22s ease,
-              color 0.22s ease;
-  z-index: 1;
+  margin-left: 3px;
 }
-
-/* Label floats up when input is focused OR has content */
-.form-float-group .form-input:focus ~ .form-label,
-.form-float-group .form-input:not(:placeholder-shown) ~ .form-label {
-  top: 12px;
-  transform: translateY(0) scale(0.75);
-  color: var(--accent-gold);
-  font-weight: 500;
-}
-
-/* Shift input text down to not overlap floating label */
-.form-float-group .form-input {
-  padding-top: 22px;
-  padding-bottom: 10px;
-}
-
-/* Gold shimmer bottom border on focus */
-.form-float-group .form-input:focus {
-  border-color: var(--accent-gold);
-  box-shadow: 0 0 0 3px rgba(200, 164, 107, 0.15),
-              0 2px 0 0 var(--accent-gold) inset;
-}
-
-:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .form-float-group .form-input:focus ~ .form-label,
-:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .form-float-group .form-input:not(:placeholder-shown) ~ .form-label {
-  color: #8c6b24;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .form-float-group .form-label {
-    transition: none;
-  }
-}
-
 
 .btn-calendar-trigger {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  background: rgba(200, 164, 107, 0.12);
-  border: 1px solid rgba(200, 164, 107, 0.35);
-  color: var(--accent-gold);
-  font-size: 0.72rem;
-  letter-spacing: 0.06em;
+  background: rgba(212, 175, 55, 0.08);
+  border: 1px solid rgba(212, 175, 55, 0.24);
+  color: #E8C882;
+  font-size: 0.7rem;
+  letter-spacing: 0.03em;
   font-weight: 500;
-  padding: 4px 10px;
-  border-radius: 16px;
+  padding: 2px 9px;
+  border-radius: 999px;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  line-height: 1.4;
 }
 
 .btn-calendar-trigger:hover {
-  background: var(--accent-gold);
-  color: #090807;
+  background: rgba(212, 175, 55, 0.18);
+  border-color: rgba(212, 175, 55, 0.5);
+  color: #FFFFFF;
   transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.2);
 }
 
 .date-availability-pill {
@@ -207,8 +184,8 @@
   align-items: center;
   gap: 6px;
   margin-top: 6px;
-  background: rgba(52, 211, 153, 0.15);
-  border: 1px solid rgba(52, 211, 153, 0.35);
+  background: rgba(52, 211, 153, 0.1);
+  border: 1px solid rgba(52, 211, 153, 0.3);
   color: #34D399;
   font-size: 0.75rem;
   padding: 4px 10px;
@@ -216,42 +193,97 @@
   animation: fadeIn 0.3s ease;
 }
 
-.form-required {
-  color: var(--accent-crimson);
-  margin-left: 2px;
-}
-
-.form-input, .form-textarea, .form-select {
+/* Subtle, refined form inputs */
+.form-input,
+.form-textarea,
+.form-select {
   width: 100%;
-  background: rgba(10, 8, 7, 0.6);
-  border: 1px solid var(--border-medium);
-  border-radius: 8px;
-  padding: 14px 16px;
-  color: var(--text-primary);
-  font-size: 0.95rem;
+  box-sizing: border-box;
+  background-color: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 10px;
+  padding: 0 16px;
+  height: 48px;
+  color: #F8F5F0;
+  font-size: 0.92rem;
   font-family: inherit;
-  transition: all var(--transition-fast);
+  transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.form-input:focus, .form-textarea:focus, .form-select:focus {
-  border-color: var(--accent-gold);
-  background: rgba(10, 8, 7, 0.9);
-  box-shadow: 0 0 0 3px rgba(200, 164, 107, 0.15);
+.form-input::placeholder,
+.form-textarea::placeholder {
+  color: rgba(243, 232, 223, 0.3);
+  font-weight: 300;
+  font-size: 0.88rem;
 }
 
-.form-input.error, .form-textarea.error {
-  border-color: var(--accent-crimson);
+.form-input:hover,
+.form-textarea:hover,
+.form-select:hover {
+  border-color: rgba(212, 175, 55, 0.3);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.form-input:focus,
+.form-textarea:focus,
+.form-select:focus {
+  outline: none;
+  border-color: rgba(212, 175, 55, 0.65);
+  background-color: rgba(255, 255, 255, 0.065);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.12), 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.form-input.error,
+.form-textarea.error {
+  border-color: rgba(255, 107, 122, 0.65);
+  background-color: rgba(255, 107, 122, 0.04);
+  box-shadow: 0 0 0 3px rgba(255, 107, 122, 0.1);
 }
 
 .form-error-msg {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   color: #FF6B7A;
-  margin-top: 4px;
+  margin-top: 3px;
+  letter-spacing: 0.01em;
 }
 
 .form-textarea {
-  min-height: 120px;
+  height: auto;
+  min-height: 110px;
+  padding: 13px 16px;
   resize: vertical;
+  line-height: 1.6;
+}
+
+/* Custom subtle dropdown arrow with proper no-repeat */
+.form-select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='rgba(212,175,55,0.75)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 14px 14px;
+  padding-right: 40px;
+  cursor: pointer;
+}
+
+.form-select option {
+  background-color: #1E1015;
+  color: #F8F5F0;
+  padding: 10px;
+}
+
+/* Date picker calendar indicator */
+.form-input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  filter: invert(0.85) sepia(0.4) saturate(2) hue-rotate(5deg);
+  opacity: 0.7;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.form-input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+  transform: scale(1.08);
 }
 
 /* Honeypot hidden from humans */
@@ -262,9 +294,33 @@
 
 .form-submit-btn {
   width: 100%;
-  padding: 16px;
-  margin-top: 8px;
-  font-size: 1rem;
+  height: 52px;
+  margin-top: 4px;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #D4AF37 0%, #A9834B 100%);
+  color: #0A0807;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(212, 175, 55, 0.22);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.form-submit-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(212, 175, 55, 0.38);
+}
+
+.form-submit-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
 }
 
 .form-success-alert {
@@ -280,7 +336,7 @@
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  background: rgba(200, 164, 107, 0.2);
+  background: rgba(200, 164, 107, 0.15);
   color: var(--accent-gold);
   display: flex;
   align-items: center;
@@ -304,6 +360,7 @@
   .enquiry-section {
     padding: 90px 0;
   }
+
   .enquiry-grid {
     grid-template-columns: 1fr;
     gap: 40px;
@@ -338,6 +395,7 @@
     opacity: 0;
     transform: scale(0.95);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -348,37 +406,46 @@
   .enquiry-section {
     padding: 70px 0;
   }
+
   .enquiry-desc {
     font-size: 0.95rem;
     line-height: 1.6;
-    margin-bottom: 28px;
+    margin-bottom: 24px;
   }
+
   .enquiry-direct-item {
-    padding: 12px 14px;
+    padding: 14px 16px;
     gap: 12px;
   }
+
   .form-row {
     grid-template-columns: 1fr;
     gap: 16px;
   }
+
   /* 16px font-size prevents iOS Safari zoom on focus */
   .form-input,
   .form-select,
   .form-textarea {
     font-size: 16px !important;
     min-height: 48px;
-    padding: 12px 14px;
+    padding: 0 14px;
   }
+
   .form-textarea {
     min-height: 100px;
+    padding: 12px 14px;
   }
+
   .form-submit-btn {
-    min-height: 50px;
-    font-size: 0.95rem;
+    height: 50px;
+    font-size: 0.84rem;
   }
+
   .calendar-modal-backdrop {
     padding: 12px;
   }
+
   .calendar-modal-dialog {
     max-height: 94vh;
   }
@@ -392,36 +459,42 @@
 }
 
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .enquiry-form-card {
-  background: #FFFFFF;
-  border: 1px solid var(--border-medium);
-  box-shadow: var(--shadow-md);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(184, 134, 11, 0.16);
+  box-shadow: 0 20px 50px rgba(40, 25, 20, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .form-label {
-  color: var(--text-primary);
+  color: #4A3E39;
   font-weight: 600;
 }
 
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .btn-calendar-trigger {
-  background: rgba(142, 101, 35, 0.12);
-  border-color: rgba(142, 101, 35, 0.35);
-  color: var(--accent-gold);
+  background: rgba(142, 101, 35, 0.08);
+  border-color: rgba(142, 101, 35, 0.28);
+  color: #8E6523;
 }
 
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .btn-calendar-trigger:hover {
-  background: var(--accent-gold);
+  background: #8E6523;
   color: #FFFFFF;
 }
 
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .enquiry-direct-item {
   background: #FFFFFF;
-  border-color: var(--border-medium);
-  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
 }
 
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .enquiry-direct-item:hover {
+  background: rgba(142, 101, 35, 0.04);
+  border-color: rgba(142, 101, 35, 0.3);
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .enquiry-direct-icon {
   background: rgba(142, 101, 35, 0.08);
-  border-color: var(--accent-gold);
+  border: 1px solid rgba(142, 101, 35, 0.2);
+  color: #8E6523;
 }
 
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .enquiry-direct-label {
@@ -435,23 +508,46 @@
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .form-input,
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .form-textarea,
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .form-select {
-  background: #FAF8F5;
-  border: 1.5px solid var(--border-medium);
-  color: var(--text-primary);
+  background-color: #FAF8F5;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: #1A1412;
 }
 
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .form-input::placeholder,
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .form-textarea::placeholder {
-  color: var(--text-muted);
-  opacity: 0.8;
+  color: rgba(26, 20, 18, 0.38);
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .form-input:hover,
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .form-textarea:hover,
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .form-select:hover {
+  border-color: rgba(184, 134, 11, 0.35);
+  background-color: #FFFFFF;
 }
 
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .form-input:focus,
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .form-textarea:focus,
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .form-select:focus {
-  background: #FFFFFF;
-  border-color: var(--accent-gold);
-  box-shadow: 0 0 0 3px rgba(142, 101, 35, 0.18);
+  background-color: #FFFFFF;
+  border-color: rgba(184, 134, 11, 0.7);
+  box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.12), 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .form-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='rgba(142,101,35,0.75)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 14px 14px;
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .form-select option {
+  background-color: #FFFFFF;
+  color: #1A1412;
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .form-input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.2) sepia(0.5) hue-rotate(5deg);
+  opacity: 0.65;
 }
 
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .form-success-title {
@@ -461,5 +557,3 @@
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .calendar-modal-backdrop {
   background: rgba(20, 16, 14, 0.65);
 }
-
-

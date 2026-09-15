@@ -1,0 +1,14 @@
+# ==============================================================================
+# YOU & ME — Cinematic Wedding Photography
+# Robots Exclusion File for Search Engine Crawlers
+# ==============================================================================
+
+User-agent: *
+Allow: /
+
+# Protect Private VIP Client Galleries and Admin Vault from Indexing
+Disallow: /client-lounge
+Disallow: /admin
+
+# XML Sitemap
+Sitemap: https://www.teamyouandme.net/sitemap.xml

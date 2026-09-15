@@ -42,7 +42,7 @@ export const EnquirySection: React.FC = () => {
         const parsed = JSON.parse(saved);
         return { ...initial, ...parsed, botTrap: '' };
       }
-    } catch {}
+    } catch { }
     return initial;
   });
 
@@ -60,7 +60,7 @@ export const EnquirySection: React.FC = () => {
       const updated = { ...prev, [name]: value };
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-      } catch {}
+      } catch { }
       return updated;
     });
 
@@ -253,7 +253,10 @@ export const EnquirySection: React.FC = () => {
                   </div>
                 )}
 
-                <div className="form-group form-float-group">
+                <div className="form-group">
+                  <label htmlFor="form-name" className="form-label">
+                    Your Name <span className="form-required">*</span>
+                  </label>
                   <input
                     id="form-name"
                     type="text"
@@ -261,16 +264,13 @@ export const EnquirySection: React.FC = () => {
                     autoComplete="name"
                     value={values.fullName}
                     onChange={handleChange}
-                    placeholder=" "
+                    placeholder="e.g. Aditi Sharma & Rohan Verma"
                     className={`form-input ${errors.fullName ? 'error' : ''}`}
                     aria-required="true"
                     aria-invalid={!!errors.fullName}
                     aria-describedby={errors.fullName ? 'form-name-err' : undefined}
                     disabled={isSubmitting}
                   />
-                  <label htmlFor="form-name" className="form-label">
-                    Your Name <span className="form-required">*</span>
-                  </label>
                   {errors.fullName && (
                     <span id="form-name-err" className="form-error-msg">
                       {errors.fullName}
@@ -279,7 +279,10 @@ export const EnquirySection: React.FC = () => {
                 </div>
 
                 <div className="form-row">
-                  <div className="form-group form-float-group">
+                  <div className="form-group">
+                    <label htmlFor="form-email" className="form-label">
+                      Email Address <span className="form-required">*</span>
+                    </label>
                     <input
                       id="form-email"
                       type="email"
@@ -287,16 +290,13 @@ export const EnquirySection: React.FC = () => {
                       autoComplete="email"
                       value={values.email}
                       onChange={handleChange}
-                      placeholder=" "
+                      placeholder="aditi@example.com"
                       className={`form-input ${errors.email ? 'error' : ''}`}
                       aria-required="true"
                       aria-invalid={!!errors.email}
                       aria-describedby={errors.email ? 'form-email-err' : undefined}
                       disabled={isSubmitting}
                     />
-                    <label htmlFor="form-email" className="form-label">
-                      Email Address <span className="form-required">*</span>
-                    </label>
                     {errors.email && (
                       <span id="form-email-err" className="form-error-msg">
                         {errors.email}
@@ -304,7 +304,10 @@ export const EnquirySection: React.FC = () => {
                     )}
                   </div>
 
-                  <div className="form-group form-float-group">
+                  <div className="form-group">
+                    <label htmlFor="form-phone" className="form-label">
+                      Phone Number <span className="form-required">*</span>
+                    </label>
                     <input
                       id="form-phone"
                       type="tel"
@@ -312,16 +315,13 @@ export const EnquirySection: React.FC = () => {
                       autoComplete="tel"
                       value={values.phone}
                       onChange={handleChange}
-                      placeholder=" "
+                      placeholder="+91 98765 43210"
                       className={`form-input ${errors.phone ? 'error' : ''}`}
                       aria-required="true"
                       aria-invalid={!!errors.phone}
                       aria-describedby={errors.phone ? 'form-phone-err' : undefined}
                       disabled={isSubmitting}
                     />
-                    <label htmlFor="form-phone" className="form-label">
-                      Phone Number <span className="form-required">*</span>
-                    </label>
                     {errors.phone && (
                       <span id="form-phone-err" className="form-error-msg">
                         {errors.phone}
@@ -329,7 +329,6 @@ export const EnquirySection: React.FC = () => {
                     )}
                   </div>
                 </div>
-
 
                 <div className="form-row">
                   <div className="form-group">
@@ -343,7 +342,7 @@ export const EnquirySection: React.FC = () => {
                         onClick={() => setShowCalendar(true)}
                         aria-label="Open interactive studio availability calendar"
                       >
-                        <CalendarIcon size={13} /> Check Studio Calendar
+                        <CalendarIcon size={12} /> View Calendar
                       </button>
                     </div>
 
@@ -377,20 +376,22 @@ export const EnquirySection: React.FC = () => {
                     )}
                   </div>
 
-                  <div className="form-group form-float-group">
+                  <div className="form-group">
+                    <div className="form-label-row">
+                      <label htmlFor="form-location" className="form-label">
+                        Wedding Location / Venue
+                      </label>
+                    </div>
                     <input
                       id="form-location"
                       type="text"
                       name="weddingLocation"
                       value={values.weddingLocation}
                       onChange={handleChange}
-                      placeholder=" "
+                      placeholder="e.g. Umaid Bhawan, Jodhpur"
                       className="form-input"
                       disabled={isSubmitting}
                     />
-                    <label htmlFor="form-location" className="form-label">
-                      Wedding Location / Venue
-                    </label>
                   </div>
                 </div>
 

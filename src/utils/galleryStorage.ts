@@ -1,16 +1,9 @@
 import { couplesData } from '../data/couplesData';
 import type { WeddingStory, WeddingImage } from '../data/couplesData';
 
-export interface StoredStoryMeta {
-  id: string;
-  pin: string;
-  isPrivate: boolean;
-  uploadedAt: string;
-}
-
 export type ClientRole = 'couple' | 'family' | 'guest';
 
-export interface PinRecord {
+interface PinRecord {
   pin: string;
   storyId: string;
   role: ClientRole;

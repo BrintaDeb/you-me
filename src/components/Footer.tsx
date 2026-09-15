@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Phone, Mail, Lock } from 'lucide-react';
+import { Phone, Mail } from 'lucide-react';
 import { businessInfo } from '../data/businessData';
 import { useTheme } from '../context/useTheme';
 import './Footer.css';
@@ -185,23 +185,6 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 Accessibility Statement
               </a>
             </div>
-
-            <button
-              type="button"
-              className="footer-admin-btn"
-              onClick={(e) => {
-                e.preventDefault();
-                if (onNavigate) {
-                  onNavigate('admin');
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }
-              }}
-              aria-label="Access Studio Admin Panel"
-              title="Studio Administration & Media Manager"
-            >
-              <Lock size={13} className="admin-lock-icon" />
-              <span>Admin Panel</span>
-            </button>
           </div>
         </div>
       </div>

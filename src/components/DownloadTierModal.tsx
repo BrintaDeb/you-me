@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   X,
   Download,
@@ -36,6 +36,16 @@ export const DownloadTierModal: React.FC<DownloadTierModalProps> = ({
   const [progressPercent, setProgressPercent] = useState(0);
   const [statusMessage, setStatusMessage] = useState('');
   const [isFinished, setIsFinished] = useState(false);
+  const timerIdsRef = useRef<number[]>([]);
+
+  const clearAllTimers = () => {
+    timerIdsRef.current.forEach(id => window.clearTimeout(id));
+    timerIdsRef.current = [];
+  };
+
+  useEffect(() => {
+    return () => clearAllTimers();
+  }, []);
 
   if (!isOpen) return null;
 
@@ -47,6 +57,7 @@ export const DownloadTierModal: React.FC<DownloadTierModalProps> = ({
       return;
     }
 
+    clearAllTimers();
     setIsPackaging(true);
     setProgressPercent(10);
     setStatusMessage('Connecting to YOU & ME high-speed archival edge...');
@@ -60,7 +71,7 @@ export const DownloadTierModal: React.FC<DownloadTierModalProps> = ({
     ];
 
     steps.forEach((step, idx) => {
-      setTimeout(() => {
+      const timerId = window.setTimeout(() => {
         setProgressPercent(step.p);
         setStatusMessage(step.msg);
 
@@ -79,10 +90,12 @@ export const DownloadTierModal: React.FC<DownloadTierModalProps> = ({
           a.click();
         }
       }, (idx + 1) * 750);
+      timerIdsRef.current.push(timerId);
     });
   };
 
   const handleReset = () => {
+    clearAllTimers();
     setIsPackaging(false);
     setProgressPercent(0);
     setStatusMessage('');

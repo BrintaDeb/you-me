@@ -6,17 +6,21 @@
 
 .portfolio-header {
   text-align: center;
-  max-width: 760px;
-  margin: 0 auto 50px;
+  max-width: 780px;
+  margin: 0 auto 48px;
 }
 
 .portfolio-title {
   font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+  line-height: 1.15;
+  margin-top: 12px;
   margin-bottom: 16px;
+  letter-spacing: -0.01em;
 }
 
 .portfolio-subtitle {
   font-size: 1.05rem;
+  line-height: 1.6;
   color: var(--text-muted);
 }
 
@@ -30,88 +34,261 @@
 }
 
 .filter-pill {
-  padding: 8px 20px;
+  padding: 9px 22px;
   border-radius: 30px;
   font-size: 0.85rem;
   letter-spacing: 0.04em;
+  font-weight: 500;
   color: var(--text-secondary);
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--border-subtle);
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: all var(--transition-fast, 0.25s ease);
 }
-.filter-pill:hover, .filter-pill.active {
-  background: rgba(200, 164, 107, 0.12);
+.filter-pill:hover,
+.filter-pill.active {
+  background: rgba(200, 164, 107, 0.14);
   border-color: var(--accent-gold);
   color: var(--accent-gold-light);
+  transform: translateY(-1px);
 }
 
+/* --------------------------------------------------------------------------
+   INTERACTIVE EDITORIAL MAGAZINE GRID (Part 1 Item 4)
+   Asymmetrical print-inspired layout with variable aspect ratios & marginalia
+   -------------------------------------------------------------------------- */
+.editorial-magazine-grid,
 .portfolio-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-auto-rows: 320px;
-  gap: 20px;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 28px;
   margin-bottom: 60px;
+  animation: portfolioGridFade 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Bento editorial layout: tall portrait + wide landscape pattern */
-.portfolio-card:nth-child(6n + 1) {
-  grid-row: span 2; /* Tall portrait */
-}
-.portfolio-card:nth-child(6n + 4) {
-  grid-column: span 2; /* Wide landscape */
+@keyframes portfolioGridFade {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
+/* Editorial Asymmetrical Card Rhythm */
+/* Card 0: Lead Feature Story (Wide 7 cols) */
+.editorial-card-0 {
+  grid-column: span 7;
+  aspect-ratio: 16 / 11;
+}
+
+/* Card 1: Tall Vertical Monograph (5 cols) */
+.editorial-card-1 {
+  grid-column: span 5;
+  aspect-ratio: 4 / 5;
+}
+
+/* Card 2: Detail Intimacy (4 cols) */
+.editorial-card-2 {
+  grid-column: span 4;
+  aspect-ratio: 4 / 5;
+}
+
+/* Card 3: Wide Architectural Spread (8 cols) */
+.editorial-card-3 {
+  grid-column: span 8;
+  aspect-ratio: 16 / 10;
+}
+
+/* Card 4: Staggered Portrait Pair (6 cols) */
+.editorial-card-4 {
+  grid-column: span 6;
+  aspect-ratio: 16 / 11;
+}
+
+/* Card 5: Ceremonial Finale (6 cols) */
+.editorial-card-5 {
+  grid-column: span 6;
+  aspect-ratio: 16 / 11;
+}
+
+.editorial-card,
 .portfolio-card {
   position: relative;
-  border-radius: 12px;
+  width: 100%;
+  border-radius: 16px;
   overflow: hidden;
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
-  aspect-ratio: 4 / 5;
   cursor: pointer;
-  box-shadow: var(--shadow-sm);
-  transition: all var(--transition-normal);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.3s ease;
+  display: flex;
+  flex-direction: column;
 }
+
+.editorial-card:hover,
 .portfolio-card:hover {
-  transform: translateY(-6px);
-  border-color: rgba(200, 164, 107, 0.4);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
+  transform: translateY(-8px);
+  border-color: rgba(200, 164, 107, 0.6);
+  box-shadow: 0 20px 40px -12px rgba(200, 164, 107, 0.22),
+              0 14px 36px rgba(0, 0, 0, 0.7);
+}
+
+.editorial-card-media-wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Floating Editorial Plate & Craft Bar */
+.editorial-card-plate-bar {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.editorial-craft-note {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.66rem;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.86);
+  background: rgba(14, 10, 10, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  opacity: 0.9;
+  transition: all 0.25s ease;
+}
+
+.editorial-card:hover .editorial-craft-note {
+  opacity: 1;
+  border-color: var(--accent-gold);
+  color: #FFFFFF;
+}
+
+.portfolio-curatorial-tag {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--accent-gold);
+  background: var(--editorial-tag-bg);
+  border: 1px solid var(--editorial-tag-border);
+  padding: 2px 7px;
+  border-radius: 4px;
 }
 
 .portfolio-card-img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.8s var(--ease-cinematic);
+  object-position: center 25%;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
+
 .portfolio-card:hover .portfolio-card-img {
-  transform: scale(1.05);
+  transform: scale(1.06);
 }
 
 .portfolio-card-gradient {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(9, 8, 7, 0.95) 0%, rgba(9, 8, 7, 0.3) 50%, transparent 100%);
+  background: linear-gradient(
+    to top,
+    rgba(9, 8, 7, 0.96) 0%,
+    rgba(9, 8, 7, 0.8) 32%,
+    rgba(9, 8, 7, 0.25) 65%,
+    transparent 100%
+  );
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 24px;
+  padding: 26px 22px 22px;
+  z-index: 2;
+  transition: background 0.35s ease;
+}
+
+.portfolio-card:hover .portfolio-card-gradient {
+  background: linear-gradient(
+    to top,
+    rgba(9, 8, 7, 0.98) 0%,
+    rgba(9, 8, 7, 0.86) 38%,
+    rgba(9, 8, 7, 0.32) 70%,
+    transparent 100%
+  );
+}
+
+.portfolio-card-top-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
 }
 
 .portfolio-card-cat {
-  font-size: 0.75rem;
-  letter-spacing: 0.15em;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--accent-gold);
-  margin-bottom: 6px;
+  font-weight: 600;
+  color: var(--accent-gold-light, #e8c882);
+}
+
+.portfolio-card-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 12px;
+  background: rgba(200, 164, 107, 0.22);
+  border: 1px solid rgba(200, 164, 107, 0.45);
+  color: #FFFFFF;
 }
 
 .portfolio-card-name {
   font-family: var(--font-serif);
-  font-size: 1.5rem;
-  color: #fff;
-  margin-bottom: 8px;
+  font-size: 1.55rem;
+  font-weight: 500;
+  line-height: 1.25;
+  color: #FFFFFF;
+  margin-bottom: 4px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+.portfolio-card-tagline {
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.78);
+  font-style: italic;
+  line-height: 1.4;
+  margin-bottom: 12px;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .portfolio-card-footer {
@@ -119,36 +296,77 @@
   align-items: center;
   justify-content: space-between;
   font-size: 0.82rem;
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.78);
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  padding-top: 12px;
+}
+
+.portfolio-card-meta-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.portfolio-card-loc {
+  display: inline-flex;
+  align-items: center;
+  opacity: 0.85;
 }
 
 .portfolio-card-link {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: var(--accent-gold-light);
+  color: var(--accent-gold-light, #e8c882);
   font-weight: 500;
+  font-size: 0.82rem;
+  transition: all 0.25s ease;
+}
+
+.portfolio-card-arrow {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.portfolio-card:hover .portfolio-card-link {
+  color: #FFFFFF;
+}
+
+.portfolio-card:hover .portfolio-card-arrow {
+  transform: translateX(5px);
 }
 
 .portfolio-actions {
   text-align: center;
 }
 
-/* Tablet Optimizations (601px - 960px) */
-@media (min-width: 601px) and (max-width: 960px) {
+.portfolio-actions .btn {
+  padding: 14px 34px;
+  font-size: 0.92rem;
+  letter-spacing: 0.06em;
+}
+
+/* Tablet Optimizations (601px - 1024px) */
+@media (min-width: 601px) and (max-width: 1024px) {
   .portfolio-showcase {
     padding: 90px 0;
   }
+  .editorial-magazine-grid,
   .portfolio-grid {
-    grid-template-columns: repeat(2, 1fr);
-    grid-auto-rows: 300px;
-    gap: 16px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+    margin-bottom: 48px;
   }
-  /* Reset bento pattern for tablet */
-  .portfolio-card:nth-child(6n + 1),
-  .portfolio-card:nth-child(6n + 4) {
-    grid-row: unset;
-    grid-column: unset;
+  .editorial-card-0,
+  .editorial-card-3 {
+    grid-column: span 2;
+    aspect-ratio: 16 / 10;
+  }
+  .editorial-card-1,
+  .editorial-card-2,
+  .editorial-card-4,
+  .editorial-card-5 {
+    grid-column: span 1;
+    aspect-ratio: 4 / 5;
   }
 }
 
@@ -158,7 +376,7 @@
     flex-wrap: nowrap;
     overflow-x: auto;
     justify-content: flex-start;
-    padding: 4px 12px 14px;
+    padding: 4px 16px 14px;
     gap: 8px;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
@@ -183,23 +401,33 @@
   .portfolio-header {
     margin-bottom: 28px;
   }
+  .editorial-magazine-grid,
   .portfolio-grid {
     grid-template-columns: 1fr;
-    grid-auto-rows: 320px;
     gap: 20px;
     margin-bottom: 36px;
   }
-  /* Reset all bento on mobile */
-  .portfolio-card:nth-child(6n + 1),
-  .portfolio-card:nth-child(6n + 4) {
-    grid-row: unset;
-    grid-column: unset;
+  .editorial-card-0,
+  .editorial-card-1,
+  .editorial-card-2,
+  .editorial-card-3,
+  .editorial-card-4,
+  .editorial-card-5,
+  .editorial-card,
+  .portfolio-card {
+    grid-column: span 1;
+    aspect-ratio: 4 / 5;
+  }
+  .editorial-card-plate-bar {
+    top: 12px;
+    left: 12px;
+    right: 12px;
   }
   .portfolio-card-name {
     font-size: 1.35rem;
   }
   .portfolio-card-gradient {
-    padding: 18px;
+    padding: 20px 18px 18px;
   }
   .portfolio-actions .btn {
     width: 100%;
@@ -231,12 +459,13 @@
 }
 
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .portfolio-card {
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 8px 24px -6px rgba(45, 30, 22, 0.12);
   border: 1px solid var(--border-subtle);
 }
 
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .portfolio-card:hover {
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 16px 36px -10px rgba(142, 101, 35, 0.3),
+              0 8px 20px rgba(45, 30, 22, 0.08);
   border-color: var(--accent-gold);
 }
 

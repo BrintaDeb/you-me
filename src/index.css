@@ -27,6 +27,56 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* ==========================================================================
+   PHYSICAL FINE-ART PAPER & LINEN SURFACE TEXTURE (Part 1 Item 2)
+   Generates a tactile museum-grade Hahnemühle rag paper & darkroom grain
+   Zero network payload, hardware-accelerated, non-blocking
+   ========================================================================== */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9990;
+  opacity: var(--paper-grain-opacity, 0.045);
+  mix-blend-mode: var(--paper-grain-blend, overlay);
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='fineArtPaperFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23fineArtPaperFilter)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 190px 190px;
+}
+
+/* Editorial Magazine Marginalia & Plate Utilities (Part 1 Item 4) */
+.editorial-plate-tag {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent-gold);
+  background: var(--editorial-tag-bg);
+  border: 1px solid var(--editorial-tag-border);
+  padding: 3px 8px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.editorial-hairline {
+  display: inline-block;
+  height: 1px;
+  background: var(--editorial-hairline);
+  flex-grow: 1;
+}
+
+.editorial-marginalia {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: var(--editorial-marginalia);
+}
+
 /* Accessible Skip Link */
 .skip-link {
   position: absolute;
@@ -285,6 +335,45 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
     transform: scale(1);
   }
 }
+/* Specular Glassmorphism & Ambient Light Highlights */
+.specular-card {
+  position: relative;
+  background-clip: padding-box;
+}
 
+.specular-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at var(--specular-x, 50%) var(--specular-y, 50%),
+    rgba(212, 175, 55, 0.22) 0%,
+    transparent 65%
+  );
+  opacity: 0.85;
+  transition: opacity var(--transition-fast);
+  z-index: 1;
+}
 
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .specular-card::before {
+  background: radial-gradient(
+    circle at var(--specular-x, 50%) var(--specular-y, 50%),
+    rgba(115, 78, 20, 0.18) 0%,
+    transparent 60%
+  );
+}
 
+/* Fluid Typography & 200% Zoom Resiliency */
+h1, h2, h3, h4, h5, h6, p, span, a, button, input, textarea, select {
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+/* Ensure buttons don't clip at 200% zoom */
+.btn, .action-pill-btn, .chapter-chip, .dynamic-hud-expand-pill {
+  white-space: normal;
+  text-align: center;
+  max-width: 100%;
+}

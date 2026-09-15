@@ -1,6 +1,8 @@
-import React, { useEffect, useCallback } from 'react';
-import { X, ChevronLeft, ChevronRight } from 'lucide-react';
+import React, { useEffect, useCallback, useState } from 'react';
+import { X, ChevronLeft, ChevronRight, Download, Check } from 'lucide-react';
 import type { WeddingImage } from '../data/couplesData';
+import { downloadPhotoFile } from '../utils/photoDownloader';
+import { triggerHaptic } from '../utils/haptics';
 import './Lightbox.css';
 
 interface LightboxProps {
@@ -9,6 +11,7 @@ interface LightboxProps {
   isOpen: boolean;
   onClose: () => void;
   onNavigate: (index: number) => void;
+  storySlug?: string;
 }
 
 export const Lightbox: React.FC<LightboxProps> = ({
@@ -16,8 +19,12 @@ export const Lightbox: React.FC<LightboxProps> = ({
   currentIndex,
   isOpen,
   onClose,
-  onNavigate
+  onNavigate,
+  storySlug = 'gallery'
 }) => {
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [downloadSuccess, setDownloadSuccess] = useState(false);
+
   const handlePrev = useCallback(() => {
     onNavigate((currentIndex - 1 + images.length) % images.length);
   }, [currentIndex, images.length, onNavigate]);
@@ -48,6 +55,22 @@ export const Lightbox: React.FC<LightboxProps> = ({
 
   const currentImage = images[currentIndex];
 
+  const handleDownload = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!currentImage || isDownloading) return;
+
+    setIsDownloading(true);
+    triggerHaptic('medium');
+
+    const filename = `YOU_AND_ME_${storySlug}_Frame_${currentImage.id || String(currentIndex + 1).padStart(2, '0')}.jpg`;
+    await downloadPhotoFile(currentImage.url, filename);
+
+    setIsDownloading(false);
+    setDownloadSuccess(true);
+    triggerHaptic('success');
+    setTimeout(() => setDownloadSuccess(false), 2500);
+  };
+
   return (
     <div
       className="lightbox-overlay"
@@ -60,14 +83,36 @@ export const Lightbox: React.FC<LightboxProps> = ({
         <span className="lightbox-counter">
           {currentIndex + 1} / {images.length}
         </span>
-        <button
-          type="button"
-          className="lightbox-close-btn"
-          onClick={onClose}
-          aria-label="Close lightbox"
-        >
-          <X size={20} />
-        </button>
+        <div className="lightbox-header-actions">
+          <button
+            type="button"
+            className={`lightbox-download-btn ${downloadSuccess ? 'success' : ''}`}
+            onClick={handleDownload}
+            disabled={isDownloading}
+            aria-label="Download photograph"
+            title="Download high-resolution photograph"
+          >
+            {downloadSuccess ? (
+              <>
+                <Check size={16} className="gold-icon" />
+                <span>Saved to Device</span>
+              </>
+            ) : (
+              <>
+                <Download size={16} />
+                <span>{isDownloading ? 'Saving...' : 'Download Photo'}</span>
+              </>
+            )}
+          </button>
+          <button
+            type="button"
+            className="lightbox-close-btn"
+            onClick={onClose}
+            aria-label="Close lightbox"
+          >
+            <X size={20} />
+          </button>
+        </div>
       </div>
 
       <button

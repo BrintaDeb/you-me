@@ -132,43 +132,6 @@
   color: var(--text-primary);
 }
 
-.footer-admin-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 6px 14px;
-  font-family: var(--font-sans);
-  font-size: 0.76rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--accent-gold);
-  background: rgba(212, 175, 55, 0.09);
-  border: 1px solid rgba(212, 175, 55, 0.35);
-  border-radius: 9999px;
-  cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.footer-admin-btn:hover {
-  background: var(--accent-gold);
-  color: #0A0807;
-  border-color: var(--accent-gold);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.28);
-}
-
-.footer-admin-btn:active {
-  transform: scale(0.97);
-}
-
-.footer-admin-btn .admin-lock-icon {
-  transition: transform 0.2s ease;
-}
-
-.footer-admin-btn:hover .admin-lock-icon {
-  transform: scale(1.15);
-}
 
 .footer-attribution {
   font-size: 0.78rem;

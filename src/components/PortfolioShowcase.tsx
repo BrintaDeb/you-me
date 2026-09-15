@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowRight, Sparkles, Image as ImageIcon } from 'lucide-react';
+import { ArrowRight, Sparkles, Image as ImageIcon, MapPin, Film, Compass, Camera } from 'lucide-react';
 import { couplesData } from '../data/couplesData';
 import type { WeddingStory } from '../data/couplesData';
 import './PortfolioShowcase.css';
@@ -10,6 +10,33 @@ interface PortfolioShowcaseProps {
 }
 
 const categories = ['All', 'Candid & Documentary', 'Traditional Wedding', 'Destination Wedding', 'Bengali Wedding'];
+
+const CAMERA_NOTES = [
+  'Leica M11 • 50mm Summilux • f/1.4',
+  'Hasselblad X2D 100C • 38mm f/2.5',
+  'Sony Cinema FX3 • Anamorphic Cine',
+  'Leica Q3 • 28mm Summilux • Natural Twilight',
+  'Sony A7R V • 85mm f/1.4 GM • Golden Hour',
+  'Hasselblad X2D • 55mm • Calibrated Emulation'
+];
+
+const CURATORIAL_TAGS = [
+  'Editorial Monograph',
+  'Ceremonial Splendor',
+  'Spontaneous Intimacy',
+  'Fine-Art Heirloom',
+  'Anamorphic Motion',
+  'Heritage Ritual'
+];
+
+const COORDINATES_MAP: Record<string, string> = {
+  'Kolkata': "22°34'N 88°21'E • Calcutta Classical",
+  'Rajasthan': "26°55'N 75°49'E • Royal Heritage",
+  'Goa': "15°29'N 73°49'E • Coastal Horizon",
+  'Traditional Bengali Wedding': "22°32'N 88°24'E • Traditional Atelier",
+  'Grand Heritage Palace': "24°35'N 73°41'E • Heritage Palace",
+  'Calcutta Classical': "22°34'N 88°21'E • Calcutta Classical"
+};
 
 export const PortfolioShowcase: React.FC<PortfolioShowcaseProps> = ({
   onSelectStory,
@@ -55,42 +82,85 @@ export const PortfolioShowcase: React.FC<PortfolioShowcaseProps> = ({
           ))}
         </div>
 
-        <div className="portfolio-grid">
-          {displayedCouples.map(story => (
-            <article
-              key={story.id}
-              className="portfolio-card"
-              onClick={() => onSelectStory(story)}
-              tabIndex={0}
-              role="button"
-              aria-label={`Open gallery for ${story.title}`}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  onSelectStory(story);
-                }
-              }}
-            >
-              <img
-                src={story.coverImage}
-                alt={story.title}
-                className="portfolio-card-img"
-                loading="lazy"
-              />
-              <div className="portfolio-card-gradient">
-                <span className="portfolio-card-cat">{story.category}</span>
-                <h3 className="portfolio-card-name">{story.title}</h3>
-                <div className="portfolio-card-footer">
-                  <span>
-                    <ImageIcon size={13} style={{ display: 'inline', marginRight: 4, verticalAlign: 'middle' }} />
-                    {story.imageCount} Frames
-                  </span>
-                  <span className="portfolio-card-link">
-                    View Gallery <ArrowRight size={13} />
-                  </span>
+        {/* Interactive Editorial Magazine Grid */}
+        <div className="editorial-magazine-grid" key={selectedCategory}>
+          {displayedCouples.map((story, idx) => {
+            const cameraNote = CAMERA_NOTES[idx % CAMERA_NOTES.length];
+            const curatorialTag = CURATORIAL_TAGS[idx % CURATORIAL_TAGS.length];
+            const locCoordinates = COORDINATES_MAP[story.location || ''] || story.location || "22°34'N 88°21'E • Calcutta Classical";
+
+            return (
+              <article
+                key={story.id}
+                className={`editorial-card editorial-card-${idx}`}
+                onClick={() => onSelectStory(story)}
+                tabIndex={0}
+                role="button"
+                aria-label={`Open gallery for ${story.title}`}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    onSelectStory(story);
+                  }
+                }}
+              >
+                <div className="editorial-card-media-wrap">
+                  <img
+                    src={story.coverImage}
+                    alt={story.title}
+                    className="portfolio-card-img"
+                    loading={idx < 2 ? 'eager' : 'lazy'}
+                    decoding="async"
+                  />
+
+                  {/* Editorial Callout Marginalia (Floating Top Banner) */}
+                  <div className="editorial-card-plate-bar">
+                    <span className="editorial-plate-tag">
+                      <Compass size={11} className="gold-icon" />
+                      PLATE {String(idx + 1).padStart(2, '0')}
+                    </span>
+                    <span className="editorial-craft-note">
+                      <Camera size={11} className="gold-icon" />
+                      {cameraNote}
+                    </span>
+                  </div>
+
+                  <div className="portfolio-card-gradient">
+                    <div className="portfolio-card-top-meta">
+                      <span className="portfolio-card-cat">{story.category}</span>
+                      <span className="portfolio-curatorial-tag">{curatorialTag}</span>
+                      {story.videoUrl && (
+                        <span className="portfolio-card-badge" title="Includes Cinematic Film">
+                          <Film size={11} /> 4K Film
+                        </span>
+                      )}
+                    </div>
+
+                    <h3 className="portfolio-card-name">{story.title}</h3>
+
+                    {story.tagline && (
+                      <p className="portfolio-card-tagline">{story.tagline}</p>
+                    )}
+
+                    <div className="portfolio-card-footer">
+                      <div className="portfolio-card-meta-left">
+                        <span>
+                          <ImageIcon size={13} style={{ display: 'inline', marginRight: 4, verticalAlign: 'middle' }} />
+                          {story.imageCount} Master Frames
+                        </span>
+                        <span className="portfolio-card-loc" title={locCoordinates}>
+                          <MapPin size={11} style={{ display: 'inline', marginRight: 3, verticalAlign: 'middle' }} />
+                          {locCoordinates}
+                        </span>
+                      </div>
+                      <span className="portfolio-card-link">
+                        Inspect Story <ArrowRight size={13} className="portfolio-card-arrow" />
+                      </span>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </article>
-          ))}
+              </article>
+            );
+          })}
         </div>
 
         <div className="portfolio-actions">

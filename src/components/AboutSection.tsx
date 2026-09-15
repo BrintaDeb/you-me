@@ -292,12 +292,6 @@ export const AboutSection: React.FC = () => {
               >
                 <ChevronRight size={20} />
               </button>
-
-              {/* Auto-play Timer Progress Line */}
-              <div
-                key={`progress-${activePhotoIndex}`}
-                className={`dynamic-timer-line ${isAutoPlaying ? 'running' : 'paused'}`}
-              />
             </div>
 
             {/* Thumbnail Pills Selector */}
@@ -616,26 +610,45 @@ export const AboutSection: React.FC = () => {
                   </div>
                 )}
 
-                <div className="team-modal-cta-row">
-                  <a
-                    href="#contact"
-                    className="btn btn-primary"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setSelectedMember(null);
-                      handleScrollToContact();
-                    }}
-                  >
-                    Request {selectedMember.name.split(' ')[0]} For Your Date &rarr;
-                  </a>
-                  <a
-                    href={`https://instagram.com/${selectedMember.socialHandle.replace('@', '')}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn btn-outline team-social-btn"
-                  >
-                    <InstagramIcon size={16} /> {selectedMember.socialHandle}
-                  </a>
+                {/* Team Member Info Box Panels (No Button) */}
+                <div
+                  className="team-modal-info-panels"
+                  role="region"
+                  aria-label={`Atelier assignment and booking information for ${selectedMember.name}`}
+                >
+                  <div className="team-info-panel-card">
+                    <div className="team-info-panel-header">
+                      <div className="team-info-panel-title-wrap">
+                        <Sparkles size={15} className="team-info-panel-icon" />
+                        <span>{selectedMember.infoPanels?.roleScope.title || "Atelier Role & Coverage"}</span>
+                      </div>
+                      <span className="team-info-panel-badge">Core Atelier</span>
+                    </div>
+                    <p className="team-info-panel-desc">
+                      {selectedMember.infoPanels?.roleScope.description}
+                    </p>
+                    <div className="team-info-panel-footer">
+                      <span className="team-info-footer-label">Scope</span>
+                      <span className="team-info-footer-val">{selectedMember.infoPanels?.roleScope.focus}</span>
+                    </div>
+                  </div>
+
+                  <div className="team-info-panel-card">
+                    <div className="team-info-panel-header">
+                      <div className="team-info-panel-title-wrap">
+                        <ShieldCheck size={15} className="team-info-panel-icon" />
+                        <span>{selectedMember.infoPanels?.bookingPolicy.title || "Collective Atelier Booking"}</span>
+                      </div>
+                      <span className="team-info-panel-badge">Studio Policy</span>
+                    </div>
+                    <p className="team-info-panel-desc">
+                      {selectedMember.infoPanels?.bookingPolicy.description}
+                    </p>
+                    <div className="team-info-panel-footer">
+                      <span className="team-info-footer-label">Availability</span>
+                      <span className="team-info-footer-val">{selectedMember.infoPanels?.bookingPolicy.status}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

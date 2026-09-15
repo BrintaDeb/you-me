@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { X, Phone, Mail, ArrowRight, Lock } from 'lucide-react';
+import { X, Phone, Mail, ArrowRight } from 'lucide-react';
 import { businessInfo } from '../data/businessData';
 import { ThemeToggle } from './ThemeToggle';
 import { useTheme } from '../context/useTheme';
@@ -166,17 +166,6 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose, onNavig
           >
             YouTube
           </a>
-        </div>
-
-        <div className="mobile-admin-row">
-          <button
-            type="button"
-            className="mobile-admin-btn"
-            onClick={() => handleNavClick('admin')}
-            title="Studio Administration Panel"
-          >
-            <Lock size={13} className="admin-lock-icon" /> Studio Admin Panel
-          </button>
         </div>
       </div>
     </div>

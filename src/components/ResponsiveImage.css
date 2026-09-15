@@ -29,6 +29,10 @@
   }
 }
 
+.responsive-img-picture {
+  display: contents;
+}
+
 .responsive-img-core {
   display: block;
   width: 100%;

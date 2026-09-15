@@ -29,6 +29,46 @@
   color: var(--text-muted);
 }
 
+.lightbox-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.lightbox-download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(26, 12, 16, 0.85);
+  border: 1px solid rgba(212, 175, 55, 0.55);
+  color: #FFFFFF;
+  padding: 8px 18px;
+  border-radius: 9999px;
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lightbox-download-btn:hover {
+  background: linear-gradient(135deg, #D4AF37 0%, #B8860B 100%);
+  color: #14100E;
+  border-color: #D4AF37;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.35);
+}
+
+.lightbox-download-btn.success {
+  background: rgba(30, 80, 40, 0.85);
+  border-color: #4CAF50;
+  color: #E8F5E9;
+}
+
 .lightbox-close-btn {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid var(--border-medium);

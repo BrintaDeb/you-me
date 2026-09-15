@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Sun, Sparkles } from 'lucide-react';
+import { Sun, Moon } from 'lucide-react';
 import { useTheme } from '../context/useTheme';
-import { triggerHaptic } from '../utils/haptics';
+import { hapticTheme } from '../utils/haptics';
 import './ThemeToggle.css';
 
 interface ThemeToggleProps {
@@ -16,13 +16,13 @@ interface ThemeRipple {
   color: string;
 }
 
-export const ThemeToggle: React.FC<ThemeToggleProps> = ({ className = '', showLabel = false }) => {
+export const ThemeToggle: React.FC<ThemeToggleProps> = ({ className = '' }) => {
   const { theme, cycleTheme } = useTheme();
   const [isFlipping, setIsFlipping] = useState(false);
   const [ripple, setRipple] = useState<ThemeRipple | null>(null);
 
   const handleToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
-    triggerHaptic('light');
+    hapticTheme();
 
     const rect = e.currentTarget.getBoundingClientRect();
     const x = rect.left + rect.width / 2;
@@ -41,25 +41,9 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({ className = '', showLa
     cycleTheme();
   };
 
-  const getThemeInfo = () => {
-    switch (theme) {
-      case 'burgundy':
-        return {
-          icon: <Sparkles size={15} className="theme-icon icon-burgundy" />,
-          label: 'Burgundy',
-          title: 'Switch to White theme (Currently Burgundy)'
-        };
-      case 'white':
-      default:
-        return {
-          icon: <Sun size={15} className="theme-icon icon-sun" />,
-          label: 'White',
-          title: 'Switch to Burgundy theme (Currently White)'
-        };
-    }
-  };
-
-  const current = getThemeInfo();
+  const isDark = theme === 'burgundy';
+  const currentLabel = isDark ? 'Burgundy' : 'White';
+  const nextThemeTitle = isDark ? 'Switch to White Theme' : 'Switch to Burgundy Theme';
 
   return (
     <>
@@ -77,16 +61,18 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({ className = '', showLa
       )}
       <button
         type="button"
-        className={`theme-cycle-toggle theme-${theme} ${isFlipping ? 'is-flipping' : ''} ${className}`}
+        className={`theme-cycle-toggle theme-icon-toggle theme-${theme} ${isFlipping ? 'is-flipping' : ''} ${className}`}
         onClick={handleToggle}
-        title={current.title}
-        aria-label={`Current theme: ${current.label}. Click to switch theme.`}
+        title={nextThemeTitle}
+        aria-label={`Current theme: ${currentLabel}. Click to ${nextThemeTitle.toLowerCase()}.`}
       >
         <span className="theme-icon-slot">
-          {current.icon}
+          {isDark ? (
+            <Moon size={18} className="theme-icon icon-moon" />
+          ) : (
+            <Sun size={18} className="theme-icon icon-sun" />
+          )}
         </span>
-        <span className="theme-name-pill">{current.label}</span>
-        {showLabel && <span className="theme-text-label">{current.label}</span>}
       </button>
     </>
   );

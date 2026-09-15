@@ -294,6 +294,20 @@ export const CameraPathExperience: React.FC<CameraPathExperienceProps> = ({
             </div>
           </div>
 
+          {/* Scene 2 Multi-Plane Parallax: Foreground Floating Golden Bokeh */}
+          <div
+            className="camera-foreground-bokeh"
+            style={{
+              transform: `translate3d(${mousePos.x * 24}px, ${mousePos.y * 24 - scrollProgress * 120}px, 0)`
+            }}
+            aria-hidden="true"
+          >
+            <span className="journey-bokeh-orb orb-a" />
+            <span className="journey-bokeh-orb orb-b" />
+            <span className="journey-bokeh-orb orb-c" />
+            <span className="journey-bokeh-orb orb-d" />
+          </div>
+
           {/* 3D World Stage */}
           <div className="camera-world">
             {featuredStories.map((story, i) => {
@@ -406,7 +420,7 @@ export const CameraPathExperience: React.FC<CameraPathExperienceProps> = ({
 
                   {/* Centerpiece Hero Storyboard Card */}
                   <div
-                    className="story-main-card"
+                    className="story-main-card specular-card"
                     style={{
                       transform: `translate3d(calc(-50% + ${mainX}px), calc(-50% + ${mainY}px), ${mainZ}px) rotateY(${mainRotY}deg) rotateX(${mainRotX}deg) scale(${mainScale})`,
                       filter: `blur(${mainBlur}px)`

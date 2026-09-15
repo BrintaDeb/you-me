@@ -12,14 +12,16 @@ import {
   Palette,
   Layers,
   ShieldCheck,
-  Lock
+  Lock,
+  Download
 } from 'lucide-react';
 import type { WeddingStory } from '../data/couplesData';
 import type { ClientRole } from '../utils/galleryStorage';
-import { triggerHaptic } from '../utils/haptics';
+import { downloadPhotoFile } from '../utils/photoDownloader';
+import { triggerHaptic, hapticPageFlip } from '../utils/haptics';
 import './AlbumProofingModal.css';
 
-export interface AlbumRevisionPin {
+interface AlbumRevisionPin {
   id: string;
   spreadIndex: number;
   photoUrl: string;
@@ -28,9 +30,9 @@ export interface AlbumRevisionPin {
   author: string;
 }
 
-export type CoverMaterial = 'tuscan-leather' | 'silk-velvet' | 'obsidian-leather' | 'ivory-linen';
+type CoverMaterial = 'tuscan-leather' | 'silk-velvet' | 'obsidian-leather' | 'ivory-linen';
 
-export interface MaterialConfig {
+interface MaterialConfig {
   id: CoverMaterial;
   name: string;
   textureLabel: string;
@@ -197,7 +199,7 @@ export const AlbumProofingModal: React.FC<AlbumProofingModalProps> = ({
     if (currentSpread < spreads.length - 1 && !isFlipping) {
       setFlipDirection('next');
       setIsFlipping(true);
-      triggerHaptic('pageFlip');
+      hapticPageFlip();
       setTimeout(() => {
         setCurrentSpread(prev => prev + 1);
         setIsFlipping(false);
@@ -209,7 +211,7 @@ export const AlbumProofingModal: React.FC<AlbumProofingModalProps> = ({
     if (currentSpread > 0 && !isFlipping) {
       setFlipDirection('prev');
       setIsFlipping(true);
-      triggerHaptic('pageFlip');
+      hapticPageFlip();
       setTimeout(() => {
         setCurrentSpread(prev => prev - 1);
         setIsFlipping(false);
@@ -245,12 +247,35 @@ export const AlbumProofingModal: React.FC<AlbumProofingModalProps> = ({
     setRevisionPins(updated);
     try {
       localStorage.setItem(`youandme_album_pins_${story.id}`, JSON.stringify(updated));
-    } catch {}
+    } catch { }
 
     setIsAddingNote(false);
     setNoteText('');
     setTargetPhotoForNote(null);
     triggerHaptic('success');
+  };
+
+  const [downloadingUrl, setDownloadingUrl] = useState<string | null>(null);
+  const [downloadToast, setDownloadToast] = useState<string | null>(null);
+
+  const handleDownloadPhoto = async (photoUrl: string, filename: string, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    if (!photoUrl || downloadingUrl === photoUrl) return;
+
+    setDownloadingUrl(photoUrl);
+    triggerHaptic('medium');
+    setDownloadToast('Downloading photo from album spread...');
+
+    const success = await downloadPhotoFile(photoUrl, filename);
+
+    setDownloadingUrl(null);
+    if (success) {
+      triggerHaptic('success');
+      setDownloadToast('Photo saved to your device ✨');
+    } else {
+      setDownloadToast('Opened high-resolution photo in new tab');
+    }
+    setTimeout(() => setDownloadToast(null), 3000);
   };
 
   const handleApproveAlbum = () => {
@@ -379,9 +404,28 @@ export const AlbumProofingModal: React.FC<AlbumProofingModalProps> = ({
                 {activePinsForSpread.length} Note{activePinsForSpread.length > 1 ? 's' : ''}
               </span>
             )}
-            <span className="album-spread-counter">
-              Spread {currentSpread + 1} of {spreads.length}
-            </span>
+            {/* Quick Single Photo Download for current spread */}
+            {(activeSpread.leftImage || activeSpread.rightImage || activeSpread.panoramicImage) && (
+              <button
+                type="button"
+                className="album-topbar-download-btn"
+                onClick={(e) => {
+                  const targetImg = activeSpread.panoramicImage || activeSpread.leftImage || activeSpread.rightImage;
+                  if (targetImg) {
+                    handleDownloadPhoto(
+                      targetImg,
+                      `YOU_AND_ME_${story.slug}_Spread_${currentSpread + 1}.jpg`,
+                      e
+                    );
+                  }
+                }}
+                title="Download photograph from this album spread"
+                aria-label="Download photograph from this spread"
+              >
+                <Download size={14} className="gold-icon" />
+                <span className="album-btn-label">Download Photo</span>
+              </button>
+            )}
 
             <button
               type="button"
@@ -465,9 +509,35 @@ export const AlbumProofingModal: React.FC<AlbumProofingModalProps> = ({
                     {activeSpread.leftImage && (
                       <img src={activeSpread.leftImage} alt="Album left page frame" className="album-rendered-img" />
                     )}
-                    <button type="button" className="photo-pin-trigger" title="Add revision request to this frame">
-                      <Plus size={14} /> Add Note
-                    </button>
+                    <div className="photo-frame-actions" onClick={e => e.stopPropagation()}>
+                      <button
+                        type="button"
+                        className="photo-action-btn photo-download-trigger"
+                        onClick={(e) => {
+                          if (activeSpread.leftImage) {
+                            handleDownloadPhoto(
+                              activeSpread.leftImage,
+                              `YOU_AND_ME_${story.slug}_Album_Spread_${currentSpread * 2}_Page.jpg`,
+                              e
+                            );
+                          }
+                        }}
+                        title="Download photograph from this album page"
+                        aria-label="Download photograph"
+                      >
+                        <Download size={13} />
+                        <span>Download Photo</span>
+                      </button>
+                      <button
+                        type="button"
+                        className="photo-action-btn photo-pin-trigger"
+                        onClick={() => activeSpread.leftImage && openNoteDialog(activeSpread.leftImage)}
+                        title="Add revision request to this frame"
+                      >
+                        <Plus size={13} />
+                        <span>Add Note</span>
+                      </button>
+                    </div>
                   </div>
                   <p className="album-photo-caption">{activeSpread.leftCaption}</p>
                   <span className="album-folio-num">{currentSpread * 2}</span>
@@ -482,9 +552,35 @@ export const AlbumProofingModal: React.FC<AlbumProofingModalProps> = ({
                     {activeSpread.rightImage && (
                       <img src={activeSpread.rightImage} alt="Album right page frame" className="album-rendered-img" />
                     )}
-                    <button type="button" className="photo-pin-trigger" title="Add revision request to this frame">
-                      <Plus size={14} /> Add Note
-                    </button>
+                    <div className="photo-frame-actions" onClick={e => e.stopPropagation()}>
+                      <button
+                        type="button"
+                        className="photo-action-btn photo-download-trigger"
+                        onClick={(e) => {
+                          if (activeSpread.rightImage) {
+                            handleDownloadPhoto(
+                              activeSpread.rightImage,
+                              `YOU_AND_ME_${story.slug}_Album_Spread_${currentSpread * 2 + 1}_Page.jpg`,
+                              e
+                            );
+                          }
+                        }}
+                        title="Download photograph from this album page"
+                        aria-label="Download photograph"
+                      >
+                        <Download size={13} />
+                        <span>Download Photo</span>
+                      </button>
+                      <button
+                        type="button"
+                        className="photo-action-btn photo-pin-trigger"
+                        onClick={() => activeSpread.rightImage && openNoteDialog(activeSpread.rightImage)}
+                        title="Add revision request to this frame"
+                      >
+                        <Plus size={13} />
+                        <span>Add Note</span>
+                      </button>
+                    </div>
                   </div>
                   <p className="album-photo-caption">{activeSpread.rightCaption}</p>
                   <span className="album-folio-num">{currentSpread * 2 + 1}</span>
@@ -500,9 +596,35 @@ export const AlbumProofingModal: React.FC<AlbumProofingModalProps> = ({
                     {activeSpread.panoramicImage && (
                       <img src={activeSpread.panoramicImage} alt="Panoramic mandap centerfold" className="album-rendered-img panoramic" />
                     )}
-                    <button type="button" className="photo-pin-trigger" title="Add revision request to this spread">
-                      <Plus size={14} /> Add Note
-                    </button>
+                    <div className="photo-frame-actions panoramic-actions" onClick={e => e.stopPropagation()}>
+                      <button
+                        type="button"
+                        className="photo-action-btn photo-download-trigger"
+                        onClick={(e) => {
+                          if (activeSpread.panoramicImage) {
+                            handleDownloadPhoto(
+                              activeSpread.panoramicImage,
+                              `YOU_AND_ME_${story.slug}_Album_Spread_${currentSpread + 1}_Panoramic.jpg`,
+                              e
+                            );
+                          }
+                        }}
+                        title="Download panoramic photograph"
+                        aria-label="Download panoramic photograph"
+                      >
+                        <Download size={13} />
+                        <span>Download Panoramic Frame</span>
+                      </button>
+                      <button
+                        type="button"
+                        className="photo-action-btn photo-pin-trigger"
+                        onClick={() => activeSpread.panoramicImage && openNoteDialog(activeSpread.panoramicImage)}
+                        title="Add revision request to this spread"
+                      >
+                        <Plus size={13} />
+                        <span>Add Note</span>
+                      </button>
+                    </div>
                   </div>
                   <div className="album-gutter" />
                   <div className="panoramic-overlay-meta">
@@ -647,6 +769,13 @@ export const AlbumProofingModal: React.FC<AlbumProofingModalProps> = ({
               </button>
             </div>
           </div>
+        )}
+        {/* Toast Notification for Individual Download */}
+        {downloadToast && (
+          <aside className="album-download-toast" role="status" aria-live="polite">
+            <Sparkles size={15} className="gold-icon" />
+            <span>{downloadToast}</span>
+          </aside>
         )}
       </div>
     </div>

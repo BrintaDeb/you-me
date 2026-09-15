@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useRef, useId } from 'react';
+import React, { useState, useMemo, useEffect, useRef, useId, useCallback } from 'react';
 import {
   Sparkles,
   Heart,
@@ -22,7 +22,11 @@ import {
   Crown,
   Fingerprint,
   Gift,
-  Users
+  Users,
+  Check,
+  Copy,
+  Share2,
+  FileArchive
 } from 'lucide-react';
 import { couplesData } from '../data/couplesData';
 import type { WeddingImage, WeddingStory } from '../data/couplesData';
@@ -34,7 +38,10 @@ import { DownloadTierModal } from '../components/DownloadTierModal';
 import { AnniversaryCapsuleModal } from '../components/AnniversaryCapsuleModal';
 import { galleryStorage } from '../utils/galleryStorage';
 import type { ClientRole } from '../utils/galleryStorage';
-import { triggerHaptic } from '../utils/haptics';
+import { downloadPhotoFile } from '../utils/photoDownloader';
+import { triggerHaptic, hapticFavorite } from '../utils/haptics';
+import { downloadBatchAsZip } from '../utils/zipDownloader';
+import type { BatchZipProgress } from '../utils/zipDownloader';
 import './ClientLoungePage.css';
 
 interface ClientLoungePageProps {
@@ -74,11 +81,99 @@ export const ClientLoungePage: React.FC<ClientLoungePageProps> = ({ onBackToHome
   const [isBiometricAuthenticating, setIsBiometricAuthenticating] = useState(false);
   const [rememberDevice, setRememberDevice] = useState(true);
 
+  // Family Collaboration & Access Sharing
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [copiedRole, setCopiedRole] = useState<string | null>(null);
+  const [subPins, setSubPins] = useState<{ couplePin: string; familyPin: string; guestPin: string }>({
+    couplePin: '2026',
+    familyPin: '2027',
+    guestPin: '2028'
+  });
+
+  // Client-Side Batch ZIP Packaging State
+  const [isZipPackaging, setIsZipPackaging] = useState(false);
+  const [zipProgress, setZipProgress] = useState<BatchZipProgress | null>(null);
+
   // Modals & Media Player
   const [isFilmModalOpen, setIsFilmModalOpen] = useState(false);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [isAlbumModalOpen, setIsAlbumModalOpen] = useState(false);
+
+  // Fetch subPins for active story
+  useEffect(() => {
+    galleryStorage.getSubPinsForStory(selectedStoryId).then(pins => {
+      setSubPins(pins);
+    });
+  }, [selectedStoryId]);
+
+  // Verify PIN authentication and set active role / session
+  const verifyAndLogin = useCallback(async (pin: string, requestedRole?: ClientRole) => {
+    setIsSubmittingPin(true);
+    try {
+      const cleanPin = pin.trim();
+      const unified = await galleryStorage.getUnifiedStories();
+      if (unified && unified.length > 0) {
+        setAllStories(unified);
+      }
+      const resolved = await galleryStorage.resolvePin(cleanPin);
+
+      if (resolved) {
+        setSelectedStoryId(resolved.story.id);
+        const finalRole = requestedRole || resolved.role;
+        setUserRole(finalRole);
+        setIsAuthenticated(true);
+        setPinError(false);
+        localStorage.setItem('youandme_client_auth', 'true');
+        localStorage.setItem('youandme_client_story', resolved.story.id);
+        localStorage.setItem('youandme_client_role', finalRole);
+        if (rememberDevice) {
+          localStorage.setItem('youandme_vip_remembered', 'true');
+        }
+        triggerHaptic('success');
+      } else if (cleanPin === DEMO_PIN || cleanPin.length >= 4) {
+        setIsAuthenticated(true);
+        const finalRole = requestedRole || 'couple';
+        setUserRole(finalRole);
+        setPinError(false);
+        localStorage.setItem('youandme_client_auth', 'true');
+        localStorage.setItem('youandme_client_role', finalRole);
+        if (rememberDevice) {
+          localStorage.setItem('youandme_vip_remembered', 'true');
+        }
+        triggerHaptic('success');
+      } else {
+        setPinError(true);
+        triggerHaptic('warning');
+      }
+    } catch {
+      if (pin === DEMO_PIN || pin.length >= 4) {
+        setIsAuthenticated(true);
+        const finalRole = requestedRole || 'couple';
+        setUserRole(finalRole);
+        setPinError(false);
+        localStorage.setItem('youandme_client_auth', 'true');
+        localStorage.setItem('youandme_client_role', finalRole);
+        triggerHaptic('success');
+      } else {
+        setPinError(true);
+        triggerHaptic('warning');
+      }
+    } finally {
+      setIsSubmittingPin(false);
+    }
+  }, [rememberDevice]);
+
+  // Support 1-click authentication from shared invitation links (?pin=...&role=...)
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    const queryPin = params.get('pin');
+    const queryRole = params.get('role') as ClientRole | null;
+    if (queryPin && queryPin.trim()) {
+      verifyAndLogin(queryPin.trim(), queryRole || undefined);
+    }
+  }, [verifyAndLogin]);
 
   // Curation & Filtering
   const [activeChapter, setActiveChapter] = useState<ChapterFilter>('all');
@@ -205,58 +300,6 @@ export const ClientLoungePage: React.FC<ClientLoungePageProps> = ({ onBackToHome
     }
   };
 
-  const verifyAndLogin = async (pin: string) => {
-    setIsSubmittingPin(true);
-    try {
-      const cleanPin = pin.trim();
-      const unified = await galleryStorage.getUnifiedStories();
-      if (unified && unified.length > 0) {
-        setAllStories(unified);
-      }
-      const resolved = await galleryStorage.resolvePin(cleanPin);
-
-      if (resolved) {
-        setSelectedStoryId(resolved.story.id);
-        setUserRole(resolved.role);
-        setIsAuthenticated(true);
-        setPinError(false);
-        localStorage.setItem('youandme_client_auth', 'true');
-        localStorage.setItem('youandme_client_story', resolved.story.id);
-        localStorage.setItem('youandme_client_role', resolved.role);
-        if (rememberDevice) {
-          localStorage.setItem('youandme_vip_remembered', 'true');
-        }
-        triggerHaptic('success');
-      } else if (cleanPin === DEMO_PIN || cleanPin.length >= 4) {
-        setIsAuthenticated(true);
-        setUserRole('couple');
-        setPinError(false);
-        localStorage.setItem('youandme_client_auth', 'true');
-        localStorage.setItem('youandme_client_role', 'couple');
-        if (rememberDevice) {
-          localStorage.setItem('youandme_vip_remembered', 'true');
-        }
-        triggerHaptic('success');
-      } else {
-        setPinError(true);
-        triggerHaptic('warning');
-      }
-    } catch {
-      if (pin === DEMO_PIN || pin.length >= 4) {
-        setIsAuthenticated(true);
-        setUserRole('couple');
-        setPinError(false);
-        localStorage.setItem('youandme_client_auth', 'true');
-        localStorage.setItem('youandme_client_role', 'couple');
-        triggerHaptic('success');
-      } else {
-        setPinError(true);
-        triggerHaptic('warning');
-      }
-    } finally {
-      setIsSubmittingPin(false);
-    }
-  };
 
   const handleBiometricUnlock = async () => {
     setIsBiometricAuthenticating(true);
@@ -289,18 +332,24 @@ export const ClientLoungePage: React.FC<ClientLoungePageProps> = ({ onBackToHome
     triggerHaptic('light');
   };
 
-  // Toggle favorite photo for album
+  // Toggle favorite photo for album with haptic + acoustic feedback & role protection
   const togglePhotoSelection = (photoId: string, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
+    if (userRole === 'guest') {
+      showToast('Guest View: Album curation is reserved for the couple and family.');
+      triggerHaptic('warning');
+      return;
+    }
+
     setSelectedPhotoIds(prev => {
       let updated: string[];
       const isCurrentlySelected = prev.includes(photoId);
       if (isCurrentlySelected) {
         updated = prev.filter(id => id !== photoId);
-        triggerHaptic('light');
+        hapticFavorite(false);
       } else {
         updated = [...prev, photoId];
-        triggerHaptic('medium');
+        hapticFavorite(true);
       }
       try {
         localStorage.setItem(`youandme_album_selection_${currentStory.id}`, JSON.stringify(updated));
@@ -308,6 +357,74 @@ export const ClientLoungePage: React.FC<ClientLoungePageProps> = ({ onBackToHome
       } catch {}
       return updated;
     });
+  };
+
+  // One-Click Batch ZIP packaging & download
+  const handleDownloadSelectedZip = async () => {
+    const selectedItems = currentStory.images.filter(img => selectedPhotoIds.includes(img.id));
+    if (selectedItems.length === 0) {
+      showToast('Please select at least one photograph to archive.');
+      triggerHaptic('warning');
+      return;
+    }
+
+    setIsZipPackaging(true);
+    triggerHaptic('medium');
+
+    const result = await downloadBatchAsZip(
+      selectedItems.map(img => ({
+        id: img.id,
+        url: img.url,
+        caption: img.caption,
+        alt: img.alt
+      })),
+      currentStory.title,
+      (progress) => {
+        setZipProgress(progress);
+      }
+    );
+
+    if (result.success) {
+      triggerHaptic('success');
+      showToast(`Archived ${result.count} frames in ZIP container ✨`);
+      setTimeout(() => {
+        setIsZipPackaging(false);
+        setZipProgress(null);
+      }, 1400);
+    } else {
+      triggerHaptic('warning');
+      showToast(result.error || 'Batch download could not complete.');
+      setIsZipPackaging(false);
+    }
+  };
+
+  // Copy unique share link with role permissions
+  const handleCopyShareLink = (role: ClientRole, pin: string) => {
+    const origin = typeof window !== 'undefined' ? window.location.origin : '';
+    const shareUrl = `${origin}/client-lounge?pin=${pin}&role=${role}`;
+    navigator.clipboard.writeText(shareUrl).then(() => {
+      setCopiedRole(role);
+      triggerHaptic('success');
+      showToast(`Copied ${role === 'couple' ? 'Couple Master' : role === 'family' ? 'Family Circle' : 'Guest'} access link!`);
+      setTimeout(() => setCopiedRole(null), 2500);
+    });
+  };
+
+  // Share personalized invitation via WhatsApp
+  const handleShareWhatsApp = (role: ClientRole, pin: string) => {
+    const origin = typeof window !== 'undefined' ? window.location.origin : '';
+    const shareUrl = `${origin}/client-lounge?pin=${pin}&role=${role}`;
+    const roleTitle = role === 'couple' ? 'Couple Master Suite' : role === 'family' ? 'Family Circle' : 'Guest Gallery';
+    const msg = encodeURIComponent(
+      `✨ YOU & ME Wedding Photography — Private Client Sanctuary ✨\n\n` +
+      `Celebration: ${currentStory.title}\n` +
+      `Access Tier: ${roleTitle}\n` +
+      `Access PIN: ${pin}\n\n` +
+      `Tap here to enter the suite:\n${shareUrl}\n\n` +
+      `Cherish our heirloom moments together!`
+    );
+    window.open(`https://wa.me/?text=${msg}`, '_blank');
+    triggerHaptic('success');
   };
 
   // Switch active couple
@@ -362,16 +479,35 @@ export const ClientLoungePage: React.FC<ClientLoungePageProps> = ({ onBackToHome
     return () => clearInterval(interval);
   }, [isSlideshowActive, isSlideshowPlaying, displayedImages.length]);
 
-  // Download individual photo
-  const handleDownloadSinglePhoto = (img: WeddingImage, e: React.MouseEvent) => {
-    e.stopPropagation();
-    triggerHaptic('light');
-    const a = document.createElement('a');
-    a.href = img.url;
-    a.download = `YOU_AND_ME_${currentStory.slug}_Frame_${img.id}.jpg`;
-    a.target = '_blank';
-    a.rel = 'noopener noreferrer';
-    a.click();
+  // Download individual photo with robust cross-origin blob/canvas support
+  const [downloadingPhotoId, setDownloadingPhotoId] = useState<string | null>(null);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => {
+      setToastMessage(prev => (prev === msg ? null : prev));
+    }, 3200);
+  };
+
+  const handleDownloadSinglePhoto = async (img: WeddingImage, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    if (downloadingPhotoId === img.id) return;
+
+    setDownloadingPhotoId(img.id);
+    triggerHaptic('medium');
+    showToast(`Downloading photograph ${img.id}...`);
+
+    const filename = `YOU_AND_ME_${currentStory.slug}_Frame_${img.id}.jpg`;
+    const success = await downloadPhotoFile(img.url, filename);
+
+    setDownloadingPhotoId(null);
+    if (success) {
+      triggerHaptic('success');
+      showToast(`Frame #${img.id} saved to device ✨`);
+    } else {
+      showToast(`Opening high-res photograph in new window`);
+    }
   };
 
   // Export selection to WhatsApp
@@ -674,6 +810,22 @@ export const ClientLoungePage: React.FC<ClientLoungePageProps> = ({ onBackToHome
                 <span className="stat-label">Social & Master Print</span>
               </div>
             </button>
+            <div className="stat-separator" />
+            <button
+              type="button"
+              className="stat-pill share-cta-pill"
+              onClick={() => {
+                triggerHaptic('light');
+                setIsShareModalOpen(true);
+              }}
+              title="Family Share & Collaboration Access Links"
+            >
+              <Users size={16} className="gold-icon" />
+              <div className="cta-text-col">
+                <span className="stat-num cta-title">Family Circle</span>
+                <span className="stat-label">Share Access Links</span>
+              </div>
+            </button>
           </div>
 
           {/* Wedding Anniversary Time Capsule Card */}
@@ -803,6 +955,27 @@ export const ClientLoungePage: React.FC<ClientLoungePageProps> = ({ onBackToHome
               </span>
 
               <div className="tracker-export-btns">
+                <button
+                  type="button"
+                  className="action-pill-btn gold-highlight-btn"
+                  onClick={handleDownloadSelectedZip}
+                  title="Package all favorited/curated photos into an organized archive client-side"
+                >
+                  <FileArchive size={14} className="gold-icon" /> Download Selected (ZIP) ({selectedPhotoIds.length})
+                </button>
+
+                <button
+                  type="button"
+                  className="action-pill-btn"
+                  onClick={() => {
+                    triggerHaptic('light');
+                    setIsShareModalOpen(true);
+                  }}
+                  title="Share invitation links with customizable permissions"
+                >
+                  <Users size={14} className="gold-icon" /> Family Share &amp; Access Links
+                </button>
+
                 <button
                   type="button"
                   className="action-pill-btn"
@@ -1002,12 +1175,17 @@ export const ClientLoungePage: React.FC<ClientLoungePageProps> = ({ onBackToHome
                   {/* Single Photo High-Res Download */}
                   <button
                     type="button"
-                    className="photo-download-badge"
+                    className={`photo-download-badge ${downloadingPhotoId === img.id ? 'is-loading' : ''}`}
                     onClick={(e) => handleDownloadSinglePhoto(img, e)}
-                    aria-label="Download high-resolution frame"
-                    title="Download high-resolution frame"
+                    disabled={downloadingPhotoId === img.id}
+                    aria-label={`Download high-resolution photograph frame ${idx + 1}`}
+                    title="Download individual photograph"
                   >
-                    <Download size={15} />
+                    {downloadingPhotoId === img.id ? (
+                      <span className="download-spinner-mini" />
+                    ) : (
+                      <Download size={15} />
+                    )}
                   </button>
 
                   {/* Subtle Hover Reveal */}
@@ -1062,6 +1240,16 @@ export const ClientLoungePage: React.FC<ClientLoungePageProps> = ({ onBackToHome
             </div>
 
             <div className="slideshow-top-controls">
+              <button
+                type="button"
+                className="slideshow-btn"
+                onClick={() => handleDownloadSinglePhoto(displayedImages[slideshowIndex])}
+                title="Download this photograph"
+                aria-label="Download photograph"
+              >
+                <Download size={18} />
+              </button>
+
               <button
                 type="button"
                 className="slideshow-btn"
@@ -1143,13 +1331,14 @@ export const ClientLoungePage: React.FC<ClientLoungePageProps> = ({ onBackToHome
         </div>
       )}
 
-      {/* Master Lightbox */}
+      {/* Master Lightbox with Single Photo Download */}
       <Lightbox
         images={currentStory.images}
         currentIndex={lightboxIndex}
         isOpen={lightboxOpen}
         onClose={() => setLightboxOpen(false)}
         onNavigate={setLightboxIndex}
+        storySlug={currentStory.slug}
       />
 
       {/* 3D Heirloom Lay-Flat Album Proofing Modal */}
@@ -1186,6 +1375,172 @@ export const ClientLoungePage: React.FC<ClientLoungePageProps> = ({ onBackToHome
           isOpen={isFilmModalOpen}
           onClose={() => setIsFilmModalOpen(false)}
         />
+      )}
+
+      {/* Family Share & Multi-User Collaboration Modal */}
+      {isShareModalOpen && (
+        <div
+          className="family-share-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Family Collaboration & Access Links"
+          onClick={() => setIsShareModalOpen(false)}
+        >
+          <div className="family-share-modal specular-card" onClick={e => e.stopPropagation()}>
+            <div className="family-share-header">
+              <div className="header-badge">
+                <Users size={15} className="gold-icon" />
+                <span>Family Collaboration Vault</span>
+              </div>
+              <button
+                type="button"
+                className="family-share-close"
+                onClick={() => setIsShareModalOpen(false)}
+                aria-label="Close share dialog"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="family-share-intro">
+              <h3>Private Family &amp; Guest Access Links</h3>
+              <p>
+                Provide unique access links for parents, bridal party, and close family members with customized permission tiers.
+              </p>
+            </div>
+
+            <div className="collaboration-roles-list">
+              {/* Role 1: Couple Suite */}
+              <div className="collab-role-card master-role">
+                <div className="role-card-top">
+                  <div className="role-title-wrap">
+                    <Crown size={16} className="gold-icon" />
+                    <span className="role-name">Couple Master Suite</span>
+                    <span className="role-badge master">Full Rights</span>
+                  </div>
+                  <span className="role-pin-badge">PIN: {subPins.couplePin}</span>
+                </div>
+                <p className="role-desc">
+                  Curate heirloom spreads, add/remove album frames, approve final print layout, and download uncompressed 45MP masters.
+                </p>
+                <div className="role-action-row">
+                  <button
+                    type="button"
+                    className="role-action-btn copy-btn"
+                    onClick={() => handleCopyShareLink('couple', subPins.couplePin)}
+                  >
+                    {copiedRole === 'couple' ? <Check size={14} className="gold-icon" /> : <Copy size={14} />}
+                    {copiedRole === 'couple' ? 'Link Copied!' : 'Copy Master Link'}
+                  </button>
+                  <button
+                    type="button"
+                    className="role-action-btn whatsapp-btn"
+                    onClick={() => handleShareWhatsApp('couple', subPins.couplePin)}
+                  >
+                    <Share2 size={14} /> WhatsApp Invitation
+                  </button>
+                </div>
+              </div>
+
+              {/* Role 2: Family Circle */}
+              <div className="collab-role-card family-role">
+                <div className="role-card-top">
+                  <div className="role-title-wrap">
+                    <Heart size={16} className="gold-icon" />
+                    <span className="role-name">Family Circle Suite</span>
+                    <span className="role-badge family">Collaborator</span>
+                  </div>
+                  <span className="role-pin-badge">PIN: {subPins.familyPin}</span>
+                </div>
+                <p className="role-desc">
+                  Explore full ceremonies, favorite moments, leave retouching notes, and download high-resolution 2048px social packs.
+                </p>
+                <div className="role-action-row">
+                  <button
+                    type="button"
+                    className="role-action-btn copy-btn"
+                    onClick={() => handleCopyShareLink('family', subPins.familyPin)}
+                  >
+                    {copiedRole === 'family' ? <Check size={14} className="gold-icon" /> : <Copy size={14} />}
+                    {copiedRole === 'family' ? 'Link Copied!' : 'Copy Family Link'}
+                  </button>
+                  <button
+                    type="button"
+                    className="role-action-btn whatsapp-btn"
+                    onClick={() => handleShareWhatsApp('family', subPins.familyPin)}
+                  >
+                    <Share2 size={14} /> WhatsApp Invitation
+                  </button>
+                </div>
+              </div>
+
+              {/* Role 3: Guest Viewing */}
+              <div className="collab-role-card guest-role">
+                <div className="role-card-top">
+                  <div className="role-title-wrap">
+                    <ShieldCheck size={16} className="gold-icon" />
+                    <span className="role-name">Guest Gallery Sanctuary</span>
+                    <span className="role-badge guest">View Only</span>
+                  </div>
+                  <span className="role-pin-badge">PIN: {subPins.guestPin}</span>
+                </div>
+                <p className="role-desc">
+                  View-only presentation for guests and distant relatives. Download individual web-optimized photos without modifying the couple's album curation.
+                </p>
+                <div className="role-action-row">
+                  <button
+                    type="button"
+                    className="role-action-btn copy-btn"
+                    onClick={() => handleCopyShareLink('guest', subPins.guestPin)}
+                  >
+                    {copiedRole === 'guest' ? <Check size={14} className="gold-icon" /> : <Copy size={14} />}
+                    {copiedRole === 'guest' ? 'Link Copied!' : 'Copy Guest Link'}
+                  </button>
+                  <button
+                    type="button"
+                    className="role-action-btn whatsapp-btn"
+                    onClick={() => handleShareWhatsApp('guest', subPins.guestPin)}
+                  >
+                    <Share2 size={14} /> WhatsApp Invitation
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Client-Side Batch ZIP Packaging Overlay */}
+      {isZipPackaging && zipProgress && (
+        <div className="zip-packaging-overlay" role="dialog" aria-modal="true" aria-label="Batch ZIP Packaging">
+          <div className="zip-packaging-card specular-card">
+            <div className="zip-card-icon-wrap">
+              <FileArchive size={32} className="gold-icon" />
+            </div>
+            <h3>Packaging Archival ZIP</h3>
+            <p className="zip-card-status">{zipProgress.message}</p>
+
+            <div className="zip-progress-rail">
+              <div
+                className="zip-progress-fill"
+                style={{ width: `${zipProgress.percent}%` }}
+              />
+            </div>
+
+            <div className="zip-stats-row">
+              <span>{zipProgress.currentCount ? `${zipProgress.currentCount} / ${zipProgress.totalCount} Frames` : 'Compressing assets'}</span>
+              <span className="gold-text font-bold">{zipProgress.percent}%</span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Real-time Download Toast Notification */}
+      {toastMessage && (
+        <aside className="client-lounge-toast" role="status" aria-live="polite">
+          <Sparkles size={15} className="gold-icon" />
+          <span>{toastMessage}</span>
+        </aside>
       )}
     </main>
   );

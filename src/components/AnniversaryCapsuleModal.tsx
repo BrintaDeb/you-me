@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import type { WeddingStory } from '../data/couplesData';
 import { triggerHaptic } from '../utils/haptics';
+import { audioAtmosphere } from '../utils/audioAtmosphere';
 import './AnniversaryCapsuleModal.css';
 
 interface AnniversaryCapsuleModalProps {
@@ -39,7 +40,20 @@ export const AnniversaryCapsuleModal: React.FC<AnniversaryCapsuleModalProps> = (
 }) => {
   const [currentSlideIdx, setCurrentSlideIdx] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
-  const [isAudioMuted, setIsAudioMuted] = useState(false);
+  const [isAudioMuted, setIsAudioMuted] = useState(!audioAtmosphere.getStatus().isPlaying);
+
+  // Sync with global audio atmosphere state
+  useEffect(() => {
+    const unsub = audioAtmosphere.subscribe((playing) => {
+      setIsAudioMuted(!playing);
+    });
+    return unsub;
+  }, []);
+
+  const handleToggleAudio = () => {
+    triggerHaptic('light');
+    audioAtmosphere.toggle();
+  };
 
   // Parse wedding date or fallback
   const weddingYear = 2025;
@@ -76,11 +90,10 @@ export const AnniversaryCapsuleModal: React.FC<AnniversaryCapsuleModalProps> = (
             <button
               type="button"
               className="capsule-icon-btn"
-              onClick={() => {
-                setIsAudioMuted(prev => !prev);
-                triggerHaptic('light');
-              }}
+              onClick={handleToggleAudio}
               title={isAudioMuted ? 'Unmute ambient acoustic score' : 'Mute audio'}
+              aria-label={isAudioMuted ? 'Unmute ambient acoustic score' : 'Mute audio'}
+              aria-pressed={!isAudioMuted}
             >
               {isAudioMuted ? <VolumeX size={17} /> : <Volume2 size={17} className="gold-icon" />}
             </button>

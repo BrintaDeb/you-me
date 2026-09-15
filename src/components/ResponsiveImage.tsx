@@ -7,12 +7,12 @@ interface ResponsiveImageProps extends React.ImgHTMLAttributes<HTMLImageElement>
   className?: string;
   aspectRatio?: string;
   priority?: boolean;
-  sizes?: string;
 }
 
 /**
- * Intelligent Responsive Image with Skeleton Shimmer,
- * async decoding, error recovery, and optional Wix CDN srcset.
+ * Production-Grade Responsive Image
+ * Features skeleton shimmer placeholder, smooth opacity fade-in on load,
+ * async decoding, and direct authentic asset streaming without broken synthetic endpoints.
  */
 export const ResponsiveImage: React.FC<ResponsiveImageProps> = ({
   src,
@@ -20,23 +20,11 @@ export const ResponsiveImage: React.FC<ResponsiveImageProps> = ({
   className = '',
   aspectRatio,
   priority = false,
-  sizes = '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw',
   style,
   ...rest
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
-
-  // Generate responsive srcSet for Wix static media if applicable
-  const generateSrcSet = (url: string): string | undefined => {
-    if (!url || !url.includes('static.wixstatic.com/media/')) return undefined;
-
-    // Wix media standard delivery provides high performance when requested directly
-    // Generate width descriptors
-    return `${url} 480w, ${url} 800w, ${url} 1200w, ${url} 1600w`;
-  };
-
-  const srcSet = generateSrcSet(src);
 
   return (
     <div
@@ -52,14 +40,15 @@ export const ResponsiveImage: React.FC<ResponsiveImageProps> = ({
 
       <img
         src={src}
-        srcSet={srcSet}
-        sizes={srcSet ? sizes : undefined}
         alt={alt}
         className={`responsive-img-core ${className} ${isLoaded ? 'loaded' : ''}`}
         loading={priority ? 'eager' : 'lazy'}
         decoding="async"
         fetchPriority={priority ? 'high' : 'auto'}
-        onLoad={() => setIsLoaded(true)}
+        onLoad={() => {
+          setIsLoaded(true);
+          setHasError(false);
+        }}
         onError={() => {
           setHasError(true);
           setIsLoaded(true);

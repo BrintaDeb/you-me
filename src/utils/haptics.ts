@@ -1,7 +1,9 @@
 /**
- * Safe mobile haptic feedback utility
+ * Safe mobile haptic feedback & micro-acoustic integration utility
  * Gracefully no-ops on desktop or unsupported devices
  */
+
+import { acousticFeedback } from './acousticFeedback';
 
 export type HapticPattern = 'light' | 'medium' | 'heavy' | 'success' | 'warning' | 'selection' | 'pageFlip';
 
@@ -39,4 +41,33 @@ export const triggerHaptic = (pattern: HapticPattern = 'light'): void => {
   } catch {
     // Silently ignore browser vibration restrictions
   }
+};
+
+/**
+ * Micro-Interaction: Photo Favoriting & Album Selection
+ * Emits subtle vibration and synthesized camera shutter sound
+ */
+export const hapticFavorite = (isSelected: boolean): void => {
+  triggerHaptic(isSelected ? 'selection' : 'light');
+  if (isSelected) {
+    acousticFeedback.playShutterClick();
+  }
+};
+
+/**
+ * Micro-Interaction: Album Spread Turn & Gallery Swipe
+ * Emits tactile book-flip vibration and archival paper rustle sound
+ */
+export const hapticPageFlip = (): void => {
+  triggerHaptic('pageFlip');
+  acousticFeedback.playPaperRustle();
+};
+
+/**
+ * Micro-Interaction: Theme Toggle
+ * Emits light haptic pulse and harmonic chime
+ */
+export const hapticTheme = (): void => {
+  triggerHaptic('light');
+  acousticFeedback.playThemeChime();
 };

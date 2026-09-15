@@ -105,7 +105,14 @@ export function App() {
       } else if (pathname === '/client-lounge') {
         setCurrentView('client-lounge');
         setSelectedStory(null);
-      } else if (pathname === '/admin') {
+      } else if (
+        pathname === '/admin' ||
+        pathname === '/admin-portal' ||
+        pathname === '/admin-login' ||
+        pathname === '/portal' ||
+        new URLSearchParams(window.location.search).get('admin') === 'true' ||
+        window.location.hash.toLowerCase() === '#admin'
+      ) {
         setCurrentView('admin');
         setSelectedStory(null);
       } else if (pathname === '/privacy-policy') {

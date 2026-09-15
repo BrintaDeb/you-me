@@ -119,30 +119,4 @@
   color: var(--accent-gold);
 }
 
-.mobile-admin-row {
-  margin-top: 6px;
-  padding-top: 14px;
-  border-top: 1px dashed rgba(255, 255, 255, 0.1);
-}
 
-.mobile-admin-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  background: rgba(212, 175, 55, 0.08);
-  border: 1px solid rgba(212, 175, 55, 0.25);
-  color: var(--accent-gold);
-  font-family: var(--font-sans);
-  font-size: 0.78rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 8px 16px;
-  border-radius: 9999px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.mobile-admin-btn:hover {
-  background: var(--accent-gold);
-  color: #0A0807;
-}

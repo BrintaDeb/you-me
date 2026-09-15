@@ -1,23 +1,49 @@
-/* PWA Install Banner */
+/* PWA Install Banner & Universal Modal */
 
 .pwa-prompt-banner {
   position: fixed;
   bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
-  width: min(92vw, 480px);
-  background: var(--bg-elevated);
-  border: 1px solid var(--accent-gold);
+  width: min(92vw, 540px);
+  background: linear-gradient(90deg, #180A0F 0%, #250F17 50%, #180A0F 100%);
+  border: 1.5px solid #F0C655;
   border-radius: 9999px;
-  padding: 10px 18px;
+  padding: 8px 14px 8px 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 14px;
-  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.4);
+  gap: 12px;
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.75),
+              0 0 25px rgba(240, 198, 85, 0.2);
   z-index: 9998;
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   animation: slideUpPrompt 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+  overflow: visible;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+/* Suppress PWA banner during 3D Cinematic Storyboard to prevent collision */
+.pwa-prompt-banner.pwa-suppressed-storyboard,
+body:has(.letterbox-active) .pwa-prompt-banner,
+.camera-path-container.letterbox-active ~ .pwa-prompt-banner {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translate(-50%, 80px) !important;
+}
+
+/* Subtle jewelry wedding ring motif from reference */
+.pwa-ring-accent {
+  position: absolute;
+  top: -14px;
+  left: 31%;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.2px solid rgba(240, 198, 85, 0.45);
+  box-shadow: 0 0 10px rgba(240, 198, 85, 0.2);
+  pointer-events: none;
 }
 
 @keyframes slideUpPrompt {
@@ -36,79 +62,343 @@
   align-items: center;
   gap: 12px;
   min-width: 0;
+  flex: 1;
 }
 
 .pwa-prompt-icon {
-  width: 34px;
-  height: 34px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  background: rgba(212, 175, 55, 0.15);
+  background: #36171B;
+  border: 1px solid rgba(240, 198, 85, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.4);
+}
+
+.pwa-prompt-icon .gold-icon {
+  color: #F8D988;
 }
 
 .pwa-prompt-text {
   display: flex;
   flex-direction: column;
   min-width: 0;
+  gap: 2px;
 }
 
-.pwa-prompt-text strong {
-  font-family: var(--font-serif);
-  font-size: 0.92rem;
-  color: var(--text-primary);
+.pwa-prompt-title-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.pwa-prompt-heart {
+  font-size: 0.95rem;
+  line-height: 1;
+  display: inline-block;
+  transform: translateY(-1px);
+}
+
+.pwa-prompt-title {
+  font-family: var(--font-serif, "Cinzel", "Playfair Display", Georgia, serif);
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: #FFFFFF;
   white-space: nowrap;
+  letter-spacing: -0.01em;
 }
 
-.pwa-prompt-text span {
-  font-family: var(--font-sans);
-  font-size: 0.76rem;
-  color: var(--text-secondary);
+.pwa-prompt-title em {
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.pwa-prompt-subtitle {
+  font-family: var(--font-sans, system-ui, -apple-system, sans-serif);
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.78);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 210px;
 }
 
 .pwa-prompt-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   flex-shrink: 0;
 }
 
 .pwa-install-btn {
-  padding: 6px 14px;
-  font-size: 0.78rem;
-  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 20px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   border-radius: 9999px;
   white-space: nowrap;
+  background: linear-gradient(180deg, #ECC150 0%, #D19C35 100%);
+  color: #161005;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.35);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.pwa-download-icon {
+  stroke-width: 2.4px;
+}
+
+.pwa-install-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(240, 198, 85, 0.55);
+  filter: brightness(1.05);
+}
+
+.pwa-install-btn:active {
+  transform: scale(0.96);
 }
 
 .pwa-dismiss-btn {
   background: none;
   border: none;
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.65);
   cursor: pointer;
   padding: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: color 0.2s ease;
+  border-radius: 50%;
+  transition: all 0.2s ease;
 }
 
 .pwa-dismiss-btn:hover {
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* Instructions Overlay & Modal (for iOS / iPad / Desktop Manual Install) */
+.pwa-instructions-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(9, 8, 7, 0.82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeInOverlay 0.25s ease-out;
+}
+
+@keyframes fadeInOverlay {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.pwa-instructions-modal {
+  position: relative;
+  background: var(--bg-surface, #181214);
+  border: 1px solid var(--accent-gold);
+  border-radius: 20px;
+  max-width: 440px;
+  width: 100%;
+  padding: 32px 26px 26px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8),
+              0 0 30px rgba(212, 175, 55, 0.2);
+  animation: scaleUpModal 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   color: var(--text-primary);
+}
+
+@keyframes scaleUpModal {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.pwa-modal-close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: 1px solid var(--border-subtle);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pwa-modal-close-btn:hover {
+  border-color: var(--accent-gold);
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.pwa-modal-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.pwa-modal-icon-badge {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(212, 175, 55, 0.15);
+  border: 1px solid var(--accent-gold);
+  color: var(--accent-gold-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 14px;
+}
+
+.pwa-modal-title {
+  font-family: var(--font-serif);
+  font-size: 1.45rem;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+
+.pwa-modal-subtitle {
+  font-size: 0.86rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.pwa-instructions-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 26px;
+}
+
+.pwa-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+}
+
+.pwa-step-num {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--accent-gold);
+  color: #14100E;
+  font-weight: 700;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.pwa-step-body {
+  flex: 1;
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+.pwa-step-body strong {
+  display: block;
+  font-size: 0.88rem;
+  margin-bottom: 2px;
+  color: var(--text-primary);
+}
+
+.pwa-step-body p {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.inline-icon {
+  display: inline;
+  vertical-align: middle;
+  color: var(--accent-gold-light);
+  margin: 0 2px;
+}
+
+.pwa-modal-footer {
+  text-align: center;
+}
+
+.pwa-confirm-installed-btn {
+  width: 100%;
+  padding: 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #D4AF37 0%, #B8860B 100%);
+  color: #14100E;
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.pwa-confirm-installed-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.35);
 }
 
 @media (max-width: 600px) {
   .pwa-prompt-banner {
-    border-radius: 12px;
-    bottom: 16px;
-    padding: 10px 14px;
+    width: min(95vw, 420px);
+    bottom: 14px;
+    padding: 7px 10px 7px 12px;
+    gap: 8px;
   }
-  .pwa-prompt-text span {
-    display: none;
+  .pwa-prompt-content {
+    gap: 8px;
+  }
+  .pwa-prompt-icon {
+    width: 36px;
+    height: 36px;
+  }
+  .pwa-prompt-title {
+    font-size: 0.88rem;
+  }
+  .pwa-prompt-subtitle {
+    font-size: 0.72rem;
+    max-width: 145px;
+  }
+  .pwa-install-btn {
+    padding: 7px 14px;
+    font-size: 0.7rem;
+    gap: 4px;
+  }
+  .pwa-ring-accent {
+    width: 30px;
+    height: 30px;
+    top: -10px;
+    left: 28%;
   }
 }
+
