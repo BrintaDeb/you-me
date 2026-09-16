@@ -4,6 +4,7 @@ import { featuredStories } from '../data/couplesData';
 import type { WeddingStory } from '../data/couplesData';
 import { businessInfo } from '../data/businessData';
 import { useTheme } from '../context/useTheme';
+import { triggerHaptic } from '../utils/haptics';
 import './CameraPathExperience.css';
 
 interface CameraPathExperienceProps {
@@ -61,28 +62,25 @@ export const CameraPathExperience: React.FC<CameraPathExperienceProps> = ({
   const [activeStoryIdx, setActiveStoryIdx] = useState(0);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [letterboxActive, setLetterboxActive] = useState(false);
   const [heroRevealed, setHeroRevealed] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const touchStartX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile, { passive: true });
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setHeroRevealed(true);
     }, 120);
     return () => clearTimeout(timer);
-  }, []);
-
-  // Activate letterbox bars when 3D storyboard is in view
-  useEffect(() => {
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReduced) return;
-    const target = document.getElementById('camera-journey');
-    if (!target) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => setLetterboxActive(entry.isIntersecting),
-      { threshold: 0.05 }
-    );
-    observer.observe(target);
-    return () => observer.disconnect();
   }, []);
 
   // Auto-advance hero background images in intervals of 5 seconds
@@ -110,6 +108,7 @@ export const CameraPathExperience: React.FC<CameraPathExperienceProps> = ({
     };
 
     const handleMouseMove = (e: MouseEvent) => {
+      if (isMobile) return;
       // Normalized mouse coordinates from -1 to 1 for interactive 3D parallax
       const x = (e.clientX / window.innerWidth) * 2 - 1;
       const y = (e.clientY / window.innerHeight) * 2 - 1;
@@ -138,10 +137,11 @@ export const CameraPathExperience: React.FC<CameraPathExperienceProps> = ({
       window.removeEventListener('mousemove', handleMouseMove);
       cancelAnimationFrame(animFrame);
     };
-  }, []);
+  }, [isMobile]);
 
   const jumpToStory = (index: number) => {
     if (!trackRef.current) return;
+    triggerHaptic('selection');
     const trackTop = trackRef.current.getBoundingClientRect().top + window.scrollY;
     const trackHeight = trackRef.current.offsetHeight - window.innerHeight;
     const targetScroll = trackTop + (index / (featuredStories.length - 1)) * trackHeight;
@@ -152,10 +152,32 @@ export const CameraPathExperience: React.FC<CameraPathExperienceProps> = ({
     });
   };
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null || touchStartY.current === null) return;
+    const deltaX = e.changedTouches[0].clientX - touchStartX.current;
+    const deltaY = e.changedTouches[0].clientY - touchStartY.current;
+
+    // Horizontal swipe threshold > 40px and dominant over vertical
+    if (Math.abs(deltaX) > 40 && Math.abs(deltaX) > Math.abs(deltaY) * 1.3) {
+      if (deltaX < 0 && activeStoryIdx < featuredStories.length - 1) {
+        jumpToStory(activeStoryIdx + 1);
+      } else if (deltaX > 0 && activeStoryIdx > 0) {
+        jumpToStory(activeStoryIdx - 1);
+      }
+    }
+    touchStartX.current = null;
+    touchStartY.current = null;
+  };
+
   const totalStories = featuredStories.length;
 
   return (
-    <div className={`camera-path-container${letterboxActive ? ' letterbox-active' : ''}`} id="stories">
+    <div className="camera-path-container" id="stories">
       {/* Scene 1 — Cinematic Opening */}
       <section className="hero-scene" aria-label="Hero Wedding Showcase">
         <div className="hero-background-wrapper" aria-hidden="true">
@@ -268,7 +290,11 @@ export const CameraPathExperience: React.FC<CameraPathExperienceProps> = ({
         className="camera-track-section"
         aria-label="3D Cinematic Storyboard Showcase"
       >
-        <div className="camera-viewport">
+        <div
+          className="camera-viewport"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
           {/* Dynamic Ambient Glow Backdrop that shifts as stories advance */}
           <div
             className="camera-ambient-glow"
@@ -312,19 +338,34 @@ export const CameraPathExperience: React.FC<CameraPathExperienceProps> = ({
               const storyOffset = scrollProgress * (totalStories - 1) - i;
 
               // Only render if reasonably close to viewport (within -2 to +2 range)
-              const isVisible = Math.abs(storyOffset) < 1.8;
+              const isVisible = Math.abs(storyOffset) < (isMobile ? 1.5 : 1.8);
               if (!isVisible) return null;
 
               // Smooth 3D trajectory calculations
               // Main Card: Center swoop with curved X-drift and Z-depth
-              const mainZ = -Math.abs(storyOffset) * 750 + (storyOffset > 0 ? storyOffset * 350 : 0);
-              const mainX = storyOffset * -780 + mousePos.x * 22;
-              const mainY = Math.sin(storyOffset * Math.PI) * -45 + mousePos.y * 16;
-              const mainRotY = storyOffset * 24 + mousePos.x * 6;
-              const mainRotX = -storyOffset * 6 - mousePos.y * 5;
-              const mainScale = Math.max(0.72, 1 - Math.abs(storyOffset) * 0.28);
-              const mainOpacity = Math.max(0, 1 - Math.pow(Math.abs(storyOffset), 1.6));
-              const mainBlur = Math.min(10, Math.abs(storyOffset) * 7);
+              const xSpread = isMobile ? Math.min(window.innerWidth * 0.9, 390) : 780;
+              const mainZ = isMobile
+                ? -Math.abs(storyOffset) * 440
+                : -Math.abs(storyOffset) * 750 + (storyOffset > 0 ? storyOffset * 350 : 0);
+              const mainX = storyOffset * -xSpread + (isMobile ? 0 : mousePos.x * 22);
+              const mainY = isMobile
+                ? Math.sin(storyOffset * Math.PI) * -16
+                : Math.sin(storyOffset * Math.PI) * -45 + mousePos.y * 16;
+              const mainRotY = isMobile
+                ? storyOffset * 10
+                : storyOffset * 24 + mousePos.x * 6;
+              const mainRotX = isMobile
+                ? -storyOffset * 3
+                : -storyOffset * 6 - mousePos.y * 5;
+              const mainScale = isMobile
+                ? Math.max(0.85, 1 - Math.abs(storyOffset) * 0.15)
+                : Math.max(0.72, 1 - Math.abs(storyOffset) * 0.28);
+              const mainOpacity = isMobile
+                ? Math.max(0, 1 - Math.pow(Math.abs(storyOffset), 1.8))
+                : Math.max(0, 1 - Math.pow(Math.abs(storyOffset), 1.6));
+              const mainBlur = isMobile
+                ? Math.min(4, Math.abs(storyOffset) * 3)
+                : Math.min(10, Math.abs(storyOffset) * 7);
 
               // Companion Photo 1 (Left floating polaroid): Moves with dynamic parallax
               const comp1X = -430 + storyOffset * -620 + mousePos.x * 12;
@@ -371,49 +412,54 @@ export const CameraPathExperience: React.FC<CameraPathExperienceProps> = ({
                     0{i + 1}
                   </div>
 
-                  {/* Left Companion Polaroid Frame */}
-                  <div
-                    className="companion-print companion-left"
-                    style={{
-                      transform: `translate3d(calc(-50% + ${comp1X}px), calc(-50% + ${comp1Y}px), ${comp1Z}px) rotateY(${comp1RotY}deg) rotateZ(${comp1RotZ}deg)`,
-                      opacity: comp1Opacity,
-                      filter: `blur(${mainBlur * 0.7}px)`
-                    }}
-                    onClick={() => onSelectStory(story)}
-                  >
-                    <div className="polaroid-inner">
-                      <img
-                        src={companionImg1}
-                        alt={`${story.title} candid detail`}
-                        className="polaroid-photo"
-                        loading="lazy"
-                      />
-                      <span className="polaroid-caption">Ceremony Moments</span>
-                    </div>
-                  </div>
-
-                  {/* Right Companion Fine-Art Frame */}
-                  <div
-                    className="companion-print companion-right"
-                    style={{
-                      transform: `translate3d(calc(-50% + ${comp2X}px), calc(-50% + ${comp2Y}px), ${comp2Z}px) rotateY(${comp2RotY}deg) rotateZ(${comp2RotZ}deg)`,
-                      opacity: comp2Opacity,
-                      filter: `blur(${mainBlur * 0.7}px)`
-                    }}
-                    onClick={() => onSelectStory(story)}
-                  >
-                    <div className="fineart-inner">
-                      <img
-                        src={companionImg2}
-                        alt={`${story.title} portrait vignette`}
-                        className="fineart-photo"
-                        loading="lazy"
-                      />
-                      <div className="fineart-tag">
-                        <Sparkles size={11} /> Handcrafted
+                  {!isMobile && (
+                    <>
+                      {/* Left Companion Polaroid Frame */}
+                      <div
+                        className="companion-print companion-left"
+                        style={{
+                          transform: `translate3d(calc(-50% + ${comp1X}px), calc(-50% + ${comp1Y}px), ${comp1Z}px) rotateY(${comp1RotY}deg) rotateZ(${comp1RotZ}deg)`,
+                          opacity: comp1Opacity,
+                          filter: `blur(${mainBlur * 0.7}px)`
+                        }}
+                        onClick={() => onSelectStory(story)}
+                      >
+                        <div className="polaroid-inner">
+                          <img
+                            src={companionImg1}
+                            alt={`${story.title} candid detail`}
+                            className="polaroid-photo"
+                            loading="lazy"
+                          />
+                          <span className="polaroid-caption">Ceremony Moments</span>
+                        </div>
                       </div>
-                    </div>
-                  </div>
+
+                      {/* Right Companion Fine-Art Frame */}
+                      <div
+                        className="companion-print companion-right"
+                        style={{
+                          transform: `translate3d(calc(-50% + ${comp2X}px), calc(-50% + ${comp2Y}px), ${comp2Z}px) rotateY(${comp2RotY}deg) rotateZ(${comp2RotZ}deg)`,
+                          opacity: comp2Opacity,
+                          filter: `blur(${mainBlur * 0.7}px)`
+                        }}
+                        onClick={() => onSelectStory(story)}
+                      >
+                        <div className="fineart-inner">
+                          <img
+                            src={companionImg2}
+                            alt={`${story.title} portrait frame`}
+                            className="fineart-photo"
+                            loading="lazy"
+                          />
+                          <div className="fineart-tag">
+                            <Sparkles size={10} />
+                            <span>Handcrafted</span>
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  )}
 
                   {/* Centerpiece Hero Storyboard Card */}
                   <div

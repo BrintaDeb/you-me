@@ -170,10 +170,13 @@ export const ClientLoungePage: React.FC<ClientLoungePageProps> = ({ onBackToHome
     const params = new URLSearchParams(window.location.search);
     const queryPin = params.get('pin');
     const queryRole = params.get('role') as ClientRole | null;
-    if (queryPin && queryPin.trim()) {
-      verifyAndLogin(queryPin.trim(), queryRole || undefined);
+    if (queryPin && queryPin.trim() && !isAuthenticated) {
+      const timer = setTimeout(() => {
+        verifyAndLogin(queryPin.trim(), queryRole || undefined);
+      }, 0);
+      return () => clearTimeout(timer);
     }
-  }, [verifyAndLogin]);
+  }, [verifyAndLogin, isAuthenticated]);
 
   // Curation & Filtering
   const [activeChapter, setActiveChapter] = useState<ChapterFilter>('all');

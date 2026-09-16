@@ -124,8 +124,12 @@ export function App() {
       } else {
         // Check for legacy Wix blank-* paths
         const legacyMatch = couplesData.find(c => {
-          const legacyPath = new URL(c.legacyUrl).pathname.toLowerCase();
-          return legacyPath === pathname;
+          try {
+            const legacyPath = new URL(c.legacyUrl).pathname.toLowerCase();
+            return legacyPath === pathname;
+          } catch {
+            return c.legacyUrl.toLowerCase().endsWith(pathname);
+          }
         });
 
         if (legacyMatch) {

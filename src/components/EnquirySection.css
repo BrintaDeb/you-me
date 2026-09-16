@@ -590,23 +590,100 @@
 
 @media (max-width: 600px) {
   .enquiry-section {
-    padding: 70px 0;
+    padding: 60px 0;
+  }
+
+  .enquiry-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 32px !important;
+    width: 100% !important;
+  }
+
+  .enquiry-info-col {
+    position: static !important;
+    gap: 16px;
+    width: 100%;
+  }
+
+  .enquiry-title {
+    font-size: clamp(1.8rem, 7vw, 2.3rem);
+    line-height: 1.15;
   }
 
   .enquiry-desc {
-    font-size: 0.95rem;
+    font-size: 0.92rem;
     line-height: 1.6;
-    margin-bottom: 24px;
+    margin-bottom: 8px;
+  }
+
+  .enquiry-direct-cards {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    margin-top: 4px;
+    width: 100%;
   }
 
   .enquiry-direct-item {
-    padding: 14px 16px;
+    padding: 12px 14px;
     gap: 12px;
+    border-radius: 12px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .enquiry-direct-icon {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+  }
+
+  .enquiry-direct-label {
+    font-size: 0.68rem;
+  }
+
+  .enquiry-direct-val {
+    font-size: 0.88rem;
+    word-break: break-word;
+  }
+
+  .enquiry-form-card {
+    padding: 24px 16px;
+    border-radius: 16px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .enquiry-form {
+    gap: 16px;
+    width: 100%;
   }
 
   .form-row {
     grid-template-columns: 1fr;
     gap: 16px;
+    width: 100%;
+  }
+
+  .form-label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 6px;
+    min-height: auto;
+    margin-bottom: 4px;
+  }
+
+  .form-label {
+    font-size: 0.72rem;
+  }
+
+  .btn-calendar-trigger {
+    padding: 3px 8px;
+    font-size: 0.66rem;
+    gap: 4px;
   }
 
   /* 16px font-size prevents iOS Safari zoom on focus */
@@ -615,25 +692,56 @@
   .form-textarea {
     font-size: 16px !important;
     min-height: 48px;
+    height: 48px;
     padding: 0 14px;
+    box-sizing: border-box;
+    width: 100%;
   }
 
   .form-textarea {
     min-height: 100px;
+    height: auto;
     padding: 12px 14px;
   }
 
   .form-submit-btn {
     height: 50px;
-    font-size: 0.84rem;
+    font-size: 0.86rem;
+    margin-top: 6px;
+    width: 100%;
   }
 
   .calendar-modal-backdrop {
-    padding: 12px;
+    padding: 10px;
   }
 
   .calendar-modal-dialog {
-    max-height: 94vh;
+    max-height: 92vh;
+    border-radius: 14px;
+    width: 100%;
+  }
+
+  .form-success-alert {
+    padding: 24px 16px;
+  }
+
+  .form-success-title {
+    font-size: 1.4rem;
+  }
+
+  .form-success-desc {
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+}
+
+@media (max-width: 380px) {
+  .enquiry-form-card {
+    padding: 20px 12px;
+  }
+  .form-input,
+  .form-select {
+    padding: 0 10px;
   }
 }
 
