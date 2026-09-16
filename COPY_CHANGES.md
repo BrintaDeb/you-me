@@ -16,4 +16,4 @@ This document tracks all copy refinements made in accordance with the client's c
 | **Contact Heading** | *Help us learn more about your dream wedding by filling out the form below.* | *Tell Us About Your Wedding* | Inviting, concise call to action |
 | **Primary CTA** | *View Portfolio* | *Explore Our Stories* | Narrative engagement over transactional browsing |
 | **Enquiry CTA** | *Get in touch* | *Check Your Date* | Clear commercial conversion action |
-| **Footer Attribution** | *Designed by BRAND PROJECT* | *Designed by Brinta Deb* | Client instructed update replacing legacy agency attribution |
+| **Footer Attribution** | *Designed by Brinta Deb* | *Designed by Brand Project* | Client instructed update to Brand Project attribution |

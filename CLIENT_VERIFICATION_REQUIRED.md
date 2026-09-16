@@ -27,6 +27,5 @@ The following factual and commercial claims were present on the source website (
    - *Action for Client*: Confirm personal print release terms.
 
 7. **Credit & Attribution** [RESOLVED]:
-   - *Original Statement*: "Designed by BRAND PROJECT"
-   - *Client Update*: Formally instructed to update attribution to "Designed by Brinta Deb".
+   - *Client Update*: Formally instructed to set attribution to "Designed by Brand Project".
    - *Status*: Implemented in `src/components/Footer.tsx` and `src/data/businessData.ts`.

@@ -20,7 +20,7 @@
 }
 
 .enquiry-title {
-  font-size: clamp(2.4rem, 5vw, 3.6rem);
+  font-size: clamp(2rem, 4vw, 3.6rem);
   line-height: 1.12;
   background: linear-gradient(180deg, #FFFFFF 0%, #F3E8DF 100%);
   -webkit-background-clip: text;
@@ -130,9 +130,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  flex-wrap: wrap;
+  gap: 6px 10px;
   min-height: 24px;
-  height: 24px;
 }
 
 .form-label {
@@ -356,29 +356,200 @@
   line-height: 1.6;
 }
 
-@media (max-width: 960px) {
+/* ── iPad Landscape & Medium Desktops (901px – 1080px): Spacious 2-column layout ── */
+@media (min-width: 901px) and (max-width: 1080px) {
   .enquiry-section {
-    padding: 90px 0;
+    padding: 95px 0;
+  }
+
+  .enquiry-grid {
+    grid-template-columns: 1fr 1.25fr;
+    gap: 38px;
+    align-items: start;
+  }
+
+  .enquiry-title {
+    font-size: clamp(1.9rem, 3.2vw, 2.6rem);
+    line-height: 1.15;
+  }
+
+  .enquiry-desc {
+    font-size: 0.95rem;
+    line-height: 1.65;
+  }
+
+  .enquiry-info-col {
+    gap: 20px;
+    position: sticky;
+    top: 96px;
+  }
+
+  .enquiry-direct-cards {
+    gap: 10px;
+    margin-top: 4px;
+  }
+
+  .enquiry-direct-item {
+    padding: 13px 16px;
+    gap: 12px;
+    border-radius: 12px;
+  }
+
+  .enquiry-direct-icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .enquiry-direct-label {
+    font-size: 0.7rem;
+  }
+
+  .enquiry-direct-val {
+    font-size: 0.9rem;
+  }
+
+  .enquiry-form-card {
+    padding: 30px 28px;
+    border-radius: 16px;
+  }
+
+  .enquiry-form {
+    gap: 16px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .form-input,
+  .form-select {
+    height: 48px;
+    font-size: 16px; /* iOS standard to prevent auto-zoom */
+  }
+
+  .form-textarea {
+    min-height: 105px;
+    font-size: 16px;
+  }
+
+  .form-label {
+    font-size: 0.72rem;
+  }
+
+  .form-submit-btn {
+    height: 50px;
+    font-size: 0.88rem;
+  }
+}
+
+/* ── iPad Portrait & Tablets (601px – 900px): Elegant single-column flow ── */
+@media (min-width: 601px) and (max-width: 900px) {
+  .enquiry-section {
+    padding: 85px 0;
   }
 
   .enquiry-grid {
     grid-template-columns: 1fr;
-    gap: 40px;
+    gap: 36px;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .enquiry-info-col {
+    position: static;
+    gap: 20px;
+  }
+
+  .enquiry-title {
+    font-size: clamp(2rem, 4vw, 2.6rem);
+    line-height: 1.15;
+  }
+
+  .enquiry-desc {
+    font-size: 0.98rem;
+    line-height: 1.65;
+    max-width: 100%;
+  }
+
+  .enquiry-direct-item {
+    padding: 14px 16px;
+    gap: 12px;
+    border-radius: 12px;
+  }
+
+  .enquiry-direct-icon {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+  }
+
+  .enquiry-direct-label {
+    font-size: 0.72rem;
+  }
+
+  .enquiry-direct-val {
+    font-size: 0.92rem;
+    word-break: break-word;
+  }
+
+  .enquiry-form-card {
+    padding: 34px 30px;
+    border-radius: 18px;
+    width: 100%;
+  }
+
+  .enquiry-form {
+    gap: 18px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+
+  .form-input,
+  .form-select,
+  .form-textarea {
+    font-size: 16px; /* Prevents iOS Safari focus zoom */
+    min-height: 48px;
+    height: 48px;
+  }
+
+  .form-textarea {
+    min-height: 110px;
+    height: auto;
+  }
+
+  .form-submit-btn {
+    height: 52px;
+    font-size: 0.9rem;
   }
 }
 
-/* iPad (601–768px) - ensure form card has comfortable padding */
-@media (min-width: 601px) and (max-width: 768px) {
-  .enquiry-form-card {
-    padding: clamp(22px, 4vw, 32px);
+/* iPad Portrait (721px–900px): Clean 3-column contact cards row */
+@media (min-width: 721px) and (max-width: 900px) {
+  .enquiry-direct-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 8px;
   }
-  .enquiry-info-col {
-    gap: 20px;
-  }
+}
+
+/* Smaller Tablets (601px–720px): 2-column contact cards with WhatsApp wide */
+@media (min-width: 601px) and (max-width: 720px) {
   .enquiry-direct-cards {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 12px;
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  .enquiry-direct-cards .enquiry-direct-item:last-child {
+    grid-column: 1 / -1;
+    background: rgba(212, 175, 55, 0.04);
+    border-color: rgba(212, 175, 55, 0.2);
   }
 }
 

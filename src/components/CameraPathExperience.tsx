@@ -156,9 +156,6 @@ export const CameraPathExperience: React.FC<CameraPathExperienceProps> = ({
 
   return (
     <div className={`camera-path-container${letterboxActive ? ' letterbox-active' : ''}`} id="stories">
-      {/* Cinematic letterbox bars */}
-      <div className="letterbox-bar letterbox-bar-top" aria-hidden="true" />
-      <div className="letterbox-bar letterbox-bar-bottom" aria-hidden="true" />
       {/* Scene 1 — Cinematic Opening */}
       <section className="hero-scene" aria-label="Hero Wedding Showcase">
         <div className="hero-background-wrapper" aria-hidden="true">

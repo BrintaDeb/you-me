@@ -185,7 +185,7 @@ export const businessInfo = {
     ],
     highlight: "Documentary-style wedding photography, genuine candid emotion, and timeless heirloom portraits."
   },
-  attribution: "Designed by Brinta Deb"
+  attribution: "Designed by Brand Project"
 };
 
 export const teamMembers: TeamMember[] = [
