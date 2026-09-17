@@ -7,6 +7,7 @@ import { useTheme } from '../context/useTheme';
 import { triggerHaptic } from '../utils/haptics';
 import { usePublicSections } from '../hooks/usePublicSections';
 import { SkeletonSlide } from './SkeletonSlide';
+import { handleImageError } from '../utils/imageFallback';
 import './CameraPathExperience.css';
 
 interface CameraPathExperienceProps {
@@ -216,6 +217,7 @@ export const CameraPathExperience: React.FC<CameraPathExperienceProps> = ({
                     className="hero-slide-img"
                     loading={idx === 0 ? 'eager' : 'lazy'}
                     fetchPriority={idx === 0 ? 'high' : undefined}
+                    onError={handleImageError}
                   />
                 </div>
               );
@@ -251,6 +253,7 @@ export const CameraPathExperience: React.FC<CameraPathExperienceProps> = ({
             <button
               type="button"
               className="btn btn-primary"
+              data-magnetic
               onClick={() => {
                 const el = document.getElementById('camera-journey');
                 if (el) el.scrollIntoView({ behavior: 'smooth' });
@@ -261,6 +264,7 @@ export const CameraPathExperience: React.FC<CameraPathExperienceProps> = ({
             <a
               href="#contact"
               className="btn btn-outline"
+              data-magnetic
               onClick={(e) => {
                 e.preventDefault();
                 const el = document.getElementById('contact');
@@ -440,6 +444,8 @@ export const CameraPathExperience: React.FC<CameraPathExperienceProps> = ({
                       {/* Left Companion Polaroid Frame */}
                       <div
                         className="companion-print companion-left"
+                        data-cursor="expand"
+                        data-cursor-label="EXPAND"
                         style={{
                           transform: `translate3d(calc(-50% + ${comp1X}px), calc(-50% + ${comp1Y}px), ${comp1Z}px) rotateY(${comp1RotY}deg) rotateZ(${comp1RotZ}deg)`,
                           opacity: comp1Opacity,
@@ -453,6 +459,7 @@ export const CameraPathExperience: React.FC<CameraPathExperienceProps> = ({
                             alt={`${story.title} candid detail`}
                             className="polaroid-photo"
                             loading="lazy"
+                            onError={handleImageError}
                           />
                           <span className="polaroid-caption">Ceremony Moments</span>
                         </div>
@@ -461,6 +468,8 @@ export const CameraPathExperience: React.FC<CameraPathExperienceProps> = ({
                       {/* Right Companion Fine-Art Frame */}
                       <div
                         className="companion-print companion-right"
+                        data-cursor="expand"
+                        data-cursor-label="EXPAND"
                         style={{
                           transform: `translate3d(calc(-50% + ${comp2X}px), calc(-50% + ${comp2Y}px), ${comp2Z}px) rotateY(${comp2RotY}deg) rotateZ(${comp2RotZ}deg)`,
                           opacity: comp2Opacity,
@@ -474,6 +483,7 @@ export const CameraPathExperience: React.FC<CameraPathExperienceProps> = ({
                             alt={`${story.title} portrait frame`}
                             className="fineart-photo"
                             loading="lazy"
+                            onError={handleImageError}
                           />
                           <div className="fineart-tag">
                             <Sparkles size={10} />
@@ -504,6 +514,7 @@ export const CameraPathExperience: React.FC<CameraPathExperienceProps> = ({
                         alt={story.title}
                         className="card-media-img"
                         loading={i < 2 ? 'eager' : 'lazy'}
+                        onError={handleImageError}
                       />
                       <div className="card-vignette-overlay" />
                     </div>
@@ -541,6 +552,7 @@ export const CameraPathExperience: React.FC<CameraPathExperienceProps> = ({
                         <button
                           type="button"
                           className="btn-story-explore"
+                          data-magnetic
                           onClick={() => onSelectStory(story)}
                           aria-label={`Explore full story gallery of ${story.title}`}
                         >
@@ -553,6 +565,9 @@ export const CameraPathExperience: React.FC<CameraPathExperienceProps> = ({
                           <button
                             type="button"
                             className="btn-story-play-film"
+                            data-cursor="play"
+                            data-cursor-label="PLAY FILM"
+                            data-magnetic
                             onClick={(e) => {
                               e.stopPropagation();
                               onPlayFilm(story);

@@ -42,6 +42,7 @@ import { downloadPhotoFile } from '../utils/photoDownloader';
 import { triggerHaptic, hapticFavorite } from '../utils/haptics';
 import { downloadBatchAsZip } from '../utils/zipDownloader';
 import type { BatchZipProgress } from '../utils/zipDownloader';
+import { handleImageError, DEFAULT_FALLBACK_IMAGE } from '../utils/imageFallback';
 import './ClientLoungePage.css';
 
 interface ClientLoungePageProps {
@@ -1275,15 +1276,16 @@ export const ClientLoungePage: React.FC<ClientLoungePageProps> = ({ onBackToHome
 
           <div className="slideshow-stage">
             <img
-              src={displayedImages[slideshowIndex].url}
-              alt={displayedImages[slideshowIndex].alt}
+              src={displayedImages[slideshowIndex]?.url || DEFAULT_FALLBACK_IMAGE}
+              alt={displayedImages[slideshowIndex]?.alt || 'Wedding photograph'}
               className="slideshow-image"
+              onError={handleImageError}
             />
           </div>
 
           <div className="slideshow-footer-bar">
             <div className="slideshow-caption">
-              {displayedImages[slideshowIndex].caption || `Frame ${slideshowIndex + 1}`}
+              {displayedImages[slideshowIndex]?.caption || `Frame ${slideshowIndex + 1}`}
             </div>
 
             <div className="slideshow-nav-btns">
@@ -1301,9 +1303,13 @@ export const ClientLoungePage: React.FC<ClientLoungePageProps> = ({ onBackToHome
               <button
                 type="button"
                 className={`slideshow-heart-btn ${
-                  selectedPhotoIds.includes(displayedImages[slideshowIndex].id) ? 'active' : ''
+                  displayedImages[slideshowIndex] && selectedPhotoIds.includes(displayedImages[slideshowIndex].id) ? 'active' : ''
                 }`}
-                onClick={() => togglePhotoSelection(displayedImages[slideshowIndex].id)}
+                onClick={() => {
+                  if (displayedImages[slideshowIndex]) {
+                    togglePhotoSelection(displayedImages[slideshowIndex].id);
+                  }
+                }}
                 title="Curate for Heirloom Album"
               >
                 <Heart

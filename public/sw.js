@@ -73,15 +73,23 @@ self.addEventListener('fetch', (event) => {
         return cachedResponse;
       }
 
-      return fetch(request).then((networkResponse) => {
-        if (networkResponse && networkResponse.status === 200 && (url.origin === location.origin || url.hostname.includes('wixstatic.com') || url.hostname.includes('fonts.googleapis.com'))) {
-          const responseToCache = networkResponse.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(request, responseToCache);
-          });
-        }
-        return networkResponse;
-      });
+      return fetch(request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200 && (url.origin === location.origin || url.hostname.includes('wixstatic.com') || url.hostname.includes('fonts.googleapis.com'))) {
+            const responseToCache = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(request, responseToCache);
+            });
+          }
+          return networkResponse;
+        })
+        .catch(() => {
+          // If network fails (e.g. offline) and requesting an image, return cached fallback logo
+          if (request.destination === 'image') {
+            return caches.match('/assets/brand/double_heart.png');
+          }
+          return new Response('', { status: 408, statusText: 'Request timed out or offline' });
+        });
     })
   );
 });

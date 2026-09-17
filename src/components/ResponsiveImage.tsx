@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { DEFAULT_FALLBACK_IMAGE } from '../utils/imageFallback';
 import './ResponsiveImage.css';
 
 interface ResponsiveImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
@@ -49,9 +50,14 @@ export const ResponsiveImage: React.FC<ResponsiveImageProps> = ({
           setIsLoaded(true);
           setHasError(false);
         }}
-        onError={() => {
-          setHasError(true);
-          setIsLoaded(true);
+        onError={(e) => {
+          if (!e.currentTarget.dataset.hasFallback) {
+            e.currentTarget.dataset.hasFallback = 'true';
+            e.currentTarget.src = DEFAULT_FALLBACK_IMAGE;
+          } else {
+            setHasError(true);
+            setIsLoaded(true);
+          }
         }}
         {...rest}
       />

@@ -3,6 +3,7 @@ import { ArrowRight, Sparkles, Image as ImageIcon, MapPin, Film, Compass, Camera
 import { couplesData } from '../data/couplesData';
 import type { WeddingStory } from '../data/couplesData';
 import { usePublicSections } from '../hooks/usePublicSections';
+import { handleImageError } from '../utils/imageFallback';
 import './PortfolioShowcase.css';
 
 interface PortfolioShowcaseProps {
@@ -91,6 +92,7 @@ export const PortfolioShowcase: React.FC<PortfolioShowcaseProps> = ({
                       className="portfolio-dynamic-thumb-img"
                       loading="lazy"
                       decoding="async"
+                      onError={handleImageError}
                     />
                   </div>
                 );
@@ -105,6 +107,7 @@ export const PortfolioShowcase: React.FC<PortfolioShowcaseProps> = ({
               key={cat}
               type="button"
               role="tab"
+              data-magnetic
               aria-selected={selectedCategory === cat}
               className={`filter-pill ${selectedCategory === cat ? 'active' : ''}`}
               onClick={() => setSelectedCategory(cat)}
@@ -124,7 +127,9 @@ export const PortfolioShowcase: React.FC<PortfolioShowcaseProps> = ({
             return (
               <article
                 key={story.id}
-                className={`editorial-card editorial-card-${idx}`}
+                className={`editorial-card story-card editorial-card-${idx}`}
+                data-cursor="story"
+                data-cursor-label="READ STORY"
                 onClick={() => onSelectStory(story)}
                 tabIndex={0}
                 role="button"
@@ -142,6 +147,7 @@ export const PortfolioShowcase: React.FC<PortfolioShowcaseProps> = ({
                     className="portfolio-card-img"
                     loading={idx < 2 ? 'eager' : 'lazy'}
                     decoding="async"
+                    onError={handleImageError}
                   />
 
                   {/* Editorial Callout Marginalia (Floating Top Banner) */}
@@ -199,6 +205,7 @@ export const PortfolioShowcase: React.FC<PortfolioShowcaseProps> = ({
           <button
             type="button"
             className="btn btn-outline"
+            data-magnetic
             onClick={onViewAllPortfolio}
           >
             Explore Complete Portfolio Archive &rarr;

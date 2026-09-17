@@ -178,6 +178,8 @@
 .portfolio-card {
   position: relative;
   width: 100%;
+  aspect-ratio: 4 / 5;
+  min-height: 380px;
   border-radius: 16px;
   overflow: hidden;
   background: var(--bg-surface);

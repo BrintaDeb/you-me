@@ -1,4 +1,4 @@
-/* Clean, Refined Heart Cursor */
+/* Clean, Refined Luxury Heart Cursor & Context Badges */
 
 .clean-cursor-container {
   position: fixed;
@@ -30,14 +30,14 @@
   transform: translate3d(-100px, -100px, 0);
   will-change: transform;
   mix-blend-mode: screen;
-  transition: opacity 0.3s ease, width 0.4s ease, height 0.4s ease;
+  transition: opacity 0.35s ease, width 0.4s ease, height 0.4s ease;
   z-index: 999995;
 }
 
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .clean-cursor-glow {
   background: radial-gradient(
     circle,
-    rgba(180, 130, 60, 0.06) 0%,
+    rgba(180, 130, 60, 0.07) 0%,
     rgba(180, 130, 60, 0.02) 45%,
     transparent 70%
   );
@@ -45,9 +45,15 @@
 }
 
 .clean-cursor-glow.is-hovered {
-  width: 360px;
-  height: 360px;
-  opacity: 0.85;
+  width: 380px;
+  height: 380px;
+  opacity: 0.9;
+}
+
+.clean-cursor-glow.badge-active {
+  width: 440px;
+  height: 440px;
+  opacity: 1;
 }
 
 /* 1. Trailing Minimalist Glass Ring (Spring Lerp) */
@@ -62,8 +68,8 @@
   background: rgba(200, 164, 107, 0.02);
   pointer-events: none;
   will-change: transform;
-  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-              height 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+  transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              height 0.35s cubic-bezier(0.16, 1, 0.3, 1),
               border-color 0.25s ease,
               background-color 0.25s ease,
               opacity 0.25s ease;
@@ -75,17 +81,163 @@
   height: 48px;
   border-color: rgba(200, 164, 107, 0.75);
   background: rgba(200, 164, 107, 0.08);
-  box-shadow: 0 0 16px rgba(200, 164, 107, 0.2);
+  box-shadow: 0 0 18px rgba(200, 164, 107, 0.25);
+}
+
+.clean-cursor-ring.mode-magnetic {
+  width: 54px;
+  height: 54px;
+  border-color: rgba(212, 175, 55, 0.85);
+  background: rgba(212, 175, 55, 0.12);
+  box-shadow: 0 0 22px rgba(212, 175, 55, 0.35);
+}
+
+/* When a context badge is active, fade out the small standard ring */
+.clean-cursor-ring.mode-play,
+.clean-cursor-ring.mode-expand,
+.clean-cursor-ring.mode-story,
+.clean-cursor-ring.mode-drag {
+  opacity: 0;
+  transform: scale(0.6);
 }
 
 .clean-cursor-ring.is-pressed {
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   border-color: rgba(229, 37, 58, 0.65);
 }
 
 .clean-cursor-ring.is-text-input {
   opacity: 0;
+}
+
+/* 1.5 Context-Aware Luxury Badges (Play, Expand, Story, Drag) */
+.clean-cursor-badge {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 999998;
+  will-change: transform;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: translate3d(-100px, -100px, 0) translate(-50%, -50%) scale(0.4);
+  transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              scale 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              background 0.3s ease,
+              border-color 0.3s ease,
+              box-shadow 0.3s ease;
+}
+
+.clean-cursor-badge.is-visible {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.clean-cursor-badge.is-pressed {
+  transform: translate(-50%, -50%) scale(0.92);
+}
+
+.cursor-badge-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: rgba(15, 13, 11, 0.78);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1.2px solid rgba(212, 175, 55, 0.6);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(212, 175, 55, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 8px;
+  text-align: center;
+  box-sizing: border-box;
+  animation: badgePulsate 3.2s ease-in-out infinite;
+}
+
+@keyframes badgePulsate {
+  0%, 100% {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 18px rgba(212, 175, 55, 0.2);
+  }
+  50% {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 26px rgba(212, 175, 55, 0.38);
+  }
+}
+
+.cursor-badge-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cursor-badge-icon.play-icon {
+  color: #D4AF37;
+  filter: drop-shadow(0 0 6px rgba(212, 175, 55, 0.6));
+  transform: translateX(1px);
+}
+
+.cursor-badge-icon.expand-icon {
+  color: #FFFFFF;
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.5));
+}
+
+.cursor-badge-icon.story-icon {
+  color: #E5253A;
+  filter: drop-shadow(0 0 8px rgba(229, 37, 58, 0.65));
+}
+
+.cursor-badge-icon.drag-icon {
+  color: #D4AF37;
+  filter: drop-shadow(0 0 6px rgba(212, 175, 55, 0.5));
+}
+
+.cursor-badge-text {
+  font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #F5E6D3;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+/* Badge Mode Variations */
+.clean-cursor-badge.mode-play .cursor-badge-inner {
+  border-color: rgba(212, 175, 55, 0.75);
+}
+
+.clean-cursor-badge.mode-expand .cursor-badge-inner {
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+.clean-cursor-badge.mode-story .cursor-badge-inner {
+  border-color: rgba(229, 37, 58, 0.65);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 22px rgba(229, 37, 58, 0.3);
+}
+
+/* Light / Champagne Theme Variations */
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .cursor-badge-inner {
+  background: rgba(255, 255, 255, 0.88);
+  border-color: rgba(180, 130, 60, 0.6);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15), 0 0 18px rgba(180, 130, 60, 0.2);
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .cursor-badge-text {
+  color: #1A1412;
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .cursor-badge-icon.expand-icon {
+  color: #1A1412;
 }
 
 /* 2. Precision Heart Pointer (Locks precisely to coordinate) */
@@ -99,9 +251,9 @@
   align-items: center;
   justify-content: center;
   pointer-events: none;
-  will-change: transform;
+  will-change: transform, opacity;
   filter: drop-shadow(0 2px 6px rgba(229, 37, 58, 0.35));
-  transition: opacity 0.2s ease;
+  transition: opacity 0.22s ease;
 }
 
 .clean-heart-svg {
@@ -167,8 +319,8 @@
     border-color: rgba(200, 164, 107, 0.85);
   }
   100% {
-    width: 52px;
-    height: 52px;
+    width: 56px;
+    height: 56px;
     opacity: 0;
     border-color: rgba(229, 37, 58, 0.2);
   }
@@ -181,7 +333,8 @@
   .custom-heart-cursor-active a,
   .custom-heart-cursor-active button,
   .custom-heart-cursor-active [role="button"],
-  .custom-heart-cursor-active .clickable {
+  .custom-heart-cursor-active .clickable,
+  .custom-heart-cursor-active [data-cursor] {
     cursor: none !important;
   }
 
@@ -214,6 +367,13 @@
   }
 }
 
+/* Magnetic Element Class */
+.magnetic-btn,
+[data-magnetic] {
+  will-change: transform;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 /* Reduced motion accessibility */
 @media (prefers-reduced-motion: reduce) {
   .clean-heart-svg {
@@ -227,5 +387,16 @@
   }
   .cursor-trail-heart {
     display: none !important;
+  }
+  .clean-cursor-badge {
+    transition: none !important;
+  }
+  .cursor-badge-inner {
+    animation: none !important;
+  }
+  .magnetic-btn,
+  [data-magnetic] {
+    transform: none !important;
+    transition: none !important;
   }
 }

@@ -23,6 +23,7 @@ export const AudioToggle: React.FC = () => {
   return (
     <button
       type="button"
+      data-magnetic
       className={`audio-atmosphere-toggle ${isPlaying ? 'is-playing' : ''}`}
       onClick={handleToggle}
       title={

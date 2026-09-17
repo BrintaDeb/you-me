@@ -434,6 +434,7 @@ export const EnquirySection: React.FC = () => {
 
                 <button
                   type="submit"
+                  data-magnetic
                   className="btn btn-primary form-submit-btn"
                   disabled={isSubmitting}
                 >

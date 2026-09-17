@@ -61,6 +61,7 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({ className = '' }) => {
       )}
       <button
         type="button"
+        data-magnetic
         className={`theme-cycle-toggle theme-icon-toggle theme-${theme} ${isFlipping ? 'is-flipping' : ''} ${className}`}
         onClick={handleToggle}
         title={nextThemeTitle}

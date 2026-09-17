@@ -137,6 +137,29 @@
   gap: 28px;
 }
 
+.portfolio-grid .portfolio-card {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  min-height: 420px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  cursor: pointer;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.3s ease;
+}
+
+.portfolio-grid .portfolio-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(200, 164, 107, 0.6);
+  box-shadow: 0 20px 40px -12px rgba(200, 164, 107, 0.22),
+              0 14px 36px rgba(0, 0, 0, 0.7);
+}
+
 /* Tablet Optimizations (601px - 1024px) */
 @media (min-width: 601px) and (max-width: 1024px) {
   .portfolio-main-grid-section {

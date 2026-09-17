@@ -4,14 +4,24 @@ import { couplesData } from '../data/couplesData';
 import type { WeddingStory } from '../data/couplesData';
 import { FilmstripReelView } from '../components/FilmstripReelView';
 import { galleryStorage } from '../utils/galleryStorage';
+import { handleImageError } from '../utils/imageFallback';
 import './PortfolioPage.css';
 
 interface PortfolioPageProps {
   onSelectStory: (story: WeddingStory) => void;
 }
 
+const CATEGORIES = [
+  'All Works',
+  'Destination Wedding',
+  'Bengali Wedding',
+  'Candid & Documentary',
+  'Traditional Wedding',
+];
+
 export const PortfolioPage: React.FC<PortfolioPageProps> = ({ onSelectStory }) => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('All Works');
   const [viewMode, setViewMode] = useState<'grid' | 'filmstrip'>('grid');
   const [allStories, setAllStories] = useState<WeddingStory[]>(couplesData);
 
@@ -30,8 +40,13 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({ onSelectStory }) =
   }, []);
 
   const filteredStories = allStories.filter(story => {
-    return story.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-           story.category.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory =
+      selectedCategory === 'All Works' ||
+      story.category.toLowerCase().includes(selectedCategory.toLowerCase());
+    const matchesSearch =
+      story.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      story.category.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
   });
 
   return (
@@ -64,14 +79,19 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({ onSelectStory }) =
         <div className="container-wide">
           <div className="portfolio-controls-bar">
             <div className="portfolio-filters" role="tablist" aria-label="Portfolio gallery filter">
-              <button
-                type="button"
-                role="tab"
-                aria-selected={true}
-                className="filter-pill active"
-              >
-                All Works
-              </button>
+              {CATEGORIES.map(cat => (
+                <button
+                  key={cat}
+                  type="button"
+                  role="tab"
+                  data-magnetic
+                  aria-selected={selectedCategory === cat}
+                  className={`filter-pill ${selectedCategory === cat ? 'active' : ''}`}
+                  onClick={() => setSelectedCategory(cat)}
+                >
+                  {cat}
+                </button>
+              ))}
             </div>
 
             <div className="portfolio-actions-right">
@@ -130,6 +150,8 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({ onSelectStory }) =
               <article
                 key={story.id}
                 className="portfolio-card"
+                data-cursor="story"
+                data-cursor-label="READ STORY"
                 onClick={() => onSelectStory(story)}
                 role="button"
                 tabIndex={0}
@@ -145,6 +167,7 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({ onSelectStory }) =
                   alt={story.title}
                   className="portfolio-card-img"
                   loading="lazy"
+                  onError={handleImageError}
                 />
                 <div className="portfolio-card-gradient">
                   <span className="portfolio-card-cat">{story.category}</span>

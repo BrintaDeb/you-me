@@ -3,6 +3,7 @@ import { Play, Film, Sparkles } from 'lucide-react';
 import { featuredStories } from '../data/couplesData';
 import type { WeddingStory } from '../data/couplesData';
 import { usePublicSections } from '../hooks/usePublicSections';
+import { handleImageError } from '../utils/imageFallback';
 import './WeddingFilmsSection.css';
 
 interface WeddingFilmsSectionProps {
@@ -46,7 +47,9 @@ export const WeddingFilmsSection: React.FC<WeddingFilmsSectionProps> = ({ onPlay
           {effectiveStories.map(story => (
             <div
               key={story.id}
-              className="film-card"
+              className="film-card wedding-film-card"
+              data-cursor="play"
+              data-cursor-label="PLAY FILM"
               onClick={() => onPlayFilm(story)}
               role="button"
               tabIndex={0}
@@ -62,6 +65,7 @@ export const WeddingFilmsSection: React.FC<WeddingFilmsSectionProps> = ({ onPlay
                 alt={`${story.title} film poster`}
                 className="film-poster-img"
                 loading="lazy"
+                onError={handleImageError}
               />
               <div className="film-play-badge" aria-hidden="true">
                 <Play size={24} fill="currentColor" style={{ marginLeft: 3 }} />

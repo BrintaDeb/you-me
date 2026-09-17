@@ -13,6 +13,7 @@ import type { WeddingStory } from './data/couplesData';
 import { audioAtmosphere } from './utils/audioAtmosphere';
 import { HeartCursor } from './components/HeartCursor';
 import { PwaInstallPrompt } from './components/PwaInstallPrompt';
+import { useSmoothScroll } from './hooks/useSmoothScroll';
 
 // Route code-splitting: isolate heavy dependencies (jszip, rich lounges, modals) to demand
 const PortfolioPage = lazy(() => import('./pages/PortfolioPage').then(m => ({ default: m.PortfolioPage })));
@@ -67,6 +68,11 @@ export function App() {
   const [selectedStory, setSelectedStory] = useState<WeddingStory | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeFilmStory, setActiveFilmStory] = useState<WeddingStory | null>(null);
+
+  // Smooth momentum scrolling (auto-paused during modals, mobile drawer, or admin operations)
+  useSmoothScroll({
+    isPaused: !!activeFilmStory || isMobileMenuOpen || currentView === 'admin'
+  });
 
   // Native View Transition Helper
   const transitionView = (updateFn: () => void) => {
