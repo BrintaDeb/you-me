@@ -1,0 +1,36 @@
+.skeleton-slide-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.skeleton-slide-layer {
+  position: absolute;
+  inset: 0;
+}
+
+.skeleton-shimmer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    110deg,
+    var(--bg-secondary, #1a1410) 30%,
+    rgba(212, 175, 55, 0.07) 50%,
+    var(--bg-secondary, #1a1410) 70%
+  );
+  background-size: 300% 100%;
+  animation: skeleton-wave 1.8s ease-in-out infinite;
+}
+
+@keyframes skeleton-wave {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Reduced motion: static muted background instead of animation */
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-shimmer {
+    animation: none;
+    background: var(--bg-secondary, #1a1410);
+  }
+}

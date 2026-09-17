@@ -9,7 +9,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: max(16px, var(--sat)) max(16px, var(--sar)) max(16px, var(--sab)) max(16px, var(--sal));
+  height: 100vh;
+  height: 100svh;
+  height: 100dvh;
   animation: capsuleFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -20,7 +23,7 @@
 
 .anniversary-capsule-container {
   width: min(94vw, 1100px);
-  max-height: 90vh;
+  max-height: min(90vh, calc(100dvh - 32px));
   background: #14100E;
   border: 1px solid rgba(212, 175, 55, 0.35);
   border-radius: 16px;
@@ -89,8 +92,10 @@
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.15);
   color: #FFFFFF;
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
   border-radius: 50%;
   cursor: pointer;
   display: flex;

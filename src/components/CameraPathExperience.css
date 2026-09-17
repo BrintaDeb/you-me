@@ -10,11 +10,13 @@
 .hero-scene {
   position: relative;
   min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  padding: 120px 20px 80px;
+  padding: calc(120px + var(--sat)) max(20px, var(--sar)) max(80px, var(--sab)) max(20px, var(--sal));
 }
 
 /* Scene 1 — Cinematic Opening with 5-Second Animated Slides */
@@ -348,6 +350,8 @@
   left: 0;
   width: 100vw;
   height: 100vh;
+  height: 100svh;
+  height: 100dvh;
   overflow: hidden;
   perspective: 1100px;
   perspective-origin: 50% 50%;
@@ -904,8 +908,9 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 100dvh;
     height: 100vh;
+    height: 100svh;
+    height: 100dvh;
     perspective: 750px;
     perspective-origin: 50% 46%;
     overflow: hidden;
@@ -950,10 +955,11 @@
     opacity: 0.04 !important;
   }
 
-  /* Top HUD on mobile */
+  /* Top HUD on mobile with safe-area spacing */
   .camera-hud-header {
-    top: 68px;
-    padding: 0 14px;
+    top: calc(64px + var(--sat));
+    padding: 0 max(14px, var(--sal));
+    padding-right: max(14px, var(--sar));
   }
 
   .hud-badge {
@@ -1016,8 +1022,9 @@
 
   /* Bottom Timeline Navigation on Mobile */
   .storyboard-timeline-nav {
-    bottom: clamp(16px, 3vh, 26px);
-    padding: 0 10px;
+    bottom: max(16px, calc(var(--sab) + 8px));
+    padding: 0 max(10px, var(--sal));
+    padding-right: max(10px, var(--sar));
   }
 
   .timeline-items-wrapper {
@@ -1037,13 +1044,32 @@
   }
 }
 
-/* Tablet Optimizations (601px - 960px) */
-@media (min-width: 601px) and (max-width: 960px) {
+/* Tablet & iPad Optimizations (601px - 1024px) */
+@media (min-width: 601px) and (max-width: 1024px) {
   .hero-scene {
-    padding: 120px 24px 70px;
+    padding: calc(120px + var(--sat)) max(24px, var(--sar)) max(70px, var(--sab)) max(24px, var(--sal));
+    min-height: 100vh;
+    min-height: 100svh;
+    min-height: 100dvh;
   }
   .hero-heading {
     font-size: clamp(2.6rem, 5.5vw, 3.8rem);
+  }
+  .story-main-card {
+    width: min(580px, 80vw);
+    height: clamp(380px, 52vh, 460px);
+  }
+  .companion-left .polaroid-inner {
+    width: 180px;
+  }
+  .companion-left .polaroid-photo {
+    height: 190px;
+  }
+  .companion-right .fineart-inner {
+    width: 190px;
+  }
+  .companion-right .fineart-photo {
+    height: 210px;
   }
 }
 
@@ -1053,8 +1079,10 @@
     display: none !important;
   }
   .hero-scene {
-    padding: 100px 16px 40px;
+    padding: calc(90px + var(--sat)) max(16px, var(--sar)) max(40px, var(--sab)) max(16px, var(--sal));
+    min-height: 100vh;
     min-height: 100svh;
+    min-height: 100dvh;
   }
   .hero-logo-img {
     height: 42px;

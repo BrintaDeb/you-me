@@ -2,6 +2,7 @@ import React from 'react';
 import { Play, Film, Sparkles } from 'lucide-react';
 import { featuredStories } from '../data/couplesData';
 import type { WeddingStory } from '../data/couplesData';
+import { usePublicSections } from '../hooks/usePublicSections';
 import './WeddingFilmsSection.css';
 
 interface WeddingFilmsSectionProps {
@@ -9,6 +10,23 @@ interface WeddingFilmsSectionProps {
 }
 
 export const WeddingFilmsSection: React.FC<WeddingFilmsSectionProps> = ({ onPlayFilm }) => {
+  // Dynamic film posters from API — if configured, override poster images
+  const { sections } = usePublicSections();
+  const dynamicFilmPosters = sections?.['films'] ?? [];
+
+  // Build effective film list: map dynamic video or poster based on media type
+  const effectiveStories = featuredStories.map((story, idx) => {
+    const dynamicItem = dynamicFilmPosters[idx];
+    if (!dynamicItem) return story;
+    const url = import.meta.env.DEV && dynamicItem.url.startsWith('/uploads/')
+      ? `http://localhost:8000${dynamicItem.url}`
+      : dynamicItem.url;
+
+    if (dynamicItem.type === 'video' || url.endsWith('.mp4') || url.endsWith('.webm')) {
+      return { ...story, videoUrl: url };
+    }
+    return { ...story, videoPoster: url, coverImage: url };
+  });
   return (
     <section className="films-section" id="films" aria-labelledby="films-heading">
       <div className="container-wide">
@@ -25,7 +43,7 @@ export const WeddingFilmsSection: React.FC<WeddingFilmsSectionProps> = ({ onPlay
         </div>
 
         <div className="films-grid">
-          {featuredStories.map(story => (
+          {effectiveStories.map(story => (
             <div
               key={story.id}
               className="film-card"

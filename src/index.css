@@ -280,13 +280,45 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   -webkit-tap-highlight-color: transparent;
 }
 
+/* Fast-touch response: eliminate 300ms double-tap delay across iOS & Android */
+a, button, input, select, textarea, [role="button"], label[for], summary {
+  touch-action: manipulation;
+}
+
+/* iOS Safari Input Auto-Zoom Fix: inputs < 16px trigger involuntary page zoom on touch */
+@media screen and (max-width: 1024px) {
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
 /* iOS momentum scrolling for scrollable containers */
 .portfolio-filters,
 .filmstrip-scroll-track,
 .album-thumbnail-track,
 .workbench-search-box,
+.collections-table-wrap,
+.timeline-items-wrapper,
+.sew-strip,
+.status-pills-row,
 [class*="scroll"] {
   -webkit-overflow-scrolling: touch;
+}
+
+/* Universal Hardware Safe Area Helper Utilities */
+.safe-pt {
+  padding-top: max(16px, var(--sat));
+}
+.safe-pb {
+  padding-bottom: max(16px, var(--sab));
+}
+.safe-pl {
+  padding-left: max(16px, var(--sal));
+}
+.safe-pr {
+  padding-right: max(16px, var(--sar));
 }
 
 @media (max-width: 768px) {
@@ -297,8 +329,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
     --nav-height: 64px; /* reduce nav height on mobile */
   }
   .container, .container-wide {
-    padding-left: 16px;
-    padding-right: 16px;
+    padding-left: max(16px, var(--sal));
+    padding-right: max(16px, var(--sar));
   }
   .btn {
     min-height: 46px;
@@ -315,15 +347,16 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
     --nav-height: 60px;
   }
   .container, .container-wide {
-    padding-left: 14px;
-    padding-right: 14px;
+    padding-left: max(14px, var(--sal));
+    padding-right: max(14px, var(--sar));
   }
 }
 
+/* Tablet & iPad Form Factors (Portrait: 768px - 834px, Landscape: 1024px) */
 @media (min-width: 769px) and (max-width: 1024px) {
   .container, .container-wide {
-    padding-left: 24px;
-    padding-right: 24px;
+    padding-left: max(24px, var(--sal));
+    padding-right: max(24px, var(--sar));
   }
 }
 

@@ -5,6 +5,8 @@ import type { WeddingStory } from '../data/couplesData';
 import { businessInfo } from '../data/businessData';
 import { useTheme } from '../context/useTheme';
 import { triggerHaptic } from '../utils/haptics';
+import { usePublicSections } from '../hooks/usePublicSections';
+import { SkeletonSlide } from './SkeletonSlide';
 import './CameraPathExperience.css';
 
 interface CameraPathExperienceProps {
@@ -66,6 +68,23 @@ export const CameraPathExperience: React.FC<CameraPathExperienceProps> = ({
   const [isMobile, setIsMobile] = useState(false);
   const touchStartX = useRef<number | null>(null);
   const touchStartY = useRef<number | null>(null);
+
+  // ── Dynamic media from API (falls back to HERO_SLIDES if unavailable) ──
+  const { sections, isLoading: sectionsLoading } = usePublicSections();
+  const heroSlides: HeroSlide[] = (() => {
+    const apiHero = sections?.['hero'];
+    if (apiHero && apiHero.length > 0) {
+      return apiHero.map(item => ({
+        image: import.meta.env.DEV && item.url.startsWith('/uploads/')
+          ? `http://localhost:8000${item.url}`
+          : item.url,
+        alt: item.alt_text || item.title || 'Wedding photography',
+        couple: item.title || '',
+        location: '',
+      }));
+    }
+    return HERO_SLIDES; // static fallback
+  })();
 
   useEffect(() => {
     const checkMobile = () => {
@@ -181,23 +200,27 @@ export const CameraPathExperience: React.FC<CameraPathExperienceProps> = ({
       {/* Scene 1 — Cinematic Opening */}
       <section className="hero-scene" aria-label="Hero Wedding Showcase">
         <div className="hero-background-wrapper" aria-hidden="true">
-          {HERO_SLIDES.map((slide, idx) => {
-            const isActive = currentSlide === idx;
-            return (
-              <div
-                key={slide.image}
-                className={`hero-slide-layer ${isActive ? 'active' : ''}`}
-              >
-                <img
-                  src={slide.image}
-                  alt={slide.alt}
-                  className="hero-slide-img"
-                  loading={idx === 0 ? 'eager' : 'lazy'}
-                  fetchPriority={idx === 0 ? 'high' : undefined}
-                />
-              </div>
-            );
-          })}
+          {sectionsLoading ? (
+            <SkeletonSlide />
+          ) : (
+            heroSlides.map((slide, idx) => {
+              const isActive = currentSlide === idx;
+              return (
+                <div
+                  key={slide.image}
+                  className={`hero-slide-layer ${isActive ? 'active' : ''}`}
+                >
+                  <img
+                    src={slide.image}
+                    alt={slide.alt}
+                    className="hero-slide-img"
+                    loading={idx === 0 ? 'eager' : 'lazy'}
+                    fetchPriority={idx === 0 ? 'high' : undefined}
+                  />
+                </div>
+              );
+            })
+          )}
           <div className="hero-overlay-gradient" />
         </div>
 

@@ -24,3 +24,26 @@ dist-ssr
 *.sw?
 
 .vercel
+
+# Python cache & virtual environments
+__pycache__/
+*.py[cod]
+*$py.class
+*.env
+.env
+.venv/
+venv/
+ENV/
+
+# Local SQLite Database & test uploads
+backend/studio.db
+*.db
+*.sqlite
+*.sqlite3
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# Large Archives & Hostinger Media Export
+*.zip
+*.tar.gz
+backend/hostinger_export/*.zip

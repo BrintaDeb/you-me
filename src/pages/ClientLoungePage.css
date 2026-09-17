@@ -1443,7 +1443,7 @@
 /* Real-Time Client Lounge Toast Notification */
 .client-lounge-toast {
   position: fixed;
-  bottom: 30px;
+  bottom: max(30px, calc(var(--sab) + 16px));
   left: 50%;
   transform: translateX(-50%);
   background: rgba(22, 12, 16, 0.96);
@@ -1541,13 +1541,16 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  height: 100vh;
+  height: 100svh;
+  height: 100dvh;
 }
 
 .slideshow-header-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 24px 32px;
+  padding: max(20px, var(--sat)) max(28px, var(--sar)) 16px max(28px, var(--sal));
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
   z-index: 2;
 }
@@ -1626,7 +1629,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 32px 30px;
+  padding: 20px max(28px, var(--sar)) max(24px, calc(var(--sab) + 12px)) max(28px, var(--sal));
   background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
   z-index: 2;
 }
@@ -1711,14 +1714,15 @@
   }
 }
 
-/* iPad (601–768px) explicit 2-column grid */
-@media (min-width: 601px) and (max-width: 768px) {
+/* iPad & Tablet Form Factors (601px - 1024px) explicit 2-column grid */
+@media (min-width: 601px) and (max-width: 1024px) {
   .lounge-photos-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
   }
   .lounge-auth-card {
     padding: 44px 36px 36px;
-    max-width: 460px;
+    max-width: 480px;
     width: 90vw;
   }
 }
@@ -1814,9 +1818,12 @@
     max-width: 100%;
   }
 
-  .slideshow-header-bar,
+  .slideshow-header-bar {
+    padding: max(14px, var(--sat)) max(16px, var(--sar)) 10px max(16px, var(--sal));
+  }
+
   .slideshow-footer-bar {
-    padding: 14px 16px;
+    padding: 10px max(16px, var(--sar)) max(16px, calc(var(--sab) + 8px)) max(16px, var(--sal));
   }
 
   .slideshow-caption {

@@ -31,6 +31,12 @@
   --container-max: 1320px;
   --container-wide: 1540px;
 
+  /* Hardware Safe-Area Insets (iOS Dynamic Island, Notch & Android Gestures) */
+  --sat: env(safe-area-inset-top, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --sal: env(safe-area-inset-left, 0px);
+  --sar: env(safe-area-inset-right, 0px);
+
   /* Ambient Lighting & Specular Glassmorphism Defaults */
   --specular-x: 50%;
   --specular-y: 50%;

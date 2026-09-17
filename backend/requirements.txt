@@ -1,0 +1,9 @@
+fastapi>=0.111.0
+uvicorn[standard]>=0.30.0
+sqlalchemy>=2.0.0
+python-multipart>=0.0.9
+python-jose[cryptography]>=3.3.0
+pydantic>=2.0.0
+aiofiles>=23.2.1
+pymysql>=1.1.0
+cryptography>=42.0.0

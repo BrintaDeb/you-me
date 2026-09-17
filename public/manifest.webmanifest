@@ -6,7 +6,7 @@
   "display": "standalone",
   "background_color": "#14100E",
   "theme_color": "#14100E",
-  "orientation": "portrait-primary",
+  "orientation": "any",
   "icons": [
     {
       "src": "/assets/brand/double_heart.png",

@@ -3,7 +3,10 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: var(--nav-height);
+  height: calc(var(--nav-height) + var(--sat));
+  padding-top: var(--sat);
+  padding-left: var(--sal);
+  padding-right: var(--sar);
   z-index: 1000;
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
@@ -16,8 +19,7 @@
   -webkit-backdrop-filter: blur(24px) saturate(1.6);
   border-bottom: 1px solid var(--border-subtle);
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
-  height: 70px;
-  padding-top: env(safe-area-inset-top, 0px);
+  height: calc(70px + var(--sat));
 }
 
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .navbar.scrolled {
@@ -131,10 +133,10 @@
 
 @media (max-width: 768px) {
   .navbar {
-    height: 64px;
+    height: calc(64px + var(--sat));
   }
   .navbar.scrolled {
-    height: 58px;
+    height: calc(58px + var(--sat));
   }
 }
 
@@ -143,8 +145,10 @@
     height: 30px;
   }
   .menu-toggle-btn {
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
   }
 }
 

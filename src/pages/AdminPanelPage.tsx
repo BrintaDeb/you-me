@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useId } from 'react';
+import React, { useState, useEffect, useRef, useId, useCallback, useMemo } from 'react';
 import {
   Lock,
   Upload,
@@ -25,12 +25,20 @@ import {
   Share2,
   Users,
   Flame,
-  BookOpen
+  BookOpen,
+  Images,
+  Search,
+  RefreshCw,
+  SlidersHorizontal,
+  Activity,
+  AlertTriangle
 } from 'lucide-react';
 import JSZip from 'jszip';
 import type { WeddingStory, WeddingImage } from '../data/couplesData';
 import { galleryStorage } from '../utils/galleryStorage';
 import { triggerHaptic } from '../utils/haptics';
+import { adminLogin } from '../services/mediaApi';
+import { SectionEditorWidget } from '../components/admin/SectionEditorWidget';
 import './AdminPanelPage.css';
 
 interface AdminPanelPageProps {
@@ -45,6 +53,21 @@ interface ExtractedFilePreview {
   name: string;
   url: string;
   size: string;
+}
+
+interface ToastNotice {
+  id: number;
+  message: string;
+  type: 'success' | 'info' | 'warning' | 'error';
+}
+
+interface ConfirmModalState {
+  isOpen: boolean;
+  title: string;
+  message: string;
+  confirmLabel: string;
+  onConfirm: () => void;
+  isDestructive?: boolean;
 }
 
 export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({
@@ -64,6 +87,7 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({
     setAuthError(false);
     sessionStorage.setItem('youandme_admin_authenticated', 'true');
     triggerHaptic('success');
+    acquireApiToken('admin77');
   };
 
   const handleCopyPasscode = () => {
@@ -76,7 +100,22 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({
   };
 
   // Active Admin Tab
-  const [activeTab, setActiveTab] = useState<'upload' | 'collections' | 'new-couple' | 'analytics'>('upload');
+  const [activeTab, setActiveTab] = useState<'upload' | 'collections' | 'new-couple' | 'analytics' | 'media-manager'>('upload');
+
+  // JWT token for the backend Media Manager API
+  const [apiToken, setApiToken] = useState<string>(() =>
+    sessionStorage.getItem('youandme_api_token') || ''
+  );
+
+  const acquireApiToken = useCallback(async (pc: string) => {
+    try {
+      const res = await adminLogin(pc);
+      setApiToken(res.token);
+      sessionStorage.setItem('youandme_api_token', res.token);
+    } catch {
+      // Backend may not be running — silent fallback, media tab will show connection error
+    }
+  }, []);
 
   // Stories and PINs state
   const [stories, setStories] = useState<WeddingStory[]>([]);
@@ -118,6 +157,184 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({
   const zipInputId = useId();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const coverFileInputRef = useRef<HTMLInputElement>(null);
+
+  // Lightweight Toast System
+  const [toasts, setToasts] = useState<ToastNotice[]>([]);
+  const showToast = useCallback((message: string, type: 'success' | 'info' | 'warning' | 'error' = 'success') => {
+    const id = Date.now() + Math.random();
+    setToasts(prev => [...prev, { id, message, type }]);
+    setTimeout(() => {
+      setToasts(prev => prev.filter(t => t.id !== id));
+    }, 3200);
+  }, []);
+
+  const removeToast = useCallback((id: number) => {
+    setToasts(prev => prev.filter(t => t.id !== id));
+  }, []);
+
+  // Backend Health and Telemetry State
+  const [backendStatus, setBackendStatus] = useState<'checking' | 'connected' | 'offline'>('checking');
+  const [backendLatency, setBackendLatency] = useState<number | null>(null);
+
+  const checkBackendHealth = useCallback(async () => {
+    setBackendStatus('checking');
+    const start = performance.now();
+    try {
+      const res = await fetch('http://localhost:8000/api/health', { signal: AbortSignal.timeout(2500) });
+      if (res.ok) {
+        const end = performance.now();
+        setBackendLatency(Math.round(end - start));
+        setBackendStatus('connected');
+      } else {
+        setBackendStatus('offline');
+        setBackendLatency(null);
+      }
+    } catch {
+      setBackendStatus('offline');
+      setBackendLatency(null);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      // oxlint-disable-next-line react/set-state-in-effect
+      checkBackendHealth();
+      const interval = setInterval(checkBackendHealth, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [isAuthenticated, checkBackendHealth]);
+
+  // Fast Collections Search, Filters & Sorting
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterCategory, setFilterCategory] = useState('all');
+  const [filterStatus, setFilterStatus] = useState<'all' | 'with-film' | 'no-film' | 'needs-proofing' | 'custom'>('all');
+  const [sortBy, setSortBy] = useState<'name' | 'photos-desc' | 'photos-asc'>('name');
+
+  // Inline Table PIN Edit State
+  const [inlineEditingStoryId, setInlineEditingStoryId] = useState<string | null>(null);
+  const [inlinePinValue, setInlinePinValue] = useState('');
+  const inlinePinInputRef = useRef<HTMLInputElement>(null);
+
+  const handleStartInlinePinEdit = (storyId: string, currentPin: string) => {
+    setInlineEditingStoryId(storyId);
+    setInlinePinValue(currentPin !== '—' ? currentPin : '');
+    setTimeout(() => {
+      inlinePinInputRef.current?.focus();
+      inlinePinInputRef.current?.select();
+    }, 60);
+  };
+
+  const handleSaveInlinePin = async (story: WeddingStory) => {
+    const cleaned = inlinePinValue.replace(/\D/g, '').slice(0, 6);
+    if (cleaned.length < 4) {
+      showToast('Client PIN must be 4 to 6 numeric digits', 'warning');
+      triggerHaptic('warning');
+      return;
+    }
+
+    await galleryStorage.savePinWithRole(cleaned, story.id, 'couple');
+    setPinsMap(prev => {
+      const next = { ...prev };
+      for (const [p, sId] of Object.entries(next)) {
+        if (sId === story.id) delete next[p];
+      }
+      next[cleaned] = story.id;
+      return next;
+    });
+
+    setInlineEditingStoryId(null);
+    triggerHaptic('success');
+    showToast(`Access PIN for "${story.title}" set to ${cleaned}`, 'success');
+  };
+
+  // Custom Confirmation Dialog Modal
+  const [confirmModal, setConfirmModal] = useState<ConfirmModalState | null>(null);
+
+  // Global Keyboard Shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null;
+      const isInput = target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT');
+
+      if (e.key === 'Escape') {
+        if (isManagePhotosModalOpen) setIsManagePhotosModalOpen(false);
+        if (isEditStoryModalOpen) setIsEditStoryModalOpen(false);
+        if (inlineEditingStoryId) setInlineEditingStoryId(null);
+        if (confirmModal) setConfirmModal(null);
+        return;
+      }
+
+      if (!isInput) {
+        if (e.key === '1') { setActiveTab('upload'); triggerHaptic('light'); }
+        else if (e.key === '2') { setActiveTab('collections'); triggerHaptic('light'); }
+        else if (e.key === '3') { setActiveTab('new-couple'); triggerHaptic('light'); }
+        else if (e.key === '4') { setActiveTab('analytics'); triggerHaptic('light'); }
+        else if (e.key === '5') {
+          setActiveTab('media-manager');
+          triggerHaptic('light');
+          if (!apiToken) acquireApiToken('admin77');
+        }
+        else if (e.key === '/' || ((e.ctrlKey || e.metaKey) && e.key === 'k')) {
+          e.preventDefault();
+          setActiveTab('collections');
+          setTimeout(() => {
+            const searchInput = document.getElementById('admin-collections-search');
+            searchInput?.focus();
+          }, 50);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isManagePhotosModalOpen, isEditStoryModalOpen, inlineEditingStoryId, confirmModal, apiToken, acquireApiToken]);
+
+  // Derived Filtered Stories
+  const filteredStories = useMemo(() => {
+    return stories.filter(story => {
+      const pinEntry = Object.entries(pinsMap).find(([, sId]) => sId === story.id);
+      const pin = pinEntry ? pinEntry[0] : (story.id === 'story-1' ? '2026' : '');
+
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase().trim();
+        const matches =
+          story.title.toLowerCase().includes(q) ||
+          story.slug.toLowerCase().includes(q) ||
+          story.category.toLowerCase().includes(q) ||
+          (story.location && story.location.toLowerCase().includes(q)) ||
+          pin.includes(q);
+        if (!matches) return false;
+      }
+
+      if (filterCategory !== 'all' && story.category !== filterCategory) {
+        return false;
+      }
+
+      if (filterStatus === 'with-film' && !story.videoUrl) return false;
+      if (filterStatus === 'no-film' && story.videoUrl) return false;
+      if (filterStatus === 'custom' && !story.id.startsWith('story-custom')) return false;
+      if (filterStatus === 'needs-proofing') {
+        let curated = 0;
+        try {
+          const saved = localStorage.getItem(`youandme_album_selection_${story.id}`);
+          if (saved) curated = JSON.parse(saved).length;
+        } catch {
+          curated = 0;
+        }
+        if (curated >= 80) return false;
+      }
+
+      return true;
+    }).sort((a, b) => {
+      if (sortBy === 'photos-desc') return b.images.length - a.images.length;
+      if (sortBy === 'photos-asc') return a.images.length - b.images.length;
+      return a.title.localeCompare(b.title);
+    });
+  }, [stories, pinsMap, searchQuery, filterCategory, filterStatus, sortBy]);
+
+  // Aggregate KPI Metrics
+  const totalPhotos = useMemo(() => stories.reduce((acc, s) => acc + s.images.length, 0), [stories]);
+  const activeFilmsCount = useMemo(() => stories.filter(s => Boolean(s.videoUrl)).length, [stories]);
 
   // Load sub-pins for all stories
   const loadSubPinsForStories = async (storyList: WeddingStory[]) => {
@@ -162,6 +379,7 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({
       navigator.clipboard.writeText(pin);
       setCopiedPinKey(key);
       triggerHaptic('light');
+      showToast(`PIN "${pin}" copied to clipboard`, 'info');
       setTimeout(() => setCopiedPinKey(null), 2000);
     }
   };
@@ -182,6 +400,7 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({
       navigator.clipboard.writeText(text);
       setCopiedInviteId(story.id);
       triggerHaptic('success');
+      showToast(`WhatsApp invitation message copied for ${story.title}`, 'success');
       setTimeout(() => setCopiedInviteId(null), 2500);
     }
   };
@@ -381,12 +600,21 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({
   };
 
   // Delete a specific photo from a story
-  const handleDeletePhotoFromStory = async (storyId: string, photoId: string) => {
-    if (window.confirm('Delete this photograph from the client collection?')) {
-      await galleryStorage.removeImageFromStory(storyId, photoId);
-      await refreshStories();
-      triggerHaptic('light');
-    }
+  const handleDeletePhotoFromStory = (storyId: string, photoId: string) => {
+    setConfirmModal({
+      isOpen: true,
+      title: 'Remove Photograph',
+      message: 'Are you sure you want to remove this photograph from the client collection?',
+      confirmLabel: 'Remove Photo',
+      isDestructive: true,
+      onConfirm: async () => {
+        await galleryStorage.removeImageFromStory(storyId, photoId);
+        await refreshStories();
+        triggerHaptic('light');
+        showToast('Photograph removed from collection', 'info');
+        setConfirmModal(null);
+      }
+    });
   };
 
   // Save edits to couple PIN and Video
@@ -407,6 +635,7 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({
     setIsEditStoryModalOpen(false);
     setEditingStory(null);
     triggerHaptic('success');
+    showToast(`Updated details for "${editingStory.title}"`, 'success');
   };
 
   // Handle Cover File Upload for new couple
@@ -417,15 +646,25 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({
     setNewCoupleCoverPreview(dataUrl);
     setNewCoupleCoverUrl(dataUrl);
     triggerHaptic('light');
+    showToast('Cover photo attached', 'info');
   };
 
   // Delete Couple Story
-  const handleDeleteStory = async (storyId: string, title: string) => {
-    if (window.confirm(`Are you sure you want to delete custom collection "${title}"?`)) {
-      await galleryStorage.deleteStory(storyId);
-      await refreshStories();
-      triggerHaptic('medium');
-    }
+  const handleDeleteStory = (storyId: string, title: string) => {
+    setConfirmModal({
+      isOpen: true,
+      title: 'Delete Custom Collection',
+      message: `Are you sure you want to permanently delete custom collection "${title}"? This action cannot be reversed.`,
+      confirmLabel: 'Delete Collection',
+      isDestructive: true,
+      onConfirm: async () => {
+        await galleryStorage.deleteStory(storyId);
+        await refreshStories();
+        triggerHaptic('medium');
+        showToast(`Collection "${title}" permanently deleted`, 'info');
+        setConfirmModal(null);
+      }
+    });
   };
 
   // Export Backup JSON
@@ -547,6 +786,27 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({
 
   return (
     <main className="admin-page dashboard-view" id="main-content">
+      {/* Floating Notifications Toast Container */}
+      <div className="admin-toast-container" aria-live="polite">
+        {toasts.map(t => (
+          <div key={t.id} className={`admin-toast-pill toast-${t.type}`}>
+            {t.type === 'success' && <CheckCircle2 size={15} className="toast-icon" />}
+            {t.type === 'info' && <Sparkles size={15} className="toast-icon" />}
+            {t.type === 'warning' && <AlertTriangle size={15} className="toast-icon" />}
+            {t.type === 'error' && <X size={15} className="toast-icon" />}
+            <span className="toast-text">{t.message}</span>
+            <button
+              type="button"
+              className="toast-close-btn"
+              onClick={() => removeToast(t.id)}
+              aria-label="Dismiss notification"
+            >
+              <X size={12} />
+            </button>
+          </div>
+        ))}
+      </div>
+
       {/* Admin Navigation Bar */}
       <header className="admin-navbar">
         <div className="container-wide admin-navbar-inner">
@@ -579,6 +839,84 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({
         </div>
       </header>
 
+      {/* Quick-Stats Command & Telemetry Bar */}
+      <section className="admin-command-bar">
+        <div className="container-wide">
+          <div className="admin-kpi-grid">
+            {/* KPI 1: Active Suites */}
+            <div className="admin-kpi-card" onClick={() => setActiveTab('collections')} title="Click to view all collections">
+              <div className="kpi-icon-wrap">
+                <Layers size={18} className="gold-icon" />
+              </div>
+              <div className="kpi-content">
+                <span className="kpi-label">Active Client Suites</span>
+                <div className="kpi-value-row">
+                  <span className="kpi-val">{stories.length}</span>
+                  <span className="kpi-sub">Portals Live</span>
+                </div>
+              </div>
+            </div>
+
+            {/* KPI 2: Total Catalogued Assets */}
+            <div className="admin-kpi-card" onClick={() => setActiveTab('upload')} title="Click to upload media">
+              <div className="kpi-icon-wrap">
+                <Images size={18} className="gold-icon" />
+              </div>
+              <div className="kpi-content">
+                <span className="kpi-label">Archival Photographs</span>
+                <div className="kpi-value-row">
+                  <span className="kpi-val">{totalPhotos}</span>
+                  <span className="kpi-sub">Frames Stored</span>
+                </div>
+              </div>
+            </div>
+
+            {/* KPI 3: Cinematic Wedding Films */}
+            <div className="admin-kpi-card" onClick={() => { setActiveTab('collections'); setFilterStatus('with-film'); }} title="Click to filter collections with films">
+              <div className="kpi-icon-wrap">
+                <Film size={18} className="gold-icon" />
+              </div>
+              <div className="kpi-content">
+                <span className="kpi-label">Cinematic Films</span>
+                <div className="kpi-value-row">
+                  <span className="kpi-val">{activeFilmsCount}</span>
+                  <span className="kpi-sub">Films Active</span>
+                </div>
+              </div>
+            </div>
+
+            {/* KPI 4: Backend Telemetry & Health */}
+            <div className="admin-kpi-card telemetry-card">
+              <div className="kpi-icon-wrap">
+                <Activity size={18} className={backendStatus === 'connected' ? 'gold-icon' : 'crimson-icon'} />
+              </div>
+              <div className="kpi-content">
+                <div className="telemetry-top">
+                  <span className="kpi-label">API Service Telemetry</span>
+                  <button
+                    type="button"
+                    className="btn-telemetry-ping"
+                    onClick={checkBackendHealth}
+                    title="Refresh backend ping"
+                  >
+                    <RefreshCw size={11} className={backendStatus === 'checking' ? 'spin' : ''} />
+                  </button>
+                </div>
+                <div className="kpi-value-row">
+                  <span className={`status-dot ${backendStatus}`} />
+                  <span className="kpi-status-text">
+                    {backendStatus === 'connected' ? 'FastAPI 8000 (Live)' : backendStatus === 'checking' ? 'Checking...' : 'Offline (Local IDB)'}
+                  </span>
+                  {backendLatency !== null && (
+                    <span className="kpi-latency-badge">{backendLatency}ms</span>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Tabs Header */}
       <div className="admin-tabs-section">
         <div className="container-wide">
@@ -592,6 +930,7 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({
               }}
             >
               <Upload size={16} /> Upload &amp; ZIP Archive Importer
+              <span className="tab-key-hint">1</span>
             </button>
 
             <button
@@ -603,6 +942,7 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({
               }}
             >
               <Layers size={16} /> Client Collections ({stories.length})
+              <span className="tab-key-hint">2</span>
             </button>
 
             <button
@@ -614,6 +954,7 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({
               }}
             >
               <Plus size={16} /> Create New Couple Suite
+              <span className="tab-key-hint">3</span>
             </button>
 
             <button
@@ -625,6 +966,20 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({
               }}
             >
               <BarChart3 size={16} /> Activity &amp; Album Heatmaps
+              <span className="tab-key-hint">4</span>
+            </button>
+
+            <button
+              type="button"
+              className={`admin-tab-btn ${activeTab === 'media-manager' ? 'active' : ''}`}
+              onClick={() => {
+                setActiveTab('media-manager');
+                triggerHaptic('light');
+                if (!apiToken) acquireApiToken('admin77');
+              }}
+            >
+              <Images size={16} /> Homepage Media Manager
+              <span className="tab-key-hint">5</span>
             </button>
           </div>
         </div>
@@ -855,17 +1210,116 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({
             <div className="collections-table-card">
               <div className="collections-header">
                 <div>
-                  <h3>Active Client Suites</h3>
-                  <p>Manage couple portals, review assigned PINs, and test client experience.</p>
+                  <div className="collections-title-row">
+                    <h3>Active Client Suites</h3>
+                    <span className="collections-count-badge">
+                      {filteredStories.length} of {stories.length} Loaded
+                    </span>
+                  </div>
+                  <p>Manage couple portals, review assigned PINs, and test client experience in real time.</p>
                 </div>
 
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={() => setActiveTab('new-couple')}
-                >
-                  <Plus size={16} /> New Couple Suite
-                </button>
+                <div className="collections-header-actions">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={() => setActiveTab('new-couple')}
+                  >
+                    <Plus size={16} /> New Couple Suite
+                  </button>
+                </div>
+              </div>
+
+              {/* Real-time Search & Filter Command Toolbar */}
+              <div className="collections-toolbar">
+                <div className="collections-search-box">
+                  <Search size={16} className="search-icon" />
+                  <input
+                    id="admin-collections-search"
+                    type="text"
+                    value={searchQuery}
+                    onChange={e => setSearchQuery(e.target.value)}
+                    placeholder="Search by couple name, slug, location, category, or PIN... (Press / to focus)"
+                    className="collections-search-input"
+                  />
+                  {searchQuery ? (
+                    <button
+                      type="button"
+                      className="search-clear-btn"
+                      onClick={() => setSearchQuery('')}
+                      title="Clear search"
+                    >
+                      <X size={14} />
+                    </button>
+                  ) : (
+                    <span className="search-key-badge">/</span>
+                  )}
+                </div>
+
+                {/* Filter and Sort Group */}
+                <div className="collections-filter-group">
+                  {/* Category Filter */}
+                  <div className="filter-select-wrap">
+                    <SlidersHorizontal size={13} className="filter-icon" />
+                    <select
+                      value={filterCategory}
+                      onChange={e => setFilterCategory(e.target.value)}
+                      className="collections-filter-select"
+                      aria-label="Filter by ceremony style"
+                    >
+                      <option value="all">All Styles</option>
+                      <option value="Bengali Wedding">Bengali Wedding</option>
+                      <option value="Destination Wedding">Destination Wedding</option>
+                      <option value="Heritage Couple">Heritage Couple</option>
+                      <option value="Traditional Mandap">Traditional Mandap</option>
+                      <option value="Intimate Wedding">Intimate Wedding</option>
+                    </select>
+                  </div>
+
+                  {/* Status Filter Pills */}
+                  <div className="status-pills-row">
+                    <button
+                      type="button"
+                      className={`status-pill-btn ${filterStatus === 'all' ? 'active' : ''}`}
+                      onClick={() => setFilterStatus('all')}
+                    >
+                      All
+                    </button>
+                    <button
+                      type="button"
+                      className={`status-pill-btn ${filterStatus === 'with-film' ? 'active' : ''}`}
+                      onClick={() => setFilterStatus('with-film')}
+                    >
+                      <Film size={12} /> With Film
+                    </button>
+                    <button
+                      type="button"
+                      className={`status-pill-btn ${filterStatus === 'needs-proofing' ? 'active' : ''}`}
+                      onClick={() => setFilterStatus('needs-proofing')}
+                    >
+                      <BookOpen size={12} /> In Proofing
+                    </button>
+                    <button
+                      type="button"
+                      className={`status-pill-btn ${filterStatus === 'custom' ? 'active' : ''}`}
+                      onClick={() => setFilterStatus('custom')}
+                    >
+                      Custom Suites
+                    </button>
+                  </div>
+
+                  {/* Sort Selector */}
+                  <select
+                    value={sortBy}
+                    onChange={e => setSortBy(e.target.value as 'name' | 'photos-desc' | 'photos-asc')}
+                    className="collections-filter-select sort-select"
+                    aria-label="Sort collections"
+                  >
+                    <option value="name">Sort: Name (A-Z)</option>
+                    <option value="photos-desc">Sort: Most Photos</option>
+                    <option value="photos-asc">Sort: Fewest Photos</option>
+                  </select>
+                </div>
               </div>
 
               <div className="collections-table-wrap">
@@ -875,45 +1329,123 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({
                       <th>Cover</th>
                       <th>Couple Title</th>
                       <th>Category</th>
-                      <th>Client Access PIN</th>
+                      <th>Client Access PIN (Click to Edit)</th>
                       <th>Photographs</th>
                       <th>Film</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {stories.map(story => {
-                      // Find PIN mapped to this story
+                    {filteredStories.map(story => {
                       const pinEntry = Object.entries(pinsMap).find(([, sId]) => sId === story.id);
                       const currentPin = pinEntry ? pinEntry[0] : (story.id === 'story-1' ? '2026' : '—');
                       const isCustom = story.id.startsWith('story-custom');
+                      const isInlineEditing = inlineEditingStoryId === story.id;
 
                       return (
-                        <tr key={story.id}>
+                        <tr key={story.id} className="collection-table-row">
                           <td>
-                            <img src={story.coverImage} alt={story.title} className="table-thumb" />
+                            <div className="table-thumb-wrap">
+                              <img src={story.coverImage} alt={story.title} className="table-thumb" loading="lazy" />
+                            </div>
                           </td>
                           <td>
-                            <strong>{story.title}</strong>
-                            <span className="table-slug">/portfolio/{story.slug}</span>
+                            <div className="table-couple-meta">
+                              <strong className="table-couple-title">{story.title}</strong>
+                              <span className="table-slug">/portfolio/{story.slug}</span>
+                              {story.location && <span className="table-location-text">{story.location}</span>}
+                            </div>
                           </td>
                           <td>
                             <span className="category-pill">{story.category}</span>
                           </td>
                           <td>
-                            <div className="pin-badge">
-                              <Key size={13} className="gold-icon" />
-                              <code>{currentPin}</code>
-                            </div>
+                            {isInlineEditing ? (
+                              <div className="inline-pin-editor-box" onClick={e => e.stopPropagation()}>
+                                <input
+                                  ref={inlinePinInputRef}
+                                  type="text"
+                                  value={inlinePinValue}
+                                  onChange={e => setInlinePinValue(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                                  onKeyDown={e => {
+                                    if (e.key === 'Enter') handleSaveInlinePin(story);
+                                    if (e.key === 'Escape') setInlineEditingStoryId(null);
+                                  }}
+                                  placeholder="PIN"
+                                  className="inline-pin-input-field"
+                                  maxLength={6}
+                                />
+                                <button
+                                  type="button"
+                                  className="inline-pin-btn save"
+                                  onClick={() => handleSaveInlinePin(story)}
+                                  title="Save PIN"
+                                >
+                                  <Check size={12} />
+                                </button>
+                                <button
+                                  type="button"
+                                  className="inline-pin-btn cancel"
+                                  onClick={() => setInlineEditingStoryId(null)}
+                                  title="Cancel"
+                                >
+                                  <X size={12} />
+                                </button>
+                              </div>
+                            ) : (
+                              <div
+                                className="pin-badge interactive-pin-badge"
+                                onClick={() => handleStartInlinePinEdit(story.id, currentPin)}
+                                title="Click to edit PIN inline"
+                              >
+                                <Key size={13} className="gold-icon" />
+                                <code>{currentPin}</code>
+                                <Edit3 size={11} className="pin-edit-hint" />
+                              </div>
+                            )}
                           </td>
                           <td>
-                            <strong>{story.images.length}</strong> frames
+                            <button
+                              type="button"
+                              className="frame-count-badge"
+                              onClick={() => {
+                                setSelectedStoryId(story.id);
+                                setIsManagePhotosModalOpen(true);
+                                triggerHaptic('light');
+                              }}
+                              title="Click to manage photographs"
+                            >
+                              <strong>{story.images.length}</strong> frames
+                            </button>
                           </td>
                           <td>
                             {story.videoUrl ? (
-                              <span className="film-active-tag"><Film size={13} /> Active</span>
+                              <span
+                                className="film-active-tag clickable"
+                                onClick={() => {
+                                  setEditingStory(story);
+                                  setEditPinInput(currentPin !== '—' ? currentPin : '');
+                                  setEditVideoUrlInput(story.videoUrl || '');
+                                  setIsEditStoryModalOpen(true);
+                                }}
+                                title="Click to view or edit video URL"
+                              >
+                                <Film size={13} /> Active
+                              </span>
                             ) : (
-                              <span className="dim">None</span>
+                              <button
+                                type="button"
+                                className="btn-add-film-quick"
+                                onClick={() => {
+                                  setEditingStory(story);
+                                  setEditPinInput(currentPin !== '—' ? currentPin : '');
+                                  setEditVideoUrlInput('');
+                                  setIsEditStoryModalOpen(true);
+                                }}
+                                title="Attach wedding film URL"
+                              >
+                                <Plus size={11} /> Film
+                              </button>
                             )}
                           </td>
                           <td>
@@ -943,23 +1475,20 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({
                                   triggerHaptic('light');
                                 }}
                               >
-                                <Edit3 size={13} /> Edit PIN / Film
+                                <Edit3 size={13} /> Edit
                               </button>
 
-                              {story.images.length > 0 && (
-                                <button
-                                  type="button"
-                                  className="action-btn-sm"
-                                  title="Manage Assigned Photos"
-                                  onClick={() => {
-                                    setSelectedStoryId(story.id);
-                                    setIsManagePhotosModalOpen(true);
-                                    triggerHaptic('light');
-                                  }}
-                                >
-                                  <Eye size={13} /> Photos ({story.images.length})
-                                </button>
-                              )}
+                              <button
+                                type="button"
+                                className="action-btn-sm"
+                                title="Copy WhatsApp Invitation"
+                                onClick={() => {
+                                  const subPins = subPinsMap[story.id] || { couplePin: currentPin !== '—' ? currentPin : '2026', familyPin: '2027', guestPin: '2028' };
+                                  handleCopyWhatsAppInvite(story, subPins);
+                                }}
+                              >
+                                <Share2 size={13} />
+                              </button>
 
                               <button
                                 type="button"
@@ -991,6 +1520,29 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({
                         </tr>
                       );
                     })}
+
+                    {filteredStories.length === 0 && (
+                      <tr>
+                        <td colSpan={7}>
+                          <div className="table-empty-search-state">
+                            <Search size={32} className="dim" />
+                            <h4>No matching collections found</h4>
+                            <p>No client suites match your current search query or filter criteria.</p>
+                            <button
+                              type="button"
+                              className="btn btn-outline btn-reset-filters"
+                              onClick={() => {
+                                setSearchQuery('');
+                                setFilterCategory('all');
+                                setFilterStatus('all');
+                              }}
+                            >
+                              Reset All Filters
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -1332,6 +1884,55 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({
         </section>
       )}
 
+      {/* TAB 5: HOMEPAGE MEDIA MANAGER */}
+      {activeTab === 'media-manager' && (
+        <section className="admin-tab-content">
+          <div className="container-wide">
+            <div className="media-manager-header">
+              <div className="eyebrow"><Images size={14} /> Dynamic Homepage Media</div>
+              <h3 className="media-manager-title">Homepage Section Media Manager</h3>
+              <p className="media-manager-desc">
+                Assign and reorder the media shown on the live public homepage for each section.
+                Upload files via the <strong>Upload &amp; ZIP Importer</strong> tab first, then
+                drag-and-drop them into the desired order below and click Save.
+              </p>
+              {!apiToken && (
+                <div className="media-manager-notice">
+                  <span>⚠️ Backend not connected. Start the FastAPI server on port 8000 to manage media.</span>
+                  <button type="button" className="btn btn-outline" style={{ fontSize: '0.78rem', padding: '6px 14px' }}
+                    onClick={() => acquireApiToken('admin77')}>
+                    Retry Connection
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {apiToken && (
+              <div className="media-manager-widgets">
+                <SectionEditorWidget
+                  sectionId="hero"
+                  sectionLabel="Hero Slideshow"
+                  description="Background images cycling in the opening cinematic hero section."
+                  token={apiToken}
+                />
+                <SectionEditorWidget
+                  sectionId="storyboard"
+                  sectionLabel="Storyboard / Portfolio Strip"
+                  description="Editor's selection strip displayed above the portfolio grid."
+                  token={apiToken}
+                />
+                <SectionEditorWidget
+                  sectionId="films"
+                  sectionLabel="Wedding Films Posters"
+                  description="Poster images for the cinematic films section."
+                  token={apiToken}
+                />
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
       {/* MODAL 1: MANAGE ASSIGNED PHOTOS FOR ACTIVE STORY */}
       {isManagePhotosModalOpen && activeStory && (
         <div className="admin-modal-overlay" onClick={() => setIsManagePhotosModalOpen(false)}>
@@ -1486,6 +2087,35 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* CUSTOM CONFIRMATION DIALOG MODAL */}
+      {confirmModal && confirmModal.isOpen && (
+        <div className="admin-modal-overlay" onClick={() => setConfirmModal(null)}>
+          <div className="admin-modal-card modal-confirm" onClick={e => e.stopPropagation()}>
+            <div className="modal-confirm-icon-wrap">
+              <AlertTriangle size={28} className={confirmModal.isDestructive ? 'crimson-icon' : 'gold-icon'} />
+            </div>
+            <h3 className="modal-confirm-title">{confirmModal.title}</h3>
+            <p className="modal-confirm-msg">{confirmModal.message}</p>
+            <div className="modal-confirm-actions">
+              <button
+                type="button"
+                className="btn btn-outline"
+                onClick={() => setConfirmModal(null)}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className={confirmModal.isDestructive ? 'btn btn-danger' : 'btn btn-primary'}
+                onClick={confirmModal.onConfirm}
+              >
+                {confirmModal.confirmLabel}
+              </button>
+            </div>
           </div>
         </div>
       )}
