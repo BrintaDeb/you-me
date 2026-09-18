@@ -24,31 +24,31 @@ interface HeroSlide {
 
 const HERO_SLIDES: HeroSlide[] = [
   {
-    image: '/assets/posters/paraj_mrinmoyee.jpg',
+    image: 'https://static.wixstatic.com/media/62230b_019e6537a70840b5b7ed80f4e77bad72~mv2.jpg',
     alt: 'Paraj & Mrinmoyee romantic wedding celebration',
     couple: 'Paraj & Mrinmoyee',
     location: 'Calcutta Classical'
   },
   {
-    image: '/assets/posters/urmi_jasraj.jpg',
+    image: 'https://static.wixstatic.com/media/62230b_669876f3c423429a86a5811c0658ecb1~mv2.jpg',
     alt: 'Jasraj & Urmi royal evening pheras celebration',
     couple: 'Jasraj & Urmi',
     location: 'Rajasthan Royal Heritage'
   },
   {
-    image: '/assets/posters/avik_binita.jpg',
+    image: 'https://static.wixstatic.com/media/62230b_7f2c09302c3b404eacc7c85a95aff72e~mv2.jpg',
     alt: 'Avik & Binita joyful day ceremony',
     couple: 'Avik & Binita',
     location: 'Kolkata Celebration'
   },
   {
-    image: '/assets/posters/ankita_subhadeep.jpg',
+    image: 'https://static.wixstatic.com/media/62230b_ea8e74edd8f04eb7920b4d2b3b425611~mv2.jpg',
     alt: 'Subhadeep & Ankita sacred rituals and vows',
     couple: 'Subhadeep & Ankita',
     location: 'Traditional Bengali Wedding'
   },
   {
-    image: '/assets/posters/suchi_hira.jpg',
+    image: 'https://static.wixstatic.com/media/62230b_85222df8c6dc4d72931d5f6693fbbafe~mv2.jpg',
     alt: 'Hira & Suchi timeless wedding reception',
     couple: 'Hira & Suchi',
     location: 'Grand Heritage Palace'
@@ -70,21 +70,32 @@ export const CameraPathExperience: React.FC<CameraPathExperienceProps> = ({
   const touchStartX = useRef<number | null>(null);
   const touchStartY = useRef<number | null>(null);
 
-  // ── Dynamic media from API (falls back to HERO_SLIDES if unavailable) ──
+  // ── Dynamic media from API (strictly pure images, excluding video posters & screenshots) ──
   const { sections, isLoading: sectionsLoading } = usePublicSections();
   const heroSlides: HeroSlide[] = (() => {
     const apiHero = sections?.['hero'];
     if (apiHero && apiHero.length > 0) {
-      return apiHero.map(item => ({
-        image: import.meta.env.DEV && item.url.startsWith('/uploads/')
-          ? `http://localhost:8000${item.url}`
-          : item.url,
-        alt: item.alt_text || item.title || 'Wedding photography',
-        couple: item.title || '',
-        location: '',
-      }));
+      const pureImages = apiHero.filter(item => {
+        if (!item || !item.url) return false;
+        if (item.type !== 'image') return false;
+        if (/\.(mp4|webm|ogg|mov)$/i.test(item.url)) return false;
+        // Strictly exclude video posters and screenshots
+        if (item.url.includes('/posters/') || item.url.toLowerCase().includes('screenshot')) return false;
+        return true;
+      });
+
+      if (pureImages.length > 0) {
+        return pureImages.map(item => ({
+          image: import.meta.env.DEV && item.url.startsWith('/uploads/')
+            ? `http://localhost:8000${item.url}`
+            : item.url,
+          alt: item.alt_text || item.title || 'Wedding photography',
+          couple: item.title || '',
+          location: '',
+        }));
+      }
     }
-    return HERO_SLIDES; // static fallback
+    return HERO_SLIDES; // static fallback of authentic photography
   })();
 
   useEffect(() => {
@@ -105,12 +116,13 @@ export const CameraPathExperience: React.FC<CameraPathExperienceProps> = ({
 
   // Auto-advance hero background images in intervals of 5 seconds
   useEffect(() => {
+    if (!heroSlides.length) return;
     const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
+      setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
     }, 5000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [heroSlides.length]);
 
   useEffect(() => {
     let animFrame: number;

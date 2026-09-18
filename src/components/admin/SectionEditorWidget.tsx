@@ -18,6 +18,8 @@ export interface SectionEditorWidgetProps {
   token: string;
   /** Initial media from the last DB fetch (may be empty) */
   initialMedia?: MediaItem[];
+  /** Allowed media type constraint (e.g. 'image' for hero) */
+  allowedType?: 'image' | 'video';
 }
 
 type SaveState = 'idle' | 'saving' | 'success' | 'error';
@@ -28,6 +30,7 @@ export const SectionEditorWidget: React.FC<SectionEditorWidgetProps> = ({
   description,
   token,
   initialMedia = [],
+  allowedType,
 }) => {
   const [assignedMedia, setAssignedMedia] = useState<MediaItem[]>(initialMedia);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -216,6 +219,8 @@ export const SectionEditorWidget: React.FC<SectionEditorWidgetProps> = ({
       {isModalOpen && (
         <MediaPoolModal
           token={token}
+          sectionId={sectionId}
+          allowedType={allowedType}
           preSelectedIds={assignedMedia.map(m => m.id)}
           onConfirm={handleModalConfirm}
           onClose={() => setIsModalOpen(false)}

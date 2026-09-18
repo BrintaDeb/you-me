@@ -7,6 +7,10 @@ import './MediaPoolModal.css';
 interface MediaPoolModalProps {
   /** Bearer token for the admin API */
   token: string;
+  /** Section ID being configured, e.g. "hero" */
+  sectionId?: string;
+  /** Allowed media type */
+  allowedType?: 'image' | 'video';
   /** IDs already selected in this section — shown as pre-checked */
   preSelectedIds?: string[];
   /** Called when admin confirms their selection */
@@ -18,16 +22,20 @@ type FilterType = 'all' | 'image' | 'video';
 
 export const MediaPoolModal: React.FC<MediaPoolModalProps> = ({
   token,
+  sectionId,
+  allowedType,
   preSelectedIds = [],
   onConfirm,
   onClose,
 }) => {
   const modalTitleId = useId();
+  const isHeroSection = sectionId === 'hero';
+  const effectiveAllowedType = allowedType || (isHeroSection ? 'image' : undefined);
 
   const [items, setItems] = useState<MediaItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [filterType, setFilterType] = useState<FilterType>('all');
+  const [filterType, setFilterType] = useState<FilterType>(effectiveAllowedType || 'all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set(preSelectedIds));
 
@@ -42,14 +50,25 @@ export const MediaPoolModal: React.FC<MediaPoolModalProps> = ({
     // oxlint-disable-next-line react/set-state-in-effect
     setIsLoading(true);
     setError(null);
+    const activeType = effectiveAllowedType || (filterType === 'all' ? undefined : filterType);
     fetchAllMedia({
       token,
-      type: filterType === 'all' ? undefined : filterType,
+      type: activeType,
       search: searchQuery || undefined,
       page_size: 200,
     })
       .then(res => {
-        if (active) setItems(res.items);
+        if (!active) return;
+        let filtered = res.items;
+        if (isHeroSection) {
+          filtered = filtered.filter(item => {
+            if (item.type !== 'image') return false;
+            if (/\.(mp4|webm|ogg|mov)$/i.test(item.url)) return false;
+            if (item.url.includes('/posters/') || item.url.toLowerCase().includes('screenshot')) return false;
+            return true;
+          });
+        }
+        setItems(filtered);
       })
       .catch(err => {
         if (active) setError(err instanceof Error ? err.message : 'Failed to load media library');
@@ -60,7 +79,7 @@ export const MediaPoolModal: React.FC<MediaPoolModalProps> = ({
     return () => {
       active = false;
     };
-  }, [token, filterType, searchQuery, refreshKey]);
+  }, [token, filterType, searchQuery, refreshKey, effectiveAllowedType, isHeroSection]);
 
   // Close on backdrop click
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -138,21 +157,29 @@ export const MediaPoolModal: React.FC<MediaPoolModalProps> = ({
               aria-label="Search media library"
             />
           </div>
-          <div className="mpm-filter-pills" role="group" aria-label="Filter by type">
-            {(['all', 'image', 'video'] as FilterType[]).map(f => (
-              <button
-                key={f}
-                type="button"
-                className={`mpm-filter-pill ${filterType === f ? 'active' : ''}`}
-                onClick={() => setFilterType(f)}
-                aria-pressed={filterType === f}
-              >
-                {f === 'image' && <ImageIcon size={12} />}
-                {f === 'video' && <Film size={12} />}
-                {f.charAt(0).toUpperCase() + f.slice(1)}
-              </button>
-            ))}
-          </div>
+          {!effectiveAllowedType ? (
+            <div className="mpm-filter-pills" role="group" aria-label="Filter by type">
+              {(['all', 'image', 'video'] as FilterType[]).map(f => (
+                <button
+                  key={f}
+                  type="button"
+                  className={`mpm-filter-pill ${filterType === f ? 'active' : ''}`}
+                  onClick={() => setFilterType(f)}
+                  aria-pressed={filterType === f}
+                >
+                  {f === 'image' && <ImageIcon size={12} />}
+                  {f === 'video' && <Film size={12} />}
+                  {f.charAt(0).toUpperCase() + f.slice(1)}
+                </button>
+              ))}
+            </div>
+          ) : (
+            <div className="mpm-filter-pills" role="status">
+              <span className="mpm-filter-pill active" style={{ cursor: 'default' }}>
+                <ImageIcon size={12} /> Pure Photographs Only
+              </span>
+            </div>
+          )}
           <button type="button" className="mpm-refresh-btn" onClick={refreshMedia} aria-label="Refresh library">
             <RefreshCw size={14} />
           </button>

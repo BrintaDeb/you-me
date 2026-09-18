@@ -171,6 +171,31 @@ def migrate_media_files(db):
                 db.add(item)
                 registered_count += 1
 
+    # 5. Featured Master Wedding Photographs (Pure Photography for Hero & Storyboard)
+    featured_photos = [
+        ("media-photo-paraj", "https://static.wixstatic.com/media/62230b_019e6537a70840b5b7ed80f4e77bad72~mv2.jpg", "Paraj & Mrinmoyee — Calcutta Classical", "Paraj & Mrinmoyee documentary wedding photography frame", "paraj_mrinmoyee_hero.jpg"),
+        ("media-photo-urmi", "https://static.wixstatic.com/media/62230b_669876f3c423429a86a5811c0658ecb1~mv2.jpg", "Jasraj & Urmi — Ceremonial Splendor", "Jasraj & Urmi royal celebration photography frame", "urmi_jasraj_hero.jpg"),
+        ("media-photo-avik", "https://static.wixstatic.com/media/62230b_7f2c09302c3b404eacc7c85a95aff72e~mv2.jpg", "Avik & Binita — Joyful Day Ceremony", "Avik & Binita wedding photography frame", "avik_binita_hero.jpg"),
+        ("media-photo-ankita", "https://static.wixstatic.com/media/62230b_ea8e74edd8f04eb7920b4d2b3b425611~mv2.jpg", "Subhadeep & Ankita — Sacred Bengali Rituals", "Subhadeep & Ankita wedding rituals frame", "ankita_subhadeep_hero.jpg"),
+        ("media-photo-suchi", "https://static.wixstatic.com/media/62230b_85222df8c6dc4d72931d5f6693fbbafe~mv2.jpg", "Hira & Suchi — Grand Heritage Palace", "Hira & Suchi timeless wedding reception frame", "suchi_hira_hero.jpg"),
+    ]
+    for pid, purl, ptitle, palt, pfname in featured_photos:
+        existing = db.query(MediaLibrary).filter(MediaLibrary.id == pid).first()
+        if not existing:
+            item = MediaLibrary(
+                id=pid,
+                url=purl,
+                filename=pfname,
+                type="image",
+                title=ptitle,
+                alt_text=palt,
+                file_size=450000,
+                mime_type="image/jpeg",
+                upload_date=_now(),
+            )
+            db.add(item)
+            registered_count += 1
+
     db.commit()
     print(f"✅ Media migration: {copied_count} files copied, {registered_count} newly registered in MediaLibrary.")
 
@@ -315,16 +340,22 @@ def verify_default_sections(db):
     media_items = db.query(MediaLibrary).all()
     media_ids = [m.id for m in media_items]
 
-    # Find poster and video media IDs
+    # Separate pure photographs, posters, and videos
+    pure_photos = [
+        m for m in media_items
+        if m.type == "image"
+        and not any(p in m.url.lower() for p in ["/posters/", "screenshot", "/brand/", "/team/"])
+    ]
+    pure_photo_ids = [m.id for m in pure_photos]
     poster_ids = [m.id for m in media_items if m.url.startswith("/media/posters/") or m.url.startswith("/assets/posters/")]
     video_ids = [m.id for m in media_items if m.type == "video"]
     image_ids = [m.id for m in media_items if m.type == "image"]
 
     defaults = {
-        "hero": poster_ids[:5] if poster_ids else image_ids[:5],
-        "storyboard": image_ids[:5],
-        "films": video_ids[:4],
-        "gallery": image_ids[:8],
+        "hero": pure_photo_ids[:5] if pure_photo_ids else image_ids[:5],
+        "storyboard": pure_photo_ids[:5] if pure_photo_ids else image_ids[:5],
+        "films": poster_ids[:4] if poster_ids else video_ids[:4],
+        "gallery": pure_photo_ids[:8] if pure_photo_ids else image_ids[:8],
     }
 
     for sid, default_ids in defaults.items():

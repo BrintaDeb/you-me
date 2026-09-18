@@ -1912,8 +1912,9 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({
                 <SectionEditorWidget
                   sectionId="hero"
                   sectionLabel="Hero Slideshow"
-                  description="Background images cycling in the opening cinematic hero section."
+                  description="Background images cycling in the opening cinematic hero section (pure wedding photography only)."
                   token={apiToken}
+                  allowedType="image"
                 />
                 <SectionEditorWidget
                   sectionId="storyboard"
