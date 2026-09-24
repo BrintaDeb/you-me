@@ -19,7 +19,7 @@ html {
   text-rendering: optimizeLegibility;
   font-synthesis: none;
   font-feature-settings: "cv02", "cv03", "cv04", "cv11", "kern" 1;
-  overflow-x: hidden;
+  overflow-x: clip;
   width: 100%;
   max-width: 100%;
 }
@@ -53,7 +53,7 @@ body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
   line-height: 1.6;
-  overflow-x: hidden;
+  overflow-x: clip;
   width: 100%;
   max-width: 100%;
   overscroll-behavior-y: auto;   /* natural momentum scroll on mobile */
@@ -72,7 +72,7 @@ body {
   display: flex;
   flex-direction: column;
   position: relative;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 /* ==========================================================================

@@ -2,8 +2,8 @@
   position: relative;
   width: 104%;
   margin-left: -2%;
-  margin-top: clamp(2rem, 4vw, 3.5rem);
-  margin-bottom: clamp(2rem, 4vw, 3.5rem);
+  margin-top: clamp(1.25rem, 2.5vw, 2.25rem);
+  margin-bottom: clamp(1.25rem, 2.5vw, 2.25rem);
   background-color: var(--gm-wine, #8A1212);
   color: var(--gm-cream, #FFF6E5);
   padding: 12px 0;

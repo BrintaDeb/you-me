@@ -3,7 +3,8 @@
   position: relative;
   width: 100%;
   background-color: var(--bg-primary);
-  overflow: clip;
+  overflow-x: clip;
+  overflow-y: visible;
 }
 
 /* Scene 1 — Cinematic Opening */

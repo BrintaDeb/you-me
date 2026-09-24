@@ -2,7 +2,7 @@
 
 .about-section {
   position: relative;
-  padding: clamp(4.5rem, 8vw, 7.5rem) 0;
+  padding: clamp(3rem, 5vw, 4.5rem) 0 clamp(4.5rem, 8vw, 7.5rem);
   background-color: var(--bg-primary);
   color: var(--text-primary);
   overflow: hidden;
