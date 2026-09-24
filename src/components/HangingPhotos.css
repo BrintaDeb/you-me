@@ -1,0 +1,296 @@
+/* ==========================================================================
+   HANGING PHOTOS GALLERY WALL — HangingPhotos.css
+   Style inspired by goldenmoment.in/gallery:
+   - Floating polaroid photo frames pinned/hanging around the top header
+   - Subtle twine hanging threads & golden metallic clips
+   - Realistic physical drop-shadows & organic tilt angles
+   - Gentle natural pendulum sway animation & interactive hover lifts
+   ========================================================================== */
+
+.hanging-photos-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: clamp(380px, 45vh, 480px);
+  pointer-events: none;
+  z-index: 2;
+  overflow: visible;
+}
+
+.hanging-photo-node {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: auto;
+  will-change: transform;
+  transform-origin: top center;
+  animation: hangGentleSway var(--hang-duration, 7s) ease-in-out infinite alternate;
+  animation-delay: var(--hang-delay, 0s);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), z-index 0.2s ease;
+}
+
+@keyframes hangGentleSway {
+  0% {
+    transform: rotate(calc(var(--hang-rotate, 0deg) - 1.4deg)) translateY(0px);
+  }
+  50% {
+    transform: rotate(var(--hang-rotate, 0deg)) translateY(-4px);
+  }
+  100% {
+    transform: rotate(calc(var(--hang-rotate, 0deg) + 1.4deg)) translateY(2px);
+  }
+}
+
+/* ── Positioning across the section (Elevated framing without showreel overlap) ── */
+
+/* Upper Left Corner */
+.hang-pos-top-left {
+  left: 2%;
+  top: 1.5%;
+  width: clamp(140px, 13.5vw, 215px);
+  z-index: 3;
+}
+
+/* Flanking Left */
+.hang-pos-flank-left {
+  left: 12%;
+  top: 5%;
+  width: clamp(125px, 11.5vw, 175px);
+  z-index: 2;
+}
+
+/* Upper Right Corner */
+.hang-pos-top-right {
+  right: 2%;
+  top: 1.2%;
+  width: clamp(145px, 14vw, 220px);
+  z-index: 3;
+}
+
+/* Flanking Right */
+.hang-pos-flank-right {
+  right: 12%;
+  top: 5.5%;
+  width: clamp(125px, 11.5vw, 175px);
+  z-index: 2;
+}
+
+/* ── Delicate Hanging String / Twine ─────────────────────────────────── */
+.hanging-twine {
+  width: 1px;
+  height: var(--string-len, 90px);
+  background: linear-gradient(
+    to bottom,
+    rgba(184, 134, 11, 0.45) 0%,
+    rgba(184, 134, 11, 0.75) 75%,
+    rgba(138, 18, 18, 0.6) 100%
+  );
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.15);
+  transform-origin: top center;
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .hanging-twine {
+  background: linear-gradient(
+    to bottom,
+    rgba(142, 101, 35, 0.35) 0%,
+    rgba(142, 101, 35, 0.65) 80%,
+    rgba(138, 18, 18, 0.5) 100%
+  );
+}
+
+/* ── Golden Metallic Pin / Clothespin ─────────────────────────────────── */
+.hanging-clip {
+  width: 12px;
+  height: 18px;
+  margin-top: -3px;
+  margin-bottom: -7px;
+  background: linear-gradient(135deg, #ECC874 0%, #B8860B 60%, #805700 100%);
+  border-radius: 3px 3px 2px 2px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.hanging-clip-inner {
+  width: 4px;
+  height: 9px;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 1px;
+}
+
+/* ── Polaroid Photo Card ──────────────────────────────────────────────── */
+.hanging-photo-card {
+  margin: 0;
+  padding: clamp(5px, 0.6vw, 8px) clamp(5px, 0.6vw, 8px) clamp(10px, 1.2vw, 16px) clamp(5px, 0.6vw, 8px);
+  background: #FFFFFF;
+  border-radius: 4px;
+  box-shadow:
+    0 16px 40px -8px rgba(0, 0, 0, 0.22),
+    0 6px 16px -4px rgba(0, 0, 0, 0.12),
+    0 0 1px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.4s ease,
+              border-color 0.3s ease;
+  user-select: none;
+  width: 100%;
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .hanging-photo-card {
+  box-shadow:
+    0 20px 48px -10px rgba(45, 30, 22, 0.20),
+    0 6px 18px -4px rgba(45, 30, 22, 0.10),
+    0 0 0 1px rgba(45, 30, 22, 0.05);
+}
+
+/* Hover Interaction: Smooth lift, straighten, enhanced shadow */
+.hanging-photo-node:hover {
+  animation-play-state: paused;
+  z-index: 25 !important;
+}
+
+.hanging-photo-node:hover .hanging-photo-card {
+  transform: translateY(-8px) scale(1.06) rotate(0deg) !important;
+  box-shadow:
+    0 28px 60px -10px rgba(0, 0, 0, 0.35),
+    0 12px 24px -4px rgba(0, 0, 0, 0.20),
+    0 0 0 2px var(--gm-wine, #8A1212);
+}
+
+.hanging-photo-card:focus-visible {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 4px;
+}
+
+/* ── Image & Sheen ────────────────────────────────────────────────────── */
+.hanging-photo-media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: 2px;
+  background-color: #E6DFD5;
+}
+
+.hanging-photo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hanging-photo-card:hover .hanging-photo-img {
+  transform: scale(1.08);
+}
+
+.hanging-photo-sheen {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(255, 255, 255, 0) 50%,
+    rgba(0, 0, 0, 0.15) 100%
+  );
+  pointer-events: none;
+}
+
+/* ── Caption Typography ───────────────────────────────────────────────── */
+.hanging-photo-caption {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: clamp(6px, 0.8vw, 10px);
+  text-align: center;
+}
+
+.hanging-couple-name {
+  font-family: var(--font-serif);
+  font-size: clamp(0.78rem, 1vw, 0.95rem);
+  font-weight: 600;
+  color: #1A1412;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hanging-couple-tag {
+  font-family: var(--font-sans);
+  font-size: clamp(0.62rem, 0.75vw, 0.72rem);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gm-wine, #8A1212);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Responsive Adaptations ───────────────────────────────────────────── */
+@media (max-width: 1200px) {
+  .hang-pos-flank-left {
+    left: 8%;
+  }
+  .hang-pos-flank-right {
+    right: 8%;
+  }
+}
+
+@media (max-width: 1024px) {
+  /* On tablet: hide flanking polaroids so header stays pristine */
+  .hang-pos-flank-left,
+  .hang-pos-flank-right {
+    display: none;
+  }
+  .hang-pos-top-left {
+    left: 1%;
+    top: 2%;
+    width: 150px;
+  }
+  .hang-pos-top-right {
+    right: 1%;
+    top: 1.5%;
+    width: 155px;
+  }
+}
+
+@media (max-width: 768px) {
+  /* On mobile: 2 subtle corner accents that never interfere with title or showreel */
+  .hang-pos-flank-left,
+  .hang-pos-flank-right {
+    display: none;
+  }
+  .hang-pos-top-left {
+    left: -15px;
+    top: 5px;
+    width: 105px;
+    opacity: 0.85;
+  }
+  .hang-pos-top-right {
+    right: -15px;
+    top: 5px;
+    width: 110px;
+    opacity: 0.85;
+  }
+  .hanging-photo-caption {
+    display: none;
+  }
+  .hanging-twine {
+    height: 25px;
+  }
+}
+
+/* Reduced Motion Mode */
+@media (prefers-reduced-motion: reduce) {
+  .hanging-photo-node {
+    animation: none;
+    transform: rotate(var(--hang-rotate, 0deg));
+  }
+}

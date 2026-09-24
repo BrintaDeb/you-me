@@ -5,6 +5,7 @@ import type { WeddingStory } from '../data/couplesData';
 import { usePublicSections } from '../hooks/usePublicSections';
 import { handleImageError } from '../utils/imageFallback';
 import { LetterFlipHeading } from './LetterFlipHeading';
+import { PhotoShowreel } from './PhotoShowreel';
 import './PortfolioShowcase.css';
 
 interface PortfolioShowcaseProps {
@@ -122,6 +123,12 @@ export const PortfolioShowcase: React.FC<PortfolioShowcaseProps> = ({
             </button>
           ))}
         </div>
+
+        {/* Cinematic Dual-Ribbon Photo Showreel */}
+        <PhotoShowreel
+          onPhotoClick={onSelectStory}
+          tiltAngle={-1.5}
+        />
 
         {/* Interactive Editorial Magazine Grid */}
         <div className="editorial-magazine-grid" key={selectedCategory}>

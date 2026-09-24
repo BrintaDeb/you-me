@@ -3,7 +3,6 @@ import {
   Heart,
   Wine,
   Gem,
-  Baby,
   Users,
   Film,
   Camera,
@@ -328,62 +327,6 @@ const CELEBRATIONS_DATA: CelebrationCategory[] = [
         ]
       }
     ]
-  },
-  {
-    id: 'rice-ceremony',
-    label: 'Rice Ceremony',
-    icon: <Baby size={16} />,
-    quote: '“The sacred first milestone — innocence, blessings, and generations gathered in love.”',
-    plans: [
-      {
-        id: 'rice-annaprashan',
-        name: 'ANNAPRASHAN',
-        price: '₹28,000',
-        priceNum: 28000,
-        tagline: 'Preserving your child’s first sacred celebration and family blessings.',
-        deliverables: [
-          {
-            icon: <Camera size={18} />,
-            title: 'Baby & Family Portraits',
-            detail: 'Gentle, natural-light portraits before rituals commence without flash fatigue.'
-          },
-          {
-            icon: <Film size={18} />,
-            title: 'Tender Highlight Film',
-            detail: 'Capturing elder blessings, baby giggles, and joyous first meal rituals.'
-          },
-          {
-            icon: <BookOpen size={18} />,
-            title: 'Keepsake Memory Book',
-            detail: 'Hardcover lay-flat memory album designed for generations to cherish.'
-          }
-        ]
-      },
-      {
-        id: 'rice-aashirwad',
-        name: 'AASHIRWAD HERITAGE',
-        price: '₹45,000',
-        priceNum: 45000,
-        tagline: 'Complete day celebration chronicle with dual-shooter candid presence.',
-        deliverables: [
-          {
-            icon: <Users size={18} />,
-            title: 'Dual Photographers',
-            detail: 'One dedicated candid photographer for baby; one for extended family & guests.'
-          },
-          {
-            icon: <Film size={18} />,
-            title: 'Extended Celebration Film',
-            detail: 'Complete event movie with ambient blessing sound recordings & sweet moments.'
-          },
-          {
-            icon: <BookOpen size={18} />,
-            title: 'Lay-Flat Linen Family Album',
-            detail: '12x18 master album with acid-free archival cotton paper.'
-          }
-        ]
-      }
-    ]
   }
 ];
 
@@ -416,6 +359,10 @@ export const CelebrationsPage: React.FC = () => {
     setExpandedPlanId(prev => prev === planId ? null : planId);
   };
 
+  const totalCollections = CELEBRATIONS_DATA.reduce((acc, cat) => acc + cat.plans.length, 0);
+  const minPriceNum = Math.min(...CELEBRATIONS_DATA.flatMap((cat) => cat.plans.map((p) => p.priceNum)));
+  const minPriceFormatted = `₹${minPriceNum.toLocaleString('en-IN')}`;
+
   return (
     <main className="celebrations-page" id="main-content">
       {/* ── 1. Hero Header Section ──────────────────────────── */}
@@ -433,7 +380,7 @@ export const CelebrationsPage: React.FC = () => {
           </div>
 
           <p className="cp-hero-subtitle">
-            <strong>4</strong> celebrations, <strong>10</strong> curated collections, starting at <strong>₹28,000</strong>. Pick yours below &mdash; transparent investment with zero hidden surprises.
+            <strong>{CELEBRATIONS_DATA.length}</strong> celebrations, <strong>{totalCollections}</strong> curated collections, starting at <strong>{minPriceFormatted}</strong>. Pick yours below &mdash; transparent investment with zero hidden surprises.
           </p>
 
           {/* Quick Celebration Jump Pills */}

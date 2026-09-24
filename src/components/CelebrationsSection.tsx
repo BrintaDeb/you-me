@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Users, Film, Camera, BookOpen, Sparkles, Check, ArrowRight, Heart, Wine, Gem, Baby } from 'lucide-react';
+import { Users, Film, Camera, BookOpen, Sparkles, Check, ArrowRight, Heart, Wine, Gem } from 'lucide-react';
 import { LetterFlipHeading } from './LetterFlipHeading';
 import './CelebrationsSection.css';
 
@@ -158,37 +158,6 @@ const CELEBRATIONS_DATA: CelebrationCategory[] = [
             icon: <Users size={18} />,
             title: 'Ring Ceremony Documentary',
             detail: 'Unobtrusive coverage of family rituals, ring exchange, and candid emotions.'
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: 'rice-ceremony',
-    label: 'Rice Ceremony',
-    icon: <Baby size={16} />,
-    quote: '“The sacred first milestone — innocence, blessings, and generations gathered in love.”',
-    plans: [
-      {
-        id: 'rice-mukhe-bhat',
-        name: 'ANNAPRASHAN',
-        price: '₹28,000',
-        tagline: 'Preserving your child’s first sacred celebration and family blessings.',
-        deliverables: [
-          {
-            icon: <Camera size={18} />,
-            title: 'Baby & Family Portraits',
-            detail: 'Gentle, natural-light portraits before rituals commence.'
-          },
-          {
-            icon: <Film size={18} />,
-            title: 'Tender Highlight Film',
-            detail: 'Capturing elder blessings, baby giggles, and joyous meal rituals.'
-          },
-          {
-            icon: <BookOpen size={18} />,
-            title: 'Keepsake Memory Book',
-            detail: 'Hardcover lay-flat memory album designed for generations to cherish.'
           }
         ]
       }

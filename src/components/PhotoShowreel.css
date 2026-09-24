@@ -1,0 +1,245 @@
+/* ==========================================================================
+   PHOTO SHOWREEL DUAL-RIBBON MARQUEE — PhotoShowreel.css
+   Style inspired by goldenmoment.in/gallery:
+   - Tilted -2deg continuous panoramic showreel
+   - Dual parallel infinite tracks (Row 1 left, Row 2 right)
+   - 3:4 portrait photo cards with crisp white borders & deep shadow
+   - Smooth pause on hover and interactive lightbox integration
+   ========================================================================== */
+
+.photo-showreel-container {
+  position: relative;
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  margin-right: calc(-50vw + 50%);
+  margin-top: clamp(2rem, 4.5vw, 4rem);
+  margin-bottom: clamp(2.5rem, 5vw, 4.5rem);
+  padding: 1.5rem 0;
+  overflow: hidden;
+  transform: rotate(var(--showreel-tilt, -2deg));
+  transform-origin: center center;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 1.4vw, 18px);
+  pointer-events: auto;
+  user-select: none;
+}
+
+/* Subtle edge fade mask for luxury editorial finish */
+.photo-showreel-container::before,
+.photo-showreel-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: clamp(40px, 8vw, 140px);
+  z-index: 10;
+  pointer-events: none;
+}
+
+.photo-showreel-container::before {
+  left: 0;
+  background: linear-gradient(to right, var(--bg-primary, #FAF7F2) 0%, transparent 100%);
+}
+
+.photo-showreel-container::after {
+  right: 0;
+  background: linear-gradient(to left, var(--bg-primary, #FAF7F2) 0%, transparent 100%);
+}
+
+/* ── Ribbon Row Wrapper ──────────────────────────────────────────────── */
+.showreel-row-wrapper {
+  overflow: hidden;
+  width: 100%;
+  display: flex;
+}
+
+.showreel-track {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 1.2vw, 16px);
+  width: max-content;
+  will-change: transform;
+}
+
+/* Row 1: Leftward Infinite Marquee */
+.showreel-track.scroll-left {
+  animation: showreelScrollLeft 48s linear infinite;
+}
+
+/* Row 2: Rightward Infinite Marquee */
+.showreel-track.scroll-right {
+  animation: showreelScrollRight 52s linear infinite;
+}
+
+/* Pause smoothly when hovering either track or showreel container */
+.photo-showreel-container:hover .showreel-track {
+  animation-play-state: paused;
+}
+
+@keyframes showreelScrollLeft {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes showreelScrollRight {
+  0% {
+    transform: translate3d(-50%, 0, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* ── Photo Card Item ─────────────────────────────────────────────────── */
+.showreel-card {
+  flex-shrink: 0;
+  width: clamp(135px, 14vw, 195px);
+  border-radius: 6px;
+  overflow: hidden;
+  background: #FFFFFF;
+  border: 3px solid #FFFFFF;
+  box-shadow:
+    0 16px 36px -6px rgba(0, 0, 0, 0.22),
+    0 6px 14px -3px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.35s ease,
+              border-color 0.35s ease;
+  position: relative;
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .showreel-card {
+  box-shadow:
+    0 18px 40px -8px rgba(45, 30, 22, 0.20),
+    0 6px 16px -4px rgba(45, 30, 22, 0.10);
+  border-color: #FFFFFF;
+}
+
+:is([data-theme="burgundy"], [data-theme="dark"]) .showreel-card {
+  box-shadow:
+    0 20px 45px -8px rgba(0, 0, 0, 0.55),
+    0 8px 18px -4px rgba(0, 0, 0, 0.35);
+  border: 2.5px solid rgba(255, 255, 255, 0.9);
+}
+
+/* Card Hover Elevation & Glow */
+.showreel-card:hover {
+  transform: scale(1.06) translateY(-5px);
+  z-index: 15;
+  box-shadow:
+    0 26px 55px -10px rgba(0, 0, 0, 0.38),
+    0 12px 24px -4px rgba(0, 0, 0, 0.22),
+    0 0 0 2px var(--gm-wine, #8A1212);
+}
+
+.showreel-card:focus-visible {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 3px;
+}
+
+/* ── Media & Aspect Ratio ────────────────────────────────────────────── */
+.showreel-media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background-color: #E6DFD5;
+}
+
+.showreel-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.showreel-card:hover .showreel-img {
+  transform: scale(1.08);
+}
+
+.showreel-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0) 50%,
+    rgba(0, 0, 0, 0.35) 100%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.showreel-card:hover .showreel-card-overlay {
+  opacity: 1;
+}
+
+/* ── Optional Caption Strip ──────────────────────────────────────────── */
+.showreel-card-caption {
+  padding: 6px 8px 8px;
+  background: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.showreel-card-name {
+  font-family: var(--font-serif);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #110D0C;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.showreel-card-tag {
+  font-family: var(--font-sans);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--gm-wine, #8A1212);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Responsive Mobile Optimizations ─────────────────────────────────── */
+@media (max-width: 768px) {
+  .photo-showreel-container {
+    transform: rotate(calc(var(--showreel-tilt, -2deg) * 0.75));
+    gap: 8px;
+    margin-top: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  .showreel-card {
+    width: clamp(110px, 30vw, 140px);
+    border-width: 2px;
+  }
+  .showreel-track.scroll-left {
+    animation-duration: 36s;
+  }
+  .showreel-track.scroll-right {
+    animation-duration: 38s;
+  }
+}
+
+/* ── Reduced Motion ──────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .showreel-track.scroll-left,
+  .showreel-track.scroll-right {
+    animation: none;
+    overflow-x: auto;
+  }
+  .photo-showreel-container {
+    transform: none;
+  }
+}

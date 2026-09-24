@@ -3,6 +3,8 @@ import { X, Play, ArrowRight, ChevronLeft, ChevronRight, Eye } from 'lucide-reac
 import { couplesData } from '../data/couplesData';
 import type { WeddingStory, WeddingImage } from '../data/couplesData';
 import { VideoModal } from '../components/VideoModal';
+import { HangingPhotos } from '../components/HangingPhotos';
+import { PhotoShowreel } from '../components/PhotoShowreel';
 import { galleryStorage } from '../utils/galleryStorage';
 import { handleImageError } from '../utils/imageFallback';
 import { businessInfo } from '../data/businessData';
@@ -292,30 +294,36 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({ onSelectStory }) =
   return (
     <main className="gm-portfolio-page" id="main-content">
 
-      {/* ── 1. Hero Header ──────────────────────────── */}
+      {/* ── 1. Hero Header & The Wall of Moments ────────────────── */}
       <section className="gm-gallery-hero">
+        {/* Subtle noise grain texture overlay */}
+        <div className="gm-hero-noise-overlay" aria-hidden="true" />
+
+        {/* Physical Hanging Photo Frames around the header */}
+        <HangingPhotos onPhotoClick={(story, idx) => openLightbox(story, idx)} />
+
         <div className="gm-hero-inner">
           <p className="gm-hero-eyebrow">
             <span className="gm-eyebrow-line" aria-hidden="true" />
+            <span className="gm-eyebrow-symbol" aria-hidden="true">✦</span>
             THE WALL OF MOMENTS
+            <span className="gm-eyebrow-symbol" aria-hidden="true">✦</span>
             <span className="gm-eyebrow-line" aria-hidden="true" />
           </p>
 
-          <h1 className="gm-gallery-title" aria-label="Our gallery">
-            <span className="gm-gallery-prefix">Our</span>
-            <span className="gm-title-letters-wrap">
-              {'GALLERY'.split('').map((ch, i) => (
-                <span
-                  key={i}
-                  className={`gm-title-letter ${headerRevealed ? 'revealed' : ''} ${i % 2 === 1 ? 'outline-letter' : ''}`}
-                  style={{ transitionDelay: `${0.06 + 0.06 * i}s` }}
-                  aria-hidden="true"
-                >
-                  {ch}
-                </span>
-              ))}
-            </span>
-          </h1>
+          <div className="gm-gallery-header-composition">
+            <span className="gm-gallery-script-accent">Our Curated</span>
+            <h1 className="gm-gallery-master-title">
+              <span className={`gm-title-reveal-text ${headerRevealed ? 'revealed' : ''}`}>
+                GALLERY
+              </span>
+            </h1>
+            <div className="gm-gallery-tagline-wrap" aria-hidden="true">
+              <span className="gm-tagline-dash" />
+              <span className="gm-tagline-text">ARCHIVE OF TIMELESS CELEBRATIONS</span>
+              <span className="gm-tagline-dash" />
+            </div>
+          </div>
 
           <p className="gm-hero-subtitle">
             Timeless stories captured through our lens — every frame below made it to the wall.
@@ -337,6 +345,12 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({ onSelectStory }) =
             ))}
           </div>
         </div>
+
+        {/* Dual-Ribbon Continuous Photo Showreel tilted at -2deg */}
+        <PhotoShowreel
+          onPhotoClick={(story, idx) => openLightbox(story, idx)}
+          tiltAngle={-2}
+        />
       </section>
 
       {/* ── 2. GALLERY 01 · EXPLORE — OUR PHOTOS ─────── */}
