@@ -3,6 +3,7 @@ import { Menu, X, House, Film, Heart, Info, Key, Calendar } from 'lucide-react';
 import { AudioToggle } from './AudioToggle';
 import { ThemeToggle } from './ThemeToggle';
 import { businessInfo } from '../data/businessData';
+import { smoothScrollTo } from '../hooks/useSmoothScroll';
 import './Navbar.css';
 
 interface NavbarProps {
@@ -34,37 +35,33 @@ export const Navbar: React.FC<NavbarProps> = ({
     if (onNavigate) {
       if (target === 'portfolio') {
         onNavigate('portfolio');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        smoothScrollTo(0);
         return;
       }
       if (target === 'celebrations' || target === 'packages') {
         onNavigate('celebrations');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        smoothScrollTo(0);
         return;
       }
       if (target === 'about') {
         onNavigate('about');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        smoothScrollTo(0);
         return;
       }
       if (target === 'client-lounge') {
         onNavigate('client-lounge');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        smoothScrollTo(0);
         return;
       }
       if (currentView !== 'home') {
         onNavigate('home');
         setTimeout(() => {
-          const el = document.getElementById(target);
-          if (el) el.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
+          smoothScrollTo(target);
+        }, 120);
         return;
       }
     }
-    const el = document.getElementById(target);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
-    }
+    smoothScrollTo(target);
   };
 
   return (
@@ -76,7 +73,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         onClick={(e) => {
           e.preventDefault();
           if (onNavigate) onNavigate('home');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+          smoothScrollTo(0);
         }}
         aria-label="YOU & ME Wedding Photography Home"
       >

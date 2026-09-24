@@ -296,6 +296,63 @@
   position: relative;
 }
 
+/* View Mode Switcher (Curated Chapters vs 35mm Horizon Reel) */
+.gm-view-mode-toggle-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: clamp(24px, 4vw, 40px);
+}
+
+.gm-view-mode-toggle {
+  display: inline-flex;
+  align-items: center;
+  background: var(--bg-surface, #FFFFFF);
+  border: 1px solid var(--border-medium);
+  padding: 4px;
+  border-radius: 9999px;
+  gap: 4px;
+  box-shadow: var(--shadow-sm);
+}
+
+:is([data-theme="burgundy"], [data-theme="dark"]) .gm-view-mode-toggle {
+  background: rgba(26, 8, 16, 0.85);
+  border-color: rgba(212, 175, 55, 0.28);
+}
+
+.gm-view-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 9999px;
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  min-height: 40px;
+}
+
+.gm-view-toggle-btn:hover {
+  color: var(--text-primary);
+}
+
+.gm-view-toggle-btn.active {
+  background: var(--gm-wine, #8A1212);
+  color: #FFFFFF;
+  box-shadow: 0 4px 14px rgba(138, 18, 18, 0.25);
+}
+
+:is([data-theme="burgundy"], [data-theme="dark"]) .gm-view-toggle-btn.active {
+  background: var(--accent-gold, #D4AF37);
+  color: #12050A;
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.35);
+}
+
 .gm-collections-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

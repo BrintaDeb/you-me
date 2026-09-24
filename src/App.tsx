@@ -16,7 +16,7 @@ import type { WeddingStory } from './data/couplesData';
 import { audioAtmosphere } from './utils/audioAtmosphere';
 import { HeartCursor } from './components/HeartCursor';
 import { PwaInstallPrompt } from './components/PwaInstallPrompt';
-import { useSmoothScroll } from './hooks/useSmoothScroll';
+import { useSmoothScroll, smoothScrollTo } from './hooks/useSmoothScroll';
 
 // Route code-splitting: isolate heavy dependencies (jszip, rich lounges, modals) to demand
 const PortfolioPage = lazy(() => import('./pages/PortfolioPage').then(m => ({ default: m.PortfolioPage })));
@@ -227,7 +227,7 @@ export function App() {
         window.history.pushState(null, '', '/');
       }
     });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    smoothScrollTo(0);
   };
 
   const handleSelectStory = (story: WeddingStory) => {
@@ -236,7 +236,7 @@ export function App() {
       setCurrentView('story');
       window.history.pushState(null, '', `/portfolio/${story.slug}`);
     });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    smoothScrollTo(0);
   };
 
   return (
@@ -324,9 +324,8 @@ export function App() {
             onCheckDate={() => {
               navigateTo('home');
               setTimeout(() => {
-                const el = document.getElementById('contact');
-                if (el) el.scrollIntoView({ behavior: 'smooth' });
-              }, 100);
+                smoothScrollTo('contact');
+              }, 120);
             }}
           />
         )}

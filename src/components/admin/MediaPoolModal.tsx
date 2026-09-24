@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useCallback, useId } from 'react';
-import { X, Check, Search, Image as ImageIcon, Film, Loader2, AlertCircle, RefreshCw } from 'lucide-react';
+import React, { useState, useEffect, useCallback, useId, useRef } from 'react';
+import { X, Check, Search, Image as ImageIcon, Film, Loader2, AlertCircle, RefreshCw, Upload } from 'lucide-react';
 import type { MediaItem } from '../../services/mediaApi';
-import { fetchAllMedia } from '../../services/mediaApi';
+import { fetchAllMedia, uploadMedia, resolveMediaUrl } from '../../services/mediaApi';
 import './MediaPoolModal.css';
 
 interface MediaPoolModalProps {
@@ -38,8 +38,12 @@ export const MediaPoolModal: React.FC<MediaPoolModalProps> = ({
   const [filterType, setFilterType] = useState<FilterType>(effectiveAllowedType || 'all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set(preSelectedIds));
-
   const [refreshKey, setRefreshKey] = useState(0);
+
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   const refreshMedia = useCallback(() => {
     setRefreshKey(k => k + 1);
@@ -81,12 +85,10 @@ export const MediaPoolModal: React.FC<MediaPoolModalProps> = ({
     };
   }, [token, filterType, searchQuery, refreshKey, effectiveAllowedType, isHeroSection]);
 
-  // Close on backdrop click
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) onClose();
   };
 
-  // Close on Escape key
   useEffect(() => {
     const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
     document.addEventListener('keydown', handler);
@@ -103,18 +105,39 @@ export const MediaPoolModal: React.FC<MediaPoolModalProps> = ({
   };
 
   const handleConfirm = () => {
-    // Return items in their library order (reordering happens in SectionEditorWidget)
     const selected = items.filter(item => selectedIds.has(item.id));
     onConfirm(selected);
   };
 
-  const resolveUrl = (item: MediaItem) => {
-    if (item.url.startsWith('/uploads/')) {
-      return import.meta.env.DEV
-        ? `http://localhost:8000${item.url}`
-        : item.url;
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFiles = e.target.files ? Array.from(e.target.files) : [];
+    if (selectedFiles.length === 0) return;
+
+    setIsUploading(true);
+    setUploadProgress(0);
+    setUploadError(null);
+
+    try {
+      const uploaded = await uploadMedia({
+        files: selectedFiles,
+        token,
+        onProgress: (pct) => setUploadProgress(pct),
+      });
+
+      setItems(prev => [...uploaded, ...prev]);
+      setSelectedIds(prev => {
+        const next = new Set(prev);
+        uploaded.forEach(item => next.add(item.id));
+        return next;
+      });
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : 'Upload failed. Please check network/auth.');
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     }
-    return item.url;
   };
 
   return (
@@ -180,10 +203,38 @@ export const MediaPoolModal: React.FC<MediaPoolModalProps> = ({
               </span>
             </div>
           )}
+          <button
+            type="button"
+            className="mpm-upload-btn"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={isUploading}
+            aria-label="Upload new media"
+          >
+            {isUploading ? <Loader2 size={13} className="mpm-spinner" /> : <Upload size={13} />}
+            <span>{isUploading ? `${uploadProgress}%` : 'Upload'}</span>
+          </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            multiple
+            accept={effectiveAllowedType === 'image' ? 'image/*' : effectiveAllowedType === 'video' ? 'video/*' : 'image/*,video/*'}
+            style={{ display: 'none' }}
+            onChange={handleFileSelect}
+          />
           <button type="button" className="mpm-refresh-btn" onClick={refreshMedia} aria-label="Refresh library">
             <RefreshCw size={14} />
           </button>
         </div>
+
+        {uploadError && (
+          <div className="mpm-upload-error-banner" role="alert">
+            <AlertCircle size={14} />
+            <span>{uploadError}</span>
+            <button type="button" onClick={() => setUploadError(null)} aria-label="Dismiss error">
+              <X size={12} />
+            </button>
+          </div>
+        )}
 
         {/* Content */}
         <div className="mpm-body">
@@ -205,7 +256,7 @@ export const MediaPoolModal: React.FC<MediaPoolModalProps> = ({
           {!isLoading && !error && items.length === 0 && (
             <div className="mpm-state-center mpm-empty">
               <ImageIcon size={48} style={{ opacity: 0.3 }} />
-              <p>No media found. Upload files via the Upload tab first.</p>
+              <p>No media found. Upload files above or try a different filter.</p>
             </div>
           )}
 
@@ -213,7 +264,7 @@ export const MediaPoolModal: React.FC<MediaPoolModalProps> = ({
             <div className="mpm-masonry-grid" role="list">
               {items.map(item => {
                 const isSelected = selectedIds.has(item.id);
-                const url = resolveUrl(item);
+                const url = resolveMediaUrl(item.url);
                 return (
                   <div
                     key={item.id}

@@ -25,6 +25,8 @@ import {
 } from '../data/businessData';
 import type { TeamMember } from '../data/businessData';
 import { AboutLightbox } from './AboutLightbox';
+import { smoothScrollTo } from '../hooks/useSmoothScroll';
+import { handleImageError, DEFAULT_AVATAR } from '../utils/imageFallback';
 import './AboutSection.css';
 
 const InstagramIcon = ({ size = 16 }: { size?: number }) => (
@@ -121,8 +123,7 @@ export const AboutSection: React.FC = () => {
   };
 
   const handleScrollToContact = () => {
-    const el = document.getElementById('contact');
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
+    smoothScrollTo('contact');
   };
 
   const filteredMembers = teamMembers.filter((member) => {
@@ -244,6 +245,7 @@ export const AboutSection: React.FC = () => {
                 alt={currentPhoto.title}
                 className="dynamic-main-img"
                 loading="eager"
+                onError={handleImageError}
               />
 
               {/* Gradient Vignette */}
@@ -451,6 +453,7 @@ export const AboutSection: React.FC = () => {
                   alt={`${member.name} - ${member.role}`}
                   className="team-card-image"
                   loading="lazy"
+                  onError={(e) => handleImageError(e, DEFAULT_AVATAR)}
                 />
                 <div className="team-card-overlay-gradient" />
                 <div className="team-card-role-pill">
@@ -526,6 +529,7 @@ export const AboutSection: React.FC = () => {
                   src={selectedMember.image}
                   alt={selectedMember.name}
                   className="team-modal-image"
+                  onError={(e) => handleImageError(e, DEFAULT_AVATAR)}
                 />
                 <div className="team-modal-role-badge">
                   {getRoleIcon(selectedMember.id)}

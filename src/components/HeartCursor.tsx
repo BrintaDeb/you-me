@@ -17,6 +17,10 @@ interface TrailHeart {
 export type CursorMode = 'default' | 'play' | 'expand' | 'story' | 'drag' | 'magnetic';
 
 export const HeartCursor: React.FC = () => {
+  const [hasFinePointer] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(pointer: fine)').matches
+  );
+
   const [isVisible, setIsVisible] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
@@ -280,9 +284,9 @@ export const HeartCursor: React.FC = () => {
       if (magneticElRef.current) magneticElRef.current.style.transform = '';
       if (animFrameId.current) cancelAnimationFrame(animFrameId.current);
     };
-  }, [isVisible, isTextInput]);
+  }, [isVisible, isTextInput, hasFinePointer]);
 
-  if (!isVisible) return null;
+  if (!hasFinePointer || !isVisible) return null;
 
   const hasContextBadge = cursorMode !== 'default' && cursorMode !== 'magnetic';
 

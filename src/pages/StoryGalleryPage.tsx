@@ -7,6 +7,7 @@ import { CinemaWalkthroughModal } from '../components/CinemaWalkthroughModal';
 import { ResponsiveImage } from '../components/ResponsiveImage';
 import { triggerHaptic } from '../utils/haptics';
 import { galleryStorage } from '../utils/galleryStorage';
+import { smoothScrollTo } from '../hooks/useSmoothScroll';
 import './StoryGalleryPage.css';
 
 interface StoryGalleryPageProps {
@@ -144,7 +145,7 @@ export const StoryGalleryPage: React.FC<StoryGalleryPageProps> = ({
               onClick={() => {
                 triggerHaptic('light');
                 onSelectStory(prevStory);
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                smoothScrollTo(0);
               }}
             >
               <ArrowLeft size={16} /> Previous: {prevStory.title}
@@ -169,7 +170,7 @@ export const StoryGalleryPage: React.FC<StoryGalleryPageProps> = ({
               onClick={() => {
                 triggerHaptic('light');
                 onSelectStory(nextStory);
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                smoothScrollTo(0);
               }}
             >
               Next: {nextStory.title} <ArrowRight size={16} />

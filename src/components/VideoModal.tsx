@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
+import { DEFAULT_VIDEO_POSTER } from '../utils/imageFallback';
 import './VideoModal.css';
 
 interface VideoModalProps {
@@ -12,7 +13,7 @@ interface VideoModalProps {
 
 export const VideoModal: React.FC<VideoModalProps> = ({
   videoUrl,
-  posterUrl,
+  posterUrl = DEFAULT_VIDEO_POSTER,
   title,
   isOpen,
   onClose

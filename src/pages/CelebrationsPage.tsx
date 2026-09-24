@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { DeckleBanner } from '../components/DeckleBanner';
 import { businessInfo } from '../data/businessData';
+import { smoothScrollTo } from '../hooks/useSmoothScroll';
 import './CelebrationsPage.css';
 
 interface DeliverableItem {
@@ -351,7 +352,7 @@ export const CelebrationsPage: React.FC = () => {
 
   const scrollToCompare = () => {
     if (compareSectionRef.current) {
-      compareSectionRef.current.scrollIntoView({ behavior: 'smooth' });
+      smoothScrollTo(compareSectionRef.current);
     }
   };
 

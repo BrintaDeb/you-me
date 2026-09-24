@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Phone, Mail } from 'lucide-react';
 import { businessInfo } from '../data/businessData';
+import { smoothScrollTo } from '../hooks/useSmoothScroll';
 import './Footer.css';
 
 interface FooterProps {
@@ -34,11 +35,10 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
       onNavigate(view);
       if (hash) {
         setTimeout(() => {
-          const el = document.getElementById(hash);
-          if (el) el.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
+          smoothScrollTo(hash);
+        }, 120);
       } else {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        smoothScrollTo(0);
       }
     }
   };

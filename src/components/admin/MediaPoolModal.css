@@ -171,6 +171,35 @@
   color: var(--accent-gold, #D4AF37);
 }
 
+.mpm-upload-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  background: rgba(212, 175, 55, 0.12);
+  color: var(--accent-gold, #D4AF37);
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.mpm-upload-btn:hover:not(:disabled) {
+  background: rgba(212, 175, 55, 0.22);
+  border-color: rgba(212, 175, 55, 0.6);
+  transform: translateY(-1px);
+}
+
+.mpm-upload-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
 .mpm-refresh-btn {
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -189,6 +218,38 @@
 .mpm-refresh-btn:hover {
   border-color: rgba(212, 175, 55, 0.3);
   color: var(--accent-gold, #D4AF37);
+}
+
+.mpm-upload-error-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 28px 10px;
+  padding: 8px 12px;
+  background: rgba(224, 112, 112, 0.12);
+  border: 1px solid rgba(224, 112, 112, 0.3);
+  border-radius: 8px;
+  color: #f19999;
+  font-size: 0.8rem;
+}
+
+.mpm-upload-error-banner span {
+  flex: 1;
+}
+
+.mpm-upload-error-banner button {
+  background: transparent;
+  border: none;
+  color: #f19999;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 2px;
+  opacity: 0.8;
+}
+
+.mpm-upload-error-banner button:hover {
+  opacity: 1;
 }
 
 /* Body */

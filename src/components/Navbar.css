@@ -396,16 +396,28 @@
   }
 
   .pill-whatsapp-btn {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
+    position: relative;
+  }
+
+  .pill-whatsapp-btn::after,
+  .pill-navbar-actions .theme-cycle-toggle::after,
+  .pill-navbar-actions .audio-atmosphere-toggle::after,
+  .pill-menu-toggle::after {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    pointer-events: auto;
   }
 
   .pill-navbar-actions .theme-cycle-toggle,
   .pill-navbar-actions .audio-atmosphere-toggle,
   .pill-menu-toggle {
-    width: 32px !important;
-    height: 32px !important;
-    min-width: 32px !important;
-    min-height: 32px !important;
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    min-height: 36px !important;
+    position: relative;
   }
 }

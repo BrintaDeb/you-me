@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { X, Play, ArrowRight, ChevronLeft, ChevronRight, Eye } from 'lucide-react';
+import { X, Play, ArrowRight, ChevronLeft, ChevronRight, Eye, LayoutGrid, Film as FilmIcon } from 'lucide-react';
 import { couplesData } from '../data/couplesData';
 import type { WeddingStory, WeddingImage } from '../data/couplesData';
 import { VideoModal } from '../components/VideoModal';
 import { HangingPhotos } from '../components/HangingPhotos';
 import { PhotoShowreel } from '../components/PhotoShowreel';
+import { FilmstripReelView } from '../components/FilmstripReelView';
 import { galleryStorage } from '../utils/galleryStorage';
 import { handleImageError } from '../utils/imageFallback';
 import { businessInfo } from '../data/businessData';
@@ -64,6 +65,7 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({ onSelectStory }) =
   const [activeCollection, setActiveCollection] = useState<PhotoCollection | null>(null);
   const [headerRevealed, setHeaderRevealed] = useState(false);
   const [wallExpanded, setWallExpanded] = useState(false);
+  const [viewMode, setViewMode] = useState<'grid' | 'filmstrip'>('grid');
   const reelTrackRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -364,94 +366,127 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({ onSelectStory }) =
             </p>
           </div>
 
-          {/* Curated Photo Portrait Collections Grid */}
-          <div className="gm-collections-grid">
-            {collections.map(col => (
-              <div key={col.id} className="gm-collection-col">
-                <button
-                  type="button"
-                  aria-label={`View ${col.category} collection`}
-                  className="gm-collection-card group"
-                  onClick={() => setActiveCollection(col)}
-                >
-                  <div className="gm-collection-media">
-                    <img
-                      src={col.coverImage}
-                      alt={col.storyTitle}
-                      className="gm-collection-img"
-                      loading="lazy"
-                      onError={handleImageError}
-                    />
-                    <div className="gm-collection-overlay" />
-                    
-                    {/* Viewfinder corner pips */}
-                    <span className="corner-pip corner-tl" aria-hidden="true" />
-                    <span className="corner-pip corner-tr" aria-hidden="true" />
-                    <span className="corner-pip corner-bl" aria-hidden="true" />
-                    <span className="corner-pip corner-br" aria-hidden="true" />
+          {/* Archive View Mode Switcher */}
+          <div className="gm-view-mode-toggle-wrap">
+            <div className="gm-view-mode-toggle" role="group" aria-label="Archive view mode">
+              <button
+                type="button"
+                className={`gm-view-toggle-btn ${viewMode === 'grid' ? 'active' : ''}`}
+                onClick={() => setViewMode('grid')}
+                aria-pressed={viewMode === 'grid'}
+              >
+                <LayoutGrid size={14} />
+                <span>Curated Chapters</span>
+              </button>
+              <button
+                type="button"
+                className={`gm-view-toggle-btn ${viewMode === 'filmstrip' ? 'active' : ''}`}
+                onClick={() => setViewMode('filmstrip')}
+                aria-pressed={viewMode === 'filmstrip'}
+              >
+                <FilmIcon size={14} />
+                <span>35mm Horizon Reel</span>
+              </button>
+            </div>
+          </div>
 
-                    <div className="gm-collection-badge-wrap">
-                      <span className="gm-collection-tagline">{col.tagline}</span>
-                      <h3 className="gm-collection-name">{col.category}</h3>
-                      <span className="gm-collection-count">{col.frameCount} FRAMES</span>
-                    </div>
+          {viewMode === 'filmstrip' ? (
+            <FilmstripReelView
+              stories={filteredStories}
+              onSelectStory={onSelectStory}
+            />
+          ) : (
+            <>
+              {/* Curated Photo Portrait Collections Grid */}
+              <div className="gm-collections-grid">
+                {collections.map(col => (
+                  <div key={col.id} className="gm-collection-col">
+                    <button
+                      type="button"
+                      aria-label={`View ${col.category} collection`}
+                      className="gm-collection-card group"
+                      onClick={() => setActiveCollection(col)}
+                    >
+                      <div className="gm-collection-media">
+                        <img
+                          src={col.coverImage}
+                          alt={col.storyTitle}
+                          className="gm-collection-img"
+                          loading="lazy"
+                          onError={handleImageError}
+                        />
+                        <div className="gm-collection-overlay" />
+                        
+                        {/* Viewfinder corner pips */}
+                        <span className="corner-pip corner-tl" aria-hidden="true" />
+                        <span className="corner-pip corner-tr" aria-hidden="true" />
+                        <span className="corner-pip corner-bl" aria-hidden="true" />
+                        <span className="corner-pip corner-br" aria-hidden="true" />
 
-                    <div className="gm-collection-hover-pill">
-                      <span>Explore Chapter</span>
-                      <ArrowRight size={13} />
-                    </div>
+                        <div className="gm-collection-badge-wrap">
+                          <span className="gm-collection-tagline">{col.tagline}</span>
+                          <h3 className="gm-collection-name">{col.category}</h3>
+                          <span className="gm-collection-count">{col.frameCount} FRAMES</span>
+                        </div>
+
+                        <div className="gm-collection-hover-pill">
+                          <span>Explore Chapter</span>
+                          <ArrowRight size={13} />
+                        </div>
+                      </div>
+                    </button>
                   </div>
-                </button>
-              </div>
-            ))}
-          </div>
-
-          {/* Wander Through Every Moment Button */}
-          <div className="gm-wander-row">
-            <button
-              type="button"
-              className="gm-wander-btn"
-              onClick={() => setWallExpanded(v => !v)}
-            >
-              <span>{wallExpanded ? 'Show Curated Highlights' : 'Wander Through Every Moment'}</span>
-              <ArrowRight
-                size={15}
-                style={{ transform: wallExpanded ? 'rotate(90deg)' : 'none', transition: 'transform 0.3s' }}
-              />
-            </button>
-          </div>
-
-          {/* Wall of Moments Collage */}
-          {wallExpanded && (
-            <div className="gm-wall-reveal-wrap">
-              <div className="gm-wall-header-sm">
-                <p className="gm-wall-eyebrow-sm">ARCHIVAL WALL</p>
-                <h3 className="gm-wall-heading-sm">Every Captured Chronicle</h3>
-              </div>
-              <div className="gm-wall-grid">
-                {displayedWallImages.map((img, i) => (
-                  <button
-                    key={`${img.url}-${i}`}
-                    type="button"
-                    className="gm-wall-cell"
-                    onClick={() => openLightbox(img.story, Math.max(0, img.story.images.findIndex(si => si.url === img.url)))}
-                    aria-label={`View photo from ${img.storyTitle}`}
-                  >
-                    <img
-                      src={img.url}
-                      alt={img.alt}
-                      className="gm-wall-img"
-                      loading="lazy"
-                      onError={handleImageError}
-                    />
-                    <div className="gm-wall-hover">
-                      <span className="gm-wall-story-name">{img.storyTitle}</span>
-                      <span className="gm-wall-view-label"><Eye size={12} /> View</span>
-                    </div>
-                  </button>
                 ))}
               </div>
-            </div>
+
+              {/* Wander Through Every Moment Button */}
+              <div className="gm-wander-row">
+                <button
+                  type="button"
+                  className="gm-wander-btn"
+                  onClick={() => setWallExpanded(v => !v)}
+                >
+                  <span>{wallExpanded ? 'Show Curated Highlights' : 'Wander Through Every Moment'}</span>
+                  <ArrowRight
+                    size={15}
+                    style={{ transform: wallExpanded ? 'rotate(90deg)' : 'none', transition: 'transform 0.3s' }}
+                  />
+                </button>
+              </div>
+
+              {/* Wall of Moments Collage */}
+              {wallExpanded && (
+                <div className="gm-wall-reveal-wrap">
+                  <div className="gm-wall-header-sm">
+                    <p className="gm-wall-eyebrow-sm">ARCHIVAL WALL</p>
+                    <h3 className="gm-wall-heading-sm">Every Captured Chronicle</h3>
+                  </div>
+                  <div className="gm-wall-grid">
+                    {displayedWallImages.map((img, i) => (
+                      <button
+                        key={`${img.url}-${i}`}
+                        type="button"
+                        className="gm-wall-cell"
+                        onClick={() => openLightbox(img.story, Math.max(0, img.story.images.findIndex(si => si.url === img.url)))}
+                        aria-label={`View photo from ${img.storyTitle}`}
+                      >
+                        <img
+                          src={img.url}
+                          alt={img.alt}
+                          className="gm-wall-img"
+                          loading="lazy"
+                          onError={handleImageError}
+                        />
+                        <div className="gm-wall-hover">
+                          <span className="gm-wall-story-name">{img.storyTitle}</span>
+                          <span className="gm-wall-view-label"><Eye size={12} /> View</span>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </div>
       </section>

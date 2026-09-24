@@ -8,6 +8,7 @@ import { usePublicSections } from '../hooks/usePublicSections';
 import { SkeletonSlide } from './SkeletonSlide';
 import { handleImageError } from '../utils/imageFallback';
 import { LetterFlipHeading } from './LetterFlipHeading';
+import { smoothScrollTo } from '../hooks/useSmoothScroll';
 import './CameraPathExperience.css';
 
 interface CameraPathExperienceProps {
@@ -147,8 +148,8 @@ export const CameraPathExperience: React.FC<CameraPathExperienceProps> = ({
     };
 
     const updateLoop = () => {
-      // Silky lerp interpolation for 60fps cinematic fluidity
-      currentProgress += (targetProgress - currentProgress) * 0.1;
+      // Silky lerp interpolation for 60fps cinematic fluidity (slightly snappier on mobile thumb scroll)
+      currentProgress += (targetProgress - currentProgress) * (isMobile ? 0.18 : 0.1);
       setScrollProgress(currentProgress);
 
       // Determine active story index based on progress (0 to total-1)
@@ -177,10 +178,7 @@ export const CameraPathExperience: React.FC<CameraPathExperienceProps> = ({
     const trackHeight = trackRef.current.offsetHeight - window.innerHeight;
     const targetScroll = trackTop + (index / (featuredStories.length - 1)) * trackHeight;
 
-    window.scrollTo({
-      top: targetScroll,
-      behavior: 'smooth'
-    });
+    smoothScrollTo(targetScroll, { duration: 0.95 });
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -283,8 +281,7 @@ export const CameraPathExperience: React.FC<CameraPathExperienceProps> = ({
               className="btn btn-primary"
               data-magnetic
               onClick={() => {
-                const el = document.getElementById('camera-journey');
-                if (el) el.scrollIntoView({ behavior: 'smooth' });
+                smoothScrollTo('camera-journey');
               }}
             >
               Explore Our Stories <ArrowRight size={16} />
@@ -295,8 +292,7 @@ export const CameraPathExperience: React.FC<CameraPathExperienceProps> = ({
               data-magnetic
               onClick={(e) => {
                 e.preventDefault();
-                const el = document.getElementById('contact');
-                if (el) el.scrollIntoView({ behavior: 'smooth' });
+                smoothScrollTo('contact');
               }}
             >
               Check Your Date
