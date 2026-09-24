@@ -1,0 +1,222 @@
+/* ==========================================================================
+   DECKLE / WAVY CLOTH BANNER — PURE EDITORIAL TYPOGRAPHY
+   Matches reference image with organic silk ribbon waves, refined quote & seal
+   ========================================================================== */
+
+.deckle-banner-wrapper {
+  position: relative;
+  width: 100%;
+  margin: clamp(2.5rem, 5vw, 4.5rem) 0;
+  z-index: 10;
+  overflow: visible;
+}
+
+.deckle-banner-wrapper.crimson {
+  --banner-bg: #891212;
+  --banner-text: #FAF0E6;
+  --banner-accent: #E8C882;
+  --banner-shadow: rgba(40, 10, 10, 0.35);
+}
+
+.deckle-banner-wrapper.charcoal {
+  --banner-bg: #1A1215;
+  --banner-text: #FAF0E6;
+  --banner-accent: #D4AF37;
+  --banner-shadow: rgba(0, 0, 0, 0.45);
+}
+
+/* ── Smooth Organic Cloth Wave Edges ───────────────────────────────────── */
+.deckle-edge {
+  position: relative;
+  width: 100%;
+  height: clamp(26px, 3.8vw, 48px);
+  color: var(--banner-bg);
+  line-height: 0;
+  pointer-events: none;
+  z-index: 2;
+  filter: drop-shadow(0 4px 10px var(--banner-shadow));
+}
+
+.deckle-edge.top {
+  margin-bottom: -1px;
+}
+
+.deckle-edge.bottom {
+  margin-top: -1px;
+  position: relative;
+}
+
+.deckle-edge svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Central Crimson Banner Surface ────────────────────────────────────── */
+.deckle-banner-content {
+  background-color: var(--banner-bg);
+  color: var(--banner-text);
+  padding: clamp(2.8rem, 5.5vw, 4.2rem) clamp(1.5rem, 4vw, 3rem);
+  text-align: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-image: 
+    radial-gradient(ellipse at 50% 50%, rgba(255, 235, 205, 0.12) 0%, rgba(0, 0, 0, 0.18) 100%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, transparent 60%, rgba(0, 0, 0, 0.12) 100%);
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.25),
+    0 12px 32px var(--banner-shadow);
+}
+
+/* ── Header Title (Optional Variant) ──────────────────────────────────── */
+.deckle-banner-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 1.2rem;
+}
+
+.deckle-banner-prefix {
+  font-family: var(--font-signature, 'Alex Brush', cursive);
+  font-size: clamp(2.2rem, 5.5vw, 3.8rem);
+  color: var(--accent-gold, #D4AF37);
+  line-height: 1;
+}
+
+.deckle-banner-title {
+  font-family: var(--font-display-condensed, 'Antonio', sans-serif);
+  font-size: clamp(3rem, 9vw, 6.8rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #FFFFFF;
+  line-height: 0.9;
+  margin: 0;
+}
+
+/* ── Quote Container & Typography ─────────────────────────────────────── */
+.deckle-quote-container {
+  max-width: 920px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 4;
+  padding: 0 1rem;
+}
+
+.deckle-quote-mark {
+  font-family: var(--font-editorial-italic, 'Cormorant', 'Fraunces', serif);
+  font-size: clamp(2.4rem, 4vw, 3.6rem);
+  line-height: 0.8;
+  color: rgba(255, 245, 230, 0.45);
+  display: block;
+  margin: 0 auto 0.6rem;
+  user-select: none;
+  font-feature-settings: "kern" 1;
+}
+
+.deckle-quote-text {
+  font-family: var(--font-editorial-italic, 'Cormorant', 'Fraunces', serif);
+  font-style: italic;
+  font-size: clamp(1.25rem, 2.4vw, 1.95rem);
+  font-weight: 400;
+  line-height: 1.45;
+  color: #FFF5EA;
+  letter-spacing: 0.015em;
+  margin: 0 auto 0.85rem;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.deckle-quote-author {
+  display: inline-block;
+  font-family: var(--font-sans);
+  font-size: clamp(0.72rem, 0.9vw, 0.82rem);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.26em;
+  color: rgba(255, 245, 234, 0.85);
+  margin-top: 0.25rem;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Decorative Golden Heart Seal on Bottom Edge ──────────────────────── */
+.deckle-heart-seal {
+  position: absolute;
+  bottom: -15px;
+  left: 62%;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #FAF5EE 0%, #EAE0CC 100%);
+  border: 1px dashed rgba(184, 134, 11, 0.75);
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.25), 
+    0 0 10px rgba(212, 175, 55, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 12;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+}
+
+.deckle-heart-seal:hover {
+  transform: translateX(-50%) scale(1.15);
+  box-shadow: 
+    0 6px 16px rgba(0, 0, 0, 0.35), 
+    0 0 14px rgba(212, 175, 55, 0.6);
+}
+
+.deckle-heart-seal-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #891212;
+  animation: pulseHeart 2.5s ease-in-out infinite;
+}
+
+@keyframes pulseHeart {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.12);
+  }
+}
+
+/* ── Mobile Viewport Adaptations ─────────────────────────────────────── */
+@media (max-width: 768px) {
+  .deckle-banner-wrapper {
+    margin: 2rem 0;
+  }
+  .deckle-banner-content {
+    padding: 2.2rem 1.2rem;
+  }
+  .deckle-quote-text {
+    font-size: 1.15rem;
+    line-height: 1.5;
+  }
+  .deckle-quote-author {
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+  }
+  .deckle-heart-seal {
+    bottom: -13px;
+    width: 26px;
+    height: 26px;
+  }
+  .deckle-heart-seal-inner svg {
+    width: 12px;
+    height: 12px;
+  }
+}

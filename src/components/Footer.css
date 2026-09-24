@@ -54,6 +54,24 @@
   height: 42px;
   width: auto;
   align-self: flex-start;
+  object-fit: contain;
+}
+
+:is([data-theme="burgundy"], [data-theme="dark"]) .footer-logo.logo-theme-light {
+  display: none !important;
+}
+
+:is([data-theme="burgundy"], [data-theme="dark"]) .footer-logo.logo-theme-dark {
+  display: block !important;
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .footer-logo.logo-theme-dark {
+  display: none !important;
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .footer-logo.logo-theme-light {
+  display: block !important;
+  filter: contrast(1.15) brightness(0.9);
 }
 
 .footer-tagline {
@@ -73,6 +91,11 @@
   margin-bottom: 20px;
 }
 
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .footer-heading {
+  color: var(--gm-wine, #8A1212);
+  font-weight: 700;
+}
+
 .footer-links-list {
   list-style: none;
   display: flex;
@@ -87,6 +110,10 @@
 }
 .footer-links-list a:hover {
   color: var(--accent-gold);
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .footer-links-list a:hover {
+  color: var(--gm-wine, #8A1212);
 }
 
 .footer-contact-item {

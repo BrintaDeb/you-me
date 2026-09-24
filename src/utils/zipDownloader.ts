@@ -151,8 +151,8 @@ PRINT & ARCHIVAL CARE INSTRUCTIONS:
    are recommended.
 
 Direct Inquiries & Print Lab Orders:
-WhatsApp: +91 91238 27488
-Email: youandmestudio.wedding@gmail.com
+WhatsApp: (+91) 81198 05161
+Email: youandmeagt@gmail.com
 `;
   folder.file('README.txt', readme);
 

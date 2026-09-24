@@ -4,6 +4,7 @@ import { couplesData } from '../data/couplesData';
 import type { WeddingStory } from '../data/couplesData';
 import { usePublicSections } from '../hooks/usePublicSections';
 import { handleImageError } from '../utils/imageFallback';
+import { LetterFlipHeading } from './LetterFlipHeading';
 import './PortfolioShowcase.css';
 
 interface PortfolioShowcaseProps {
@@ -65,9 +66,14 @@ export const PortfolioShowcase: React.FC<PortfolioShowcaseProps> = ({
           <div className="eyebrow">
             <Sparkles size={14} /> Curated Stories
           </div>
-          <h2 id="portfolio-heading" className="portfolio-title">
-            Stories We've Had the Honour to Tell
-          </h2>
+          <LetterFlipHeading
+            prefix="Our Curated"
+            text="WEDDING STORIES"
+            as="h2"
+            align="center"
+            delay={150}
+            className="portfolio-heading-flip"
+          />
           <p className="portfolio-subtitle">
             Every celebration holds its own rhythm, tenderness, and grandeur. Explore a curated selection of authentic celebrations and timeless love stories.
           </p>
@@ -141,6 +147,12 @@ export const PortfolioShowcase: React.FC<PortfolioShowcaseProps> = ({
                 }}
               >
                 <div className="editorial-card-media-wrap">
+                  {/* Viewfinder corner pips */}
+                  <span className="corner-pip corner-tl" aria-hidden="true" />
+                  <span className="corner-pip corner-tr" aria-hidden="true" />
+                  <span className="corner-pip corner-bl" aria-hidden="true" />
+                  <span className="corner-pip corner-br" aria-hidden="true" />
+
                   <img
                     src={story.coverImage}
                     alt={story.title}

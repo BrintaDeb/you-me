@@ -1878,10 +1878,11 @@
 /* White / Light Theme Text Effects */
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .auth-title,
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .hero-couple-title {
-  background: linear-gradient(135deg, #14100E 0%, #3D2F29 55%, var(--accent-gold) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 2px 8px rgba(142, 101, 35, 0.1));
+  background: none;
+  -webkit-background-clip: initial;
+  -webkit-text-fill-color: initial;
+  color: var(--text-primary, #110D0C);
+  filter: none;
 }
 
 /* -----------------------------------------------------------------------

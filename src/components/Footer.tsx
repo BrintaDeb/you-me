@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Phone, Mail } from 'lucide-react';
 import { businessInfo } from '../data/businessData';
-import { useTheme } from '../context/useTheme';
 import './Footer.css';
 
 interface FooterProps {
@@ -9,7 +8,6 @@ interface FooterProps {
 }
 
 export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
-  const { theme } = useTheme();
   const footerRef = useRef<HTMLElement>(null);
 
   // Parallax watermark: shifts slightly on scroll
@@ -51,9 +49,14 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         <div className="footer-top">
           <div className="footer-brand-col">
             <img
-              src={theme === 'white' ? "/assets/brand/logo_black.png" : "/assets/brand/logo_white.png"}
+              src="/assets/brand/logo_white.png"
               alt="YOU & ME"
-              className="footer-logo"
+              className="footer-logo logo-theme-dark"
+            />
+            <img
+              src="/assets/brand/logo_black.png"
+              alt="YOU & ME"
+              className="footer-logo logo-theme-light"
             />
             <p className="footer-tagline">
               Documentary wedding photography shaped by warmth, emotion, and artistry. Scripting visual love stories that stand the test of time.
@@ -84,8 +87,8 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 </a>
               </li>
               <li>
-                <a href="#faq" onClick={(e) => handleLinkClick(e, 'home', 'faq')}>
-                  FAQ &amp; Packages
+                <a href="/celebrations" onClick={(e) => handleLinkClick(e, 'celebrations')}>
+                  Celebrations &amp; Pricing
                 </a>
               </li>
               <li>

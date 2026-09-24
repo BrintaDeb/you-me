@@ -1,0 +1,46 @@
+.marquee-ribbon-container {
+  position: relative;
+  width: 104%;
+  margin-left: -2%;
+  margin-top: clamp(2rem, 4vw, 3.5rem);
+  margin-bottom: clamp(2rem, 4vw, 3.5rem);
+  background-color: var(--gm-wine, #8A1212);
+  color: var(--gm-cream, #FFF6E5);
+  padding: 12px 0;
+  overflow: hidden;
+  z-index: 15;
+  box-shadow: 0 4px 20px rgba(138, 18, 18, 0.25);
+}
+
+.marquee-ribbon-container.tilted {
+  transform: rotate(-1.2deg);
+}
+
+.marquee-track-wrapper {
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+}
+
+.marquee-segment {
+  display: inline-block;
+  white-space: nowrap;
+  font-family: var(--font-display-condensed, 'Antonio', sans-serif);
+  font-size: clamp(1.15rem, 2.2vw, 1.6rem);
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #FFF6E5;
+  padding-right: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .marquee-ribbon-container {
+    padding: 10px 0;
+    width: 108%;
+    margin-left: -4%;
+  }
+  .marquee-segment {
+    letter-spacing: 0.18em;
+  }
+}

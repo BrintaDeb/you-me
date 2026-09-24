@@ -219,13 +219,15 @@
 
 /* White / Light Theme Optimizations */
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .gallery-hero-title {
-  background: linear-gradient(180deg, #14100E 0%, #362B26 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  background: none;
+  -webkit-background-clip: initial;
+  -webkit-text-fill-color: initial;
+  color: var(--text-primary, #110D0C);
 }
 
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .gallery-hero-meta {
-  color: var(--accent-gold);
+  color: var(--accent-wine, #8A1212);
+  font-weight: 600;
 }
 
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .gallery-item:hover {

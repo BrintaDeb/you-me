@@ -39,9 +39,10 @@
 }
 
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .about-title {
-  background: linear-gradient(135deg, #1a1412 0%, #3d2f29 60%, var(--accent-gold) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  background: none !important;
+  -webkit-background-clip: initial !important;
+  -webkit-text-fill-color: initial !important;
+  color: var(--text-primary, #110D0C) !important;
 }
 
 .about-p {
@@ -75,8 +76,17 @@
 }
 
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .about-highlight-box {
-  background: rgba(158, 116, 50, 0.09);
-  color: #2b201a;
+  background: rgba(138, 18, 18, 0.05);
+  border-left-color: var(--gm-wine, #8A1212);
+  color: #1A1215;
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .about-highlight-box .highlight-icon {
+  color: var(--gm-wine, #8A1212);
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .metric-value {
+  color: var(--gm-wine, #8A1212);
 }
 
 /* Credibility & Trust Metrics Bar */

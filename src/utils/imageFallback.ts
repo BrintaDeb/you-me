@@ -7,7 +7,7 @@
 
 import React from 'react';
 
-export const DEFAULT_FALLBACK_IMAGE = '/assets/posters/paraj_mrinmoyee.jpg';
+export const DEFAULT_FALLBACK_IMAGE = '/assets/portfolio/default_wedding_photo.jpg';
 export const DEFAULT_VIDEO_POSTER = '/assets/posters/urmi_jasraj.jpg';
 export const DEFAULT_AVATAR = '/assets/team/brinta_deb.jpg';
 
@@ -22,3 +22,17 @@ export function handleImageError(
     target.src = customFallback;
   }
 }
+
+/**
+ * Returns a guaranteed valid image URL, falling back to bundled default if empty or invalid
+ */
+export function getSafeImageUrl(
+  url?: string | null,
+  customFallback: string = DEFAULT_FALLBACK_IMAGE
+): string {
+  if (!url || typeof url !== 'string' || url.trim() === '') {
+    return customFallback;
+  }
+  return url;
+}
+

@@ -78,10 +78,17 @@
   letter-spacing: -0.01em;
 }
 
+.portfolio-heading-flip {
+  margin-top: 14px;
+  margin-bottom: 22px;
+}
+
 .portfolio-subtitle {
+  font-family: var(--font-sans);
   font-size: 1.05rem;
-  line-height: 1.6;
-  color: var(--text-muted);
+  line-height: 1.62;
+  font-weight: 400;
+  color: var(--text-secondary);
 }
 
 .portfolio-filters {
@@ -94,23 +101,40 @@
 }
 
 .filter-pill {
-  padding: 9px 22px;
+  padding: 8px 22px;
   border-radius: 30px;
-  font-size: 0.85rem;
-  letter-spacing: 0.04em;
-  font-weight: 500;
+  font-family: var(--font-sans);
+  font-size: 0.84rem;
+  letter-spacing: 0.025em;
+  font-weight: 600;
   color: var(--text-secondary);
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--border-subtle);
   cursor: pointer;
   transition: all var(--transition-fast, 0.25s ease);
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
 }
-.filter-pill:hover,
-.filter-pill.active {
-  background: rgba(200, 164, 107, 0.14);
+
+:is([data-theme="burgundy"], [data-theme="dark"]) .filter-pill {
+  color: #EADBD3;
+  border-color: rgba(212, 175, 55, 0.25);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.filter-pill:hover {
+  background: rgba(212, 175, 55, 0.15);
   border-color: var(--accent-gold);
-  color: var(--accent-gold-light);
+  color: var(--accent-gold);
   transform: translateY(-1px);
+}
+
+:is([data-theme="burgundy"], [data-theme="dark"]) .filter-pill.active {
+  background: var(--accent-gold, #D4AF37);
+  border-color: var(--accent-gold, #D4AF37);
+  color: #12050A;
+  font-weight: 700;
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.35);
 }
 
 /* --------------------------------------------------------------------------
@@ -465,25 +489,32 @@
 
 /* White / Light Theme Optimizations */
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .portfolio-title {
-  background: linear-gradient(135deg, #14100E 0%, #3D2F29 55%, var(--accent-gold) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 2px 10px rgba(142, 101, 35, 0.1));
+  background: none !important;
+  -webkit-background-clip: initial !important;
+  -webkit-text-fill-color: initial !important;
+  color: var(--text-primary, #110D0C) !important;
+  filter: none !important;
 }
 
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .filter-pill {
   background: #FFFFFF;
   border-color: var(--border-medium);
-  color: var(--text-secondary);
+  color: #2C221D;
   box-shadow: 0 2px 6px rgba(45, 30, 22, 0.05);
 }
 
-:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .filter-pill:hover,
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .filter-pill:hover {
+  border-color: var(--gm-wine, #8A1212);
+  color: var(--gm-wine, #8A1212);
+  background: rgba(138, 18, 18, 0.05);
+}
+
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .filter-pill.active {
-  background: var(--accent-gold);
+  background: var(--gm-wine, #8A1212);
   color: #FFFFFF;
-  border-color: var(--accent-gold);
-  box-shadow: 0 4px 14px rgba(142, 101, 35, 0.25);
+  font-weight: 700;
+  border-color: var(--gm-wine, #8A1212);
+  box-shadow: 0 4px 14px rgba(138, 18, 18, 0.25);
 }
 
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .portfolio-card {

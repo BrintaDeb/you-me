@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from 'react';
 import { X, Phone, Mail, ArrowRight } from 'lucide-react';
 import { businessInfo } from '../data/businessData';
 import { ThemeToggle } from './ThemeToggle';
-import { useTheme } from '../context/useTheme';
 import './MobileMenu.css';
 
 interface MobileMenuProps {
@@ -13,7 +12,6 @@ interface MobileMenuProps {
 
 export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose, onNavigate }) => {
   const closeBtnRef = useRef<HTMLButtonElement>(null);
-  const { theme } = useTheme();
 
   useEffect(() => {
     if (isOpen) {
@@ -55,9 +53,14 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose, onNavig
     >
       <div className="mobile-menu-header">
         <img
-          src={theme === 'white' ? "/assets/brand/logo_black.png" : "/assets/brand/logo_white.png"}
+          src="/assets/brand/logo_white.png"
           alt="YOU & ME"
-          className="mobile-logo"
+          className="mobile-logo logo-theme-dark"
+        />
+        <img
+          src="/assets/brand/logo_black.png"
+          alt="YOU & ME"
+          className="mobile-logo logo-theme-light"
         />
         <div className="mobile-header-actions">
           <ThemeToggle />
@@ -76,6 +79,17 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose, onNavig
       <ul className="mobile-nav-list">
         <li className="mobile-nav-item">
           <a
+            href="/"
+            onClick={(e) => {
+              e.preventDefault();
+              handleNavClick('home');
+            }}
+          >
+            Home <ArrowRight size={20} opacity={0.6} />
+          </a>
+        </li>
+        <li className="mobile-nav-item">
+          <a
             href="/portfolio"
             onClick={(e) => {
               e.preventDefault();
@@ -83,6 +97,17 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose, onNavig
             }}
           >
             Full Portfolio <ArrowRight size={20} opacity={0.6} />
+          </a>
+        </li>
+        <li className="mobile-nav-item">
+          <a
+            href="/celebrations"
+            onClick={(e) => {
+              e.preventDefault();
+              handleNavClick('celebrations');
+            }}
+          >
+            Celebrations &amp; Packages <ArrowRight size={20} opacity={0.6} />
           </a>
         </li>
         <li className="mobile-nav-item">

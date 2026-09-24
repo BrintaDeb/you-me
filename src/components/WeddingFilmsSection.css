@@ -146,12 +146,16 @@
   }
 }
 
-/* White / Light Theme Optimizations */
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .films-title {
-  background: linear-gradient(135deg, #14100E 0%, #3D2F29 55%, var(--accent-gold) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 2px 10px rgba(142, 101, 35, 0.1));
+  background: none !important;
+  -webkit-background-clip: initial !important;
+  -webkit-text-fill-color: initial !important;
+  color: var(--text-primary, #110D0C) !important;
+  filter: none !important;
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .films-subtitle {
+  color: var(--text-secondary, #241B17);
 }
 
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .film-card {

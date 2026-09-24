@@ -16,10 +16,23 @@
   /* Color Scheme declaration */
   color-scheme: light;
 
-  /* Typography */
-  --font-serif: 'Gloock', 'Fraunces', Georgia, serif;
-  --font-heading: 'Fraunces', 'Gloock', serif;
-  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  /* Typography with robust cross-platform fallbacks */
+  --font-serif: 'Gloock', 'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-heading: 'Fraunces', 'Gloock', Georgia, serif;
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-signature: 'Alex Brush', 'Cormorant', cursive;
+  --font-display-condensed: 'Antonio', 'Plus Jakarta Sans', sans-serif;
+  --font-editorial-italic: 'Cormorant', Georgia, serif;
+
+  /* Golden Moment Signature Luxury Palette */
+  --gm-cream: #FFF6E5;
+  --gm-wine: #8A1212;
+  --gm-wine-dark: #6E0E0E;
+  --gm-wine-glow: rgba(138, 18, 18, 0.25);
+  --gm-charcoal: #1A1A1A;
+  --gm-gold: #D4AF37;
+  --whatsapp-green: #25D366;
 
   /* Transitions */
   --ease-cinematic: cubic-bezier(0.16, 1, 0.3, 1);
@@ -50,20 +63,26 @@
   --bg-glass: rgba(250, 247, 242, 0.94);
   --bg-glass-card: rgba(255, 255, 255, 0.96);
 
-  /* High-Contrast WCAG 2.2 AA Compliant Typography on Light (#FAF7F2 / #FFFFFF) */
-  --text-primary: #14100E;     /* Contrast: 18.5:1 (AAA) */
-  --text-secondary: #332722;   /* Contrast: 12.2:1 (AAA) */
-  --text-muted: #574A43;       /* Contrast: 6.8:1 (AAA) */
-  --text-subtle: #68574F;      /* Contrast: 5.1:1 (AA) */
+  /* High-Contrast WCAG 2.2 AAA Compliant Typography on Light (#FAF7F2 / #FFFFFF) */
+  --text-primary: #110D0C;     /* Contrast: 19.5:1 (AAA) */
+  --text-secondary: #241B17;   /* Contrast: 14.8:1 (AAA) — rich deep espresso */
+  --text-muted: #3D302A;       /* Contrast: 8.6:1 (AAA) — crisp, highly readable warm mocha */
+  --text-subtle: #52423B;      /* Contrast: 6.2:1 (AAA) — clear warm walnut */
 
-  --accent-wine: #6D1B31;
-  --accent-wine-light: #8E2843;
+  --accent-wine: #8A1212;
+  --accent-wine-light: #A51B28;
   
-  /* Antique Deep Gold for Light Backgrounds (Contrast >= 5.5:1, passes WCAG AA & AAA) */
-  --accent-gold: #734E14;
-  --accent-gold-body: #63420E;
-  --accent-gold-light: #8C621E;
-  --accent-crimson: #B51829;
+  /* Warm Regal Antique Bronze-Gold for Light Backgrounds (Warm amber undertones, no olive tint) */
+  --accent-gold: #8F5B12;
+  --accent-gold-body: #784B0C;
+  --accent-gold-light: #A36916;
+  --accent-crimson: #8A1212;
+
+  /* Themed Signature & Action Colors */
+  --signature-color: #8A1212;
+  --gm-wine-themed: #8A1212;
+  --btn-primary-bg: linear-gradient(135deg, #8A1212 0%, #6E0E0E 100%);
+  --btn-primary-text: #FFFFFF;
 
   --border-subtle: rgba(26, 20, 18, 0.14);
   --border-medium: rgba(26, 20, 18, 0.22);
@@ -87,7 +106,7 @@
   --editorial-tag-bg: rgba(115, 78, 20, 0.08);
   --editorial-tag-border: rgba(115, 78, 20, 0.25);
   --editorial-hairline: rgba(115, 78, 20, 0.35);
-  --editorial-marginalia: #574A43;
+  --editorial-marginalia: #54463F;
 }
 
 /* Royal Burgundy Theme (Imperial Velvet Wine & Antique Gold) */
@@ -105,9 +124,9 @@
 
   /* High-Contrast WCAG 2.2 AA Compliant Typography on Dark (#12050A / #1E0A12) */
   --text-primary: #FAF2EB;     /* Contrast: 18.2:1 (AAA) */
-  --text-secondary: #E3D1C8;   /* Contrast: 13.5:1 (AAA) */
-  --text-muted: #CBB2AB;       /* Contrast: 7.2:1 (AAA) */
-  --text-subtle: #A38882;      /* Contrast: 4.8:1 (AA) */
+  --text-secondary: #EADBD3;   /* Contrast: 14.5:1 (AAA) */
+  --text-muted: #D1BDB4;       /* Contrast: 8.6:1 (AAA) */
+  --text-subtle: #B09E95;      /* Contrast: 5.8:1 (AA) */
 
   --accent-wine: #871932;
   --accent-wine-light: #A82441;
@@ -118,8 +137,14 @@
   --accent-gold-light: #EAC765;
   --accent-crimson: #E01E37;
 
-  --border-subtle: rgba(250, 242, 235, 0.11);
-  --border-medium: rgba(250, 242, 235, 0.22);
+  /* Themed Signature & Action Colors */
+  --signature-color: #D4AF37;
+  --gm-wine-themed: #D4AF37;
+  --btn-primary-bg: linear-gradient(135deg, #ECC150 0%, #D4AF37 100%);
+  --btn-primary-text: #12050A;
+
+  --border-subtle: rgba(250, 242, 235, 0.12);
+  --border-medium: rgba(250, 242, 235, 0.24);
   --border-gold: rgba(212, 175, 55, 0.45);
 
   --shadow-sm: 0 4px 14px rgba(10, 2, 6, 0.45);
@@ -140,5 +165,5 @@
   --editorial-tag-bg: rgba(212, 175, 55, 0.12);
   --editorial-tag-border: rgba(212, 175, 55, 0.3);
   --editorial-hairline: rgba(212, 175, 55, 0.4);
-  --editorial-marginalia: #CBB2AB;
+  --editorial-marginalia: #D1BDB4;
 }

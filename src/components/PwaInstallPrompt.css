@@ -414,3 +414,28 @@ body:has(.letterbox-active) .pwa-prompt-banner,
     inset: -6px; /* slightly tighter ring for 38px mobile icon */
   }
 }
+
+/* White / Light Theme Polish */
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .pwa-prompt-banner {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1.5px solid rgba(138, 18, 18, 0.2);
+  box-shadow: 0 16px 45px rgba(45, 30, 22, 0.14),
+              0 0 25px rgba(138, 18, 18, 0.08),
+              inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .pwa-prompt-title {
+  color: #120E0D;
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .pwa-prompt-subtitle {
+  color: #54463F;
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .pwa-prompt-close {
+  color: #54463F;
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .pwa-prompt-close:hover {
+  color: #120E0D;
+}

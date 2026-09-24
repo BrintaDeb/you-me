@@ -99,10 +99,16 @@
 
 /* White / Light Theme Optimizations */
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .faq-title {
-  background: linear-gradient(135deg, #14100E 0%, #3D2F29 55%, var(--accent-gold) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 2px 10px rgba(142, 101, 35, 0.1));
+  background: none;
+  -webkit-background-clip: initial;
+  -webkit-text-fill-color: initial;
+  color: var(--text-primary, #110D0C);
+  filter: none;
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .faq-question {
+  color: var(--text-primary, #110D0C);
+  font-weight: 500;
 }
 
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .faq-item {
@@ -112,19 +118,19 @@
 }
 
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .faq-item:hover {
-  border-color: var(--accent-gold);
-  box-shadow: 0 6px 18px rgba(45, 30, 22, 0.08);
+  border-color: var(--accent-wine, #8A1212);
+  box-shadow: 0 6px 18px rgba(138, 18, 18, 0.08);
 }
 
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .faq-item.open {
   background: #FFFFFF;
-  border-color: var(--accent-gold);
-  box-shadow: 0 8px 24px rgba(142, 101, 35, 0.12);
+  border-color: var(--accent-wine, #8A1212);
+  box-shadow: 0 8px 24px rgba(138, 18, 18, 0.1);
 }
 
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .faq-trigger:hover .faq-question,
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .faq-item.open .faq-question {
-  color: var(--accent-gold);
+  color: var(--accent-wine, #8A1212);
 }
 
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .faq-icon-badge {
@@ -134,8 +140,8 @@
 }
 
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .faq-item.open .faq-icon-badge {
-  border-color: var(--accent-gold);
+  border-color: var(--accent-wine, #8A1212);
   color: #FFFFFF;
-  background: var(--accent-gold);
+  background: var(--accent-wine, #8A1212);
 }
 

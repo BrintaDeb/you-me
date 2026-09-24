@@ -1,0 +1,386 @@
+.celebrations-section {
+  padding: clamp(3.5rem, 7vw, 6rem) 0;
+  position: relative;
+  background-color: var(--bg-primary, #FFF6E5);
+  overflow: hidden;
+}
+
+.celebrations-header {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto clamp(2rem, 4vw, 3rem);
+}
+
+.celebrations-subtitle {
+  font-family: var(--font-sans);
+  font-size: clamp(0.95rem, 1.8vw, 1.1rem);
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-top: 1rem;
+}
+
+/* Tab Switcher */
+.celebration-tabs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(8px, 1.5vw, 16px);
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.celebration-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border-radius: 40px;
+  border: 1.5px solid transparent;
+  background-color: rgba(138, 18, 18, 0.05);
+  color: var(--text-primary);
+  font-family: var(--font-display-condensed, 'Antonio', sans-serif);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.celebration-tab-btn:hover {
+  background-color: rgba(138, 18, 18, 0.12);
+  transform: translateY(-1px);
+}
+
+.celebration-tab-btn.active {
+  border-color: var(--gm-wine, #8A1212);
+  background-color: rgba(138, 18, 18, 0.12);
+  color: var(--gm-wine, #8A1212);
+  box-shadow: 0 4px 16px rgba(138, 18, 18, 0.12);
+  transform: scale(1.02);
+}
+
+.celebration-tab-icon {
+  display: flex;
+  align-items: center;
+  color: var(--gm-wine, #8A1212);
+}
+
+/* Category Quote */
+.celebration-quote {
+  text-align: center;
+  font-family: var(--font-editorial-italic, 'Cormorant', serif);
+  font-style: italic;
+  font-size: clamp(1.2rem, 2.2vw, 1.65rem);
+  color: var(--text-secondary);
+  max-width: 740px;
+  margin: 0 auto clamp(2.5rem, 5vw, 4rem);
+  line-height: 1.45;
+  transition: opacity 0.3s ease;
+}
+
+/* Package Cards Grid */
+.package-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: clamp(24px, 4vw, 40px);
+  max-width: 1100px;
+  margin: 0 auto;
+  align-items: stretch;
+}
+
+.package-card {
+  position: relative;
+  background-color: var(--bg-surface, #FFFFFF);
+  border: 1px solid var(--border-subtle, rgba(26, 20, 18, 0.12));
+  border-radius: 1.5rem;
+  padding: clamp(2rem, 4vw, 2.8rem) clamp(1.5rem, 3vw, 2.4rem);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: visible;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.package-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 48px rgba(138, 18, 18, 0.14);
+}
+
+/* Floating Circular Price Badge (Golden Moment Signature) */
+.floating-price-badge {
+  position: absolute;
+  top: -18px;
+  right: -14px;
+  width: clamp(114px, 12vw, 126px);
+  height: clamp(114px, 12vw, 126px);
+  border-radius: 50%;
+  background: #FFFFFF;
+  box-shadow: 0 12px 32px rgba(138, 18, 18, 0.22);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  pointer-events: none;
+}
+
+:is([data-theme="burgundy"], [data-theme="dark"]) .floating-price-badge {
+  background: #1E0A12;
+  border: 1px solid rgba(212, 175, 55, 0.4);
+}
+
+.price-badge-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1.5px solid rgba(138, 18, 18, 0.3);
+}
+
+.price-badge-ring.ring-1 {
+  transform: scale(1.08) rotate(-12deg);
+}
+
+.price-badge-ring.ring-2 {
+  transform: scale(1.04) rotate(12deg);
+}
+
+.price-badge-label {
+  font-family: var(--font-sans);
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--text-muted);
+}
+
+.price-badge-amount {
+  font-family: var(--font-display-condensed, 'Antonio', sans-serif);
+  font-size: clamp(1.4rem, 2vw, 1.7rem);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--gm-wine, #8A1212);
+  margin-top: 2px;
+  white-space: nowrap;
+  letter-spacing: -0.01em;
+}
+
+:is([data-theme="burgundy"], [data-theme="dark"]) .price-badge-amount {
+  color: var(--accent-gold, #D4AF37);
+}
+
+/* Card Header */
+.package-card-header {
+  margin-bottom: 1.8rem;
+  padding-right: 50px; /* room for floating badge */
+}
+
+.package-curatorial-badge {
+  display: inline-block;
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--gm-wine, #8A1212);
+  background-color: rgba(138, 18, 18, 0.08);
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 0.8rem;
+}
+
+.package-card-title {
+  font-family: var(--font-display-condensed, 'Antonio', sans-serif);
+  font-size: clamp(2rem, 3.5vw, 2.8rem);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--gm-wine, #8A1212);
+  line-height: 1;
+  margin-bottom: 0.6rem;
+}
+
+:is([data-theme="burgundy"], [data-theme="dark"]) .package-card-title {
+  color: var(--accent-gold, #D4AF37);
+}
+
+.package-card-tagline {
+  font-family: var(--font-sans);
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* Deliverables */
+.package-deliverables-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 2rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex-grow: 1;
+}
+
+.package-deliverable-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.deliverable-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: rgba(138, 18, 18, 0.08);
+  color: var(--gm-wine, #8A1212);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+:is([data-theme="burgundy"], [data-theme="dark"]) .deliverable-icon {
+  background-color: rgba(212, 175, 55, 0.12);
+  color: var(--accent-gold, #D4AF37);
+}
+
+.deliverable-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.deliverable-title {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.deliverable-detail {
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+  margin-top: 2px;
+}
+
+/* Card Actions */
+.package-card-actions {
+  margin-top: 1.5rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--border-subtle, rgba(26, 20, 18, 0.1));
+}
+
+.package-book-btn {
+  width: 100%;
+  background: var(--gm-wine, #8A1212) !important;
+  color: #FFFFFF !important;
+}
+
+.package-book-btn:hover {
+  background: var(--gm-wine-dark, #6E0E0E) !important;
+}
+
+/* Guarantee / Comparison Footer */
+.celebrations-footer-note {
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.guarantee-text {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  max-width: 680px;
+  letter-spacing: 0.02em;
+}
+
+.compare-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 24px;
+  border-radius: 40px;
+  border: 1.5px solid var(--gm-wine, #8A1212);
+  color: var(--gm-wine, #8A1212);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  background: transparent;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.compare-toggle-btn:hover {
+  background: var(--gm-wine, #8A1212);
+  color: #FFFFFF;
+}
+
+/* Comparison Drawer */
+.comparison-drawer {
+  margin-top: 2.5rem;
+  background: var(--bg-surface, #FFFFFF);
+  border: 1px solid var(--border-subtle);
+  border-radius: 1.2rem;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.06);
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.comparison-table-wrapper {
+  overflow-x: auto;
+}
+
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+}
+
+.comparison-table th,
+.comparison-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.comparison-table th {
+  font-family: var(--font-display-condensed, 'Antonio', sans-serif);
+  font-size: 1.15rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--gm-wine, #8A1212);
+  background: rgba(138, 18, 18, 0.03);
+}
+
+.check-icon {
+  color: #2E7D32;
+  vertical-align: middle;
+  margin-right: 4px;
+}
+
+@media (max-width: 600px) {
+  .floating-price-badge {
+    width: 90px;
+    height: 90px;
+    top: -14px;
+    right: -10px;
+  }
+  .price-badge-amount {
+    font-size: 1.55rem;
+  }
+}

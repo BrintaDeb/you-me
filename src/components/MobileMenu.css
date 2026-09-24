@@ -43,6 +43,35 @@
 .mobile-logo {
   height: 34px;
   width: auto;
+  object-fit: contain;
+}
+
+:is([data-theme="burgundy"], [data-theme="dark"]) .mobile-logo.logo-theme-light {
+  display: none !important;
+}
+
+:is([data-theme="burgundy"], [data-theme="dark"]) .mobile-logo.logo-theme-dark {
+  display: block !important;
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .mobile-logo.logo-theme-dark {
+  display: none !important;
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .mobile-logo.logo-theme-light {
+  display: block !important;
+  filter: contrast(1.15) brightness(0.9);
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .mobile-menu-overlay {
+  background: rgba(253, 251, 247, 0.98);
+  color: #1A1215;
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .mobile-close-btn {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.12);
+  color: #1A1215;
 }
 
 .mobile-close-btn {
@@ -138,4 +167,32 @@
   .mobile-logo {
     height: 28px;
   }
+}
+
+/* White / Light Theme Support */
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .mobile-menu-overlay {
+  background: rgba(250, 247, 242, 0.98);
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .mobile-close-btn {
+  background: #FFFFFF;
+  border-color: var(--border-medium);
+  color: var(--text-primary);
+  box-shadow: 0 2px 8px rgba(45, 30, 22, 0.08);
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .mobile-nav-item a {
+  color: #120E0D;
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .mobile-nav-item a:hover {
+  color: var(--gm-wine, #8A1212);
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .mobile-contact-links a {
+  color: #2C221D;
+}
+
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .mobile-social-link {
+  color: #54463F;
 }

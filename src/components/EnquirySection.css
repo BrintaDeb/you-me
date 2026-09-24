@@ -136,10 +136,11 @@
 }
 
 .form-label {
+  font-family: var(--font-sans);
   font-size: 0.76rem;
-  font-weight: 500;
-  color: rgba(243, 232, 223, 0.72);
-  letter-spacing: 0.04em;
+  font-weight: 600;
+  color: rgba(243, 232, 223, 0.82);
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   white-space: nowrap;
   display: inline-flex;
@@ -206,15 +207,19 @@
   height: 48px;
   color: #F8F5F0;
   font-size: 0.92rem;
-  font-family: inherit;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
   transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .form-input::placeholder,
 .form-textarea::placeholder {
-  color: rgba(243, 232, 223, 0.3);
-  font-weight: 300;
+  color: rgba(243, 232, 223, 0.45);
+  font-weight: 400;
   font-size: 0.88rem;
+  letter-spacing: -0.01em;
 }
 
 .form-input:hover,
@@ -297,10 +302,14 @@
   height: 52px;
   margin-top: 4px;
   border-radius: 10px;
+  font-family: var(--font-sans);
   font-size: 0.88rem;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
-  font-weight: 600;
+  font-weight: 700;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -747,9 +756,10 @@
 
 /* White / Light Theme Optimizations */
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .enquiry-title {
-  background: linear-gradient(180deg, #14100E 0%, #362B26 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  background: none;
+  -webkit-background-clip: initial;
+  -webkit-text-fill-color: initial;
+  color: var(--text-primary, #110D0C);
 }
 
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .enquiry-form-card {
@@ -759,18 +769,19 @@
 }
 
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .form-label {
-  color: #4A3E39;
+  color: var(--text-secondary, #241B17);
   font-weight: 600;
 }
 
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .btn-calendar-trigger {
-  background: rgba(142, 101, 35, 0.08);
-  border-color: rgba(142, 101, 35, 0.28);
-  color: #8E6523;
+  background: rgba(138, 18, 18, 0.08);
+  border-color: rgba(138, 18, 18, 0.28);
+  color: var(--accent-wine, #8A1212);
+  font-weight: 600;
 }
 
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .btn-calendar-trigger:hover {
-  background: #8E6523;
+  background: var(--accent-wine, #8A1212);
   color: #FFFFFF;
 }
 
@@ -781,22 +792,24 @@
 }
 
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .enquiry-direct-item:hover {
-  background: rgba(142, 101, 35, 0.04);
-  border-color: rgba(142, 101, 35, 0.3);
+  background: rgba(138, 18, 18, 0.04);
+  border-color: rgba(138, 18, 18, 0.3);
 }
 
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .enquiry-direct-icon {
-  background: rgba(142, 101, 35, 0.08);
-  border: 1px solid rgba(142, 101, 35, 0.2);
-  color: #8E6523;
+  background: rgba(138, 18, 18, 0.08);
+  border: 1px solid rgba(138, 18, 18, 0.2);
+  color: var(--accent-wine, #8A1212);
 }
 
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .enquiry-direct-label {
-  color: var(--text-muted);
+  color: var(--text-muted, #3D302A);
+  font-weight: 500;
 }
 
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .enquiry-direct-val {
-  color: var(--text-primary);
+  color: var(--text-primary, #110D0C);
+  font-weight: 600;
 }
 
 :is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .form-input,

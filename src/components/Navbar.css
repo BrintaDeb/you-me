@@ -1,154 +1,411 @@
-.navbar {
+/* ==========================================================================
+   FLOATING LUXURY ATELIER NAVIGATION — Navbar.css
+   - Standalone Brand Logo: Positioned outside the header section with dedicated
+     frosted glass badge & optimized black rendering in White theme
+   - Floating Header Section: Centered interactive & smooth pill capsule
+   - Interactive Navigation Buttons: Dynamic hover springs, scale, and active pill states
+   ========================================================================== */
+
+.floating-pill-header {
   position: fixed;
-  top: 0;
+  top: max(14px, calc(var(--sat, 0px) + 12px));
   left: 0;
-  width: 100%;
-  height: calc(var(--nav-height) + var(--sat));
-  padding-top: var(--sat);
-  padding-left: var(--sal);
-  padding-right: var(--sar);
+  right: 0;
   z-index: 1000;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 clamp(16px, 3.5vw, 44px);
+  pointer-events: none;
+  transition: top 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.floating-pill-header.is-scrolled {
+  top: max(12px, calc(var(--sat, 0px) + 10px));
+}
+
+/* ── 1. Standalone Brand Logo (Outside Header Section — Pure Transparent) ── */
+.standalone-brand-logo {
+  pointer-events: auto;
+  position: absolute;
+  left: clamp(16px, 3.5vw, 44px);
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  text-decoration: none;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.3s ease;
+  cursor: pointer;
+}
+
+:is([data-theme="burgundy"], [data-theme="dark"]) .standalone-brand-logo {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.standalone-brand-logo:hover {
+  transform: translateY(-50%) scale(1.06);
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+:is([data-theme="burgundy"], [data-theme="dark"]) .standalone-brand-logo:hover {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.standalone-brand-logo:active {
+  transform: translateY(-50%) scale(0.97);
+}
+
+/* Logo Image Styling & White Theme Optimization */
+.brand-logo-img {
+  height: clamp(30px, 3.2vw, 36px);
+  width: auto;
+  object-fit: contain;
+  display: block;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s ease;
+}
+
+/* In Burgundy Theme: Show White Logo, Hide Black Logo */
+:is([data-theme="burgundy"], [data-theme="dark"]) .logo-theme-light {
+  display: none !important;
+}
+:is([data-theme="burgundy"], [data-theme="dark"]) .logo-theme-dark {
+  display: block !important;
+  filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.7));
+}
+
+/* In White Theme: Show Optimized Black Logo, Hide White Logo */
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .logo-theme-dark {
+  display: none !important;
+}
+:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .logo-theme-light {
+  display: block !important;
+  /* Optimized pure black logo: crisp deep contrast with subtle luminous outline so it's readable over any background */
+  filter: contrast(1.22) brightness(0.88) drop-shadow(0 1px 4px rgba(255, 255, 255, 0.95)) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.25));
+}
+
+/* ── 2. Floating Header Section (Centered Navigation Pill) ────────── */
+.pill-navbar-container {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  max-width: min(1360px, calc(100vw - 32px));
+  margin: 0 auto;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(28px) saturate(1.9);
+  -webkit-backdrop-filter: blur(28px) saturate(1.9);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 9999px;
+  padding: 5px 8px;
+  box-shadow: 0 8px 32px rgba(45, 30, 22, 0.08), 0 1px 3px rgba(0, 0, 0, 0.03);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:is([data-theme="burgundy"], [data-theme="dark"]) .pill-navbar-container {
+  background: rgba(26, 8, 16, 0.90);
+  border-color: rgba(212, 175, 55, 0.28);
+  box-shadow: 0 10px 36px rgba(0, 0, 0, 0.55), 0 0 16px rgba(212, 175, 55, 0.08);
+}
+
+.pill-navbar-container:hover {
+  box-shadow: 0 12px 38px rgba(45, 30, 22, 0.12), 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+:is([data-theme="burgundy"], [data-theme="dark"]) .pill-navbar-container:hover {
+  box-shadow: 0 12px 42px rgba(0, 0, 0, 0.65), 0 0 22px rgba(212, 175, 55, 0.15);
+  border-color: rgba(212, 175, 55, 0.38);
+}
+
+.floating-pill-header.is-scrolled .pill-navbar-container {
+  padding: 4px 7px;
+  box-shadow: 0 10px 36px rgba(45, 30, 22, 0.12), 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+:is([data-theme="burgundy"], [data-theme="dark"]) .floating-pill-header.is-scrolled .pill-navbar-container {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.65), 0 0 20px rgba(212, 175, 55, 0.12);
+}
+
+/* ── 3. Interactive & Smooth Navigation Buttons ───────────────────── */
+.pill-navigation {
   display: flex;
   align-items: center;
 }
 
-.navbar.scrolled {
-  background: var(--bg-glass);
-  backdrop-filter: blur(24px) saturate(1.6);
-  -webkit-backdrop-filter: blur(24px) saturate(1.6);
-  border-bottom: 1px solid var(--border-subtle);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
-  height: calc(70px + var(--sat));
-}
-
-:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .navbar.scrolled {
-  background: rgba(251, 248, 243, 0.95);
-  backdrop-filter: blur(24px) saturate(1.8);
-  -webkit-backdrop-filter: blur(24px) saturate(1.8);
-  border-bottom: 1px solid transparent;
-  border-image: linear-gradient(90deg, transparent, rgba(180, 140, 60, 0.3), transparent) 1;
-  box-shadow: 0 4px 24px rgba(45, 30, 22, 0.08), 0 1px 0 rgba(180, 140, 60, 0.12);
-}
-
-:is([data-theme="white"], [data-theme="light"], [data-theme="champagne"]) .menu-toggle-btn {
-  border-color: var(--border-medium);
-  color: var(--text-primary);
-}
-
-.navbar-container {
+.pill-nav-list {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 3px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
-.navbar-brand {
+.pill-nav-item {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 7px;
+  padding: 6px 14px 6px 9px;
+  border-radius: 9999px;
+  text-decoration: none;
+  font-family: var(--font-sans);
+  font-size: 0.83rem;
+  font-weight: 600;
+  letter-spacing: 0.015em;
+  color: #2C221D;
+  background: transparent;
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+  -webkit-font-smoothing: antialiased;
+  position: relative;
+  cursor: pointer;
+}
+
+:is([data-theme="burgundy"], [data-theme="dark"]) .pill-nav-item {
+  color: #EADBD3;
+}
+
+/* Hover States — Smooth Pill Spring & Subtle Glow */
+.pill-nav-item:hover {
+  background: rgba(138, 18, 18, 0.08);
+  color: var(--gm-wine, #8A1212);
+  transform: translateY(-1.5px) scale(1.02);
+}
+
+:is([data-theme="burgundy"], [data-theme="dark"]) .pill-nav-item:hover {
+  background: rgba(212, 175, 55, 0.16);
+  color: var(--accent-gold, #D4AF37);
+  transform: translateY(-1.5px) scale(1.02);
+}
+
+.pill-nav-item:active {
+  transform: scale(0.96) translateY(0);
+}
+
+/* Active State — High Visibility Luxury Capsule */
+.pill-nav-item.active {
+  background: linear-gradient(135deg, #8A1212 0%, #6E0E0E 100%);
+  color: #FFFFFF !important;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(138, 18, 18, 0.32);
+}
+
+:is([data-theme="burgundy"], [data-theme="dark"]) .pill-nav-item.active {
+  background: linear-gradient(135deg, #DFBE52 0%, #B8860B 100%);
+  color: #12050A !important;
+  font-weight: 700;
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.42);
+}
+
+/* Icon Badges with Interactive Spring Animation */
+.pill-icon-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: rgba(138, 18, 18, 0.08);
+  color: inherit;
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              background 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:is([data-theme="burgundy"], [data-theme="dark"]) .pill-icon-badge {
+  background: rgba(212, 175, 55, 0.16);
+}
+
+.pill-nav-item:hover .pill-icon-badge {
+  transform: scale(1.15) rotate(4deg);
+}
+
+.pill-nav-item.active .pill-icon-badge {
+  background: rgba(255, 255, 255, 0.22);
+  color: #FFFFFF;
+}
+
+:is([data-theme="burgundy"], [data-theme="dark"]) .pill-nav-item.active .pill-icon-badge {
+  background: rgba(0, 0, 0, 0.18);
+  color: #12050A;
+}
+
+/* ── 4. Hairline Divider ─────────────────────────────────────────── */
+.pill-nav-divider {
+  width: 1px;
+  height: 18px;
+  margin: 0 2px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 1px;
+}
+
+:is([data-theme="burgundy"], [data-theme="dark"]) .pill-nav-divider {
+  background: rgba(212, 175, 55, 0.28);
+}
+
+/* ── 5. Action Buttons & Utilities ───────────────────────────────── */
+.pill-navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+/* WhatsApp Direct Launcher Button */
+.pill-whatsapp-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background-color: var(--whatsapp-green, #25D366);
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 2px 10px rgba(37, 211, 102, 0.3);
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.28s ease;
   text-decoration: none;
 }
 
-.navbar-logo {
-  height: 38px;
-  width: auto;
-  object-fit: contain;
-  transition: transform var(--transition-fast);
-}
-.navbar-brand:hover .navbar-logo {
-  transform: scale(1.02);
+.pill-whatsapp-btn:hover {
+  transform: scale(1.12) translateY(-1px);
+  box-shadow: 0 6px 18px rgba(37, 211, 102, 0.5);
 }
 
-.navbar-nav {
-  display: flex;
-  align-items: center;
-  gap: 28px;
-  list-style: none;
+.pill-whatsapp-btn:active {
+  transform: scale(0.92);
 }
 
-.nav-link {
-  font-size: 0.88rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-  font-weight: 500;
-  position: relative;
-  padding: 6px 0;
+/* Universal Action Toggle Sizing (Theme & Audio) */
+.pill-navbar-actions .theme-cycle-toggle,
+.pill-navbar-actions .audio-atmosphere-toggle {
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px !important;
+  min-height: 34px !important;
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease !important;
 }
 
-.nav-link::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  width: 0;
-  height: 1.5px;
-  background: var(--accent-gold);
-  transition: all var(--transition-fast);
-  transform: translateX(-50%);
+.pill-navbar-actions .theme-cycle-toggle:hover,
+.pill-navbar-actions .audio-atmosphere-toggle:hover {
+  transform: scale(1.1) translateY(-1px);
 }
 
-.nav-link:hover {
-  color: var(--text-primary);
+.pill-navbar-actions .theme-cycle-toggle:active,
+.pill-navbar-actions .audio-atmosphere-toggle:active {
+  transform: scale(0.92);
 }
 
-.nav-link:hover::after, .nav-link.active::after {
-  width: 100%;
-}
-
-.navbar-actions {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.menu-toggle-btn {
+/* Mobile Menu Toggle Button */
+.pill-menu-toggle {
   display: none;
-  background: none;
-  border: 1px solid var(--border-medium);
-  border-radius: 50%;
-  width: 44px;
-  height: 44px;
   align-items: center;
   justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(138, 18, 18, 0.08);
   color: var(--text-primary);
-  transition: all var(--transition-fast);
-}
-.menu-toggle-btn:hover {
-  border-color: var(--accent-gold);
-  color: var(--accent-gold);
+  border: none;
+  cursor: pointer;
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@media (max-width: 960px) {
-  .navbar-nav {
+:is([data-theme="burgundy"], [data-theme="dark"]) .pill-menu-toggle {
+  background: rgba(212, 175, 55, 0.16);
+  color: #FFFFFF;
+}
+
+.pill-menu-toggle:hover {
+  background: rgba(138, 18, 18, 0.16);
+  transform: scale(1.1);
+}
+
+:is([data-theme="burgundy"], [data-theme="dark"]) .pill-menu-toggle:hover {
+  background: rgba(212, 175, 55, 0.28);
+}
+
+.pill-menu-toggle:active {
+  transform: scale(0.92);
+}
+
+/* ── 6. Responsive Adaptations ───────────────────────────────────── */
+@media (max-width: 1080px) {
+  .floating-pill-header {
+    justify-content: flex-end;
+    padding: 0 14px;
+  }
+
+  .standalone-brand-logo {
+    left: 14px;
+    padding: 0;
+  }
+
+  .brand-logo-img {
+    height: 28px;
+  }
+
+  .pill-navigation,
+  .pill-nav-divider {
     display: none;
   }
-  .menu-toggle-btn {
+
+  .pill-menu-toggle {
     display: flex;
   }
-  .navbar-actions {
-    gap: 10px;
+
+  .pill-navbar-container {
+    margin: 0;
   }
 }
 
-@media (max-width: 768px) {
-  .navbar {
-    height: calc(64px + var(--sat));
+@media (max-width: 640px) {
+  .floating-pill-header {
+    top: max(10px, calc(var(--sat, 0px) + 8px));
+    padding: 0 10px;
   }
-  .navbar.scrolled {
-    height: calc(58px + var(--sat));
+
+  .standalone-brand-logo {
+    left: 10px;
+    padding: 0;
+  }
+
+  .brand-logo-img {
+    height: 24px;
+  }
+
+  .pill-navbar-container {
+    padding: 4px 6px;
+    gap: 5px;
+  }
+
+  .pill-whatsapp-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .pill-navbar-actions .theme-cycle-toggle,
+  .pill-navbar-actions .audio-atmosphere-toggle,
+  .pill-menu-toggle {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
   }
 }
-
-@media (max-width: 480px) {
-  .navbar-logo {
-    height: 30px;
-  }
-  .menu-toggle-btn {
-    width: 44px;
-    height: 44px;
-    min-width: 44px;
-    min-height: 44px;
-  }
-}
-

@@ -15,6 +15,7 @@ import {
 import type { WeddingStory } from '../data/couplesData';
 import { triggerHaptic } from '../utils/haptics';
 import { audioAtmosphere } from '../utils/audioAtmosphere';
+import { handleImageError } from '../utils/imageFallback';
 import './AnniversaryCapsuleModal.css';
 
 interface AnniversaryCapsuleModalProps {
@@ -130,6 +131,7 @@ export const AnniversaryCapsuleModal: React.FC<AnniversaryCapsuleModalProps> = (
                   src={slides[currentSlideIdx].url}
                   alt={slides[currentSlideIdx].alt}
                   className="capsule-image"
+                  onError={handleImageError}
                 />
                 <div className="capsule-img-gradient" />
 

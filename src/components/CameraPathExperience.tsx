@@ -3,11 +3,11 @@ import { Play, ArrowRight, Sparkles, Film, Image as ImageIcon, ChevronRight } fr
 import { featuredStories } from '../data/couplesData';
 import type { WeddingStory } from '../data/couplesData';
 import { businessInfo } from '../data/businessData';
-import { useTheme } from '../context/useTheme';
 import { triggerHaptic } from '../utils/haptics';
 import { usePublicSections } from '../hooks/usePublicSections';
 import { SkeletonSlide } from './SkeletonSlide';
 import { handleImageError } from '../utils/imageFallback';
+import { LetterFlipHeading } from './LetterFlipHeading';
 import './CameraPathExperience.css';
 
 interface CameraPathExperienceProps {
@@ -59,7 +59,6 @@ export const CameraPathExperience: React.FC<CameraPathExperienceProps> = ({
   onSelectStory,
   onPlayFilm
 }) => {
-  const { theme } = useTheme();
   const trackRef = useRef<HTMLDivElement>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [activeStoryIdx, setActiveStoryIdx] = useState(0);
@@ -223,6 +222,11 @@ export const CameraPathExperience: React.FC<CameraPathExperienceProps> = ({
                   key={slide.image}
                   className={`hero-slide-layer ${isActive ? 'active' : ''}`}
                 >
+                  <div
+                    className="hero-slide-ambient"
+                    style={{ backgroundImage: `url(${slide.image})` }}
+                    aria-hidden="true"
+                  />
                   <img
                     src={slide.image}
                     alt={slide.alt}
@@ -241,9 +245,16 @@ export const CameraPathExperience: React.FC<CameraPathExperienceProps> = ({
         <div className={`hero-content ${heroRevealed ? 'text-revealed' : ''}`}>
           <div className="hero-logo-badge">
             <img
-              src={theme === 'white' ? "/assets/brand/logo_black.png" : "/assets/brand/logo_white.png"}
+              src="/assets/brand/logo_white.png"
               alt={businessInfo.name}
-              className="hero-logo-img"
+              className="hero-logo-img logo-theme-dark"
+              width="240"
+              height="74"
+            />
+            <img
+              src="/assets/brand/logo_black.png"
+              alt={businessInfo.name}
+              className="hero-logo-img logo-theme-light"
               width="240"
               height="74"
             />
@@ -253,9 +264,14 @@ export const CameraPathExperience: React.FC<CameraPathExperienceProps> = ({
             <Sparkles size={14} /> Wedding Stories, Honestly Told
           </div>
 
-          <h1 className="hero-heading">
-            Love, Remembered in Every Frame
-          </h1>
+          <LetterFlipHeading
+            prefix="Scripting"
+            text="LOVE STORIES"
+            as="h1"
+            align="center"
+            delay={180}
+            className="hero-heading-flip"
+          />
 
           <p className="hero-tagline">
             Documentary wedding photography shaped by warmth, emotion, and artistry. Scripting your visual love stories into timeless heirloom art.
@@ -466,6 +482,7 @@ export const CameraPathExperience: React.FC<CameraPathExperienceProps> = ({
                         onClick={() => onSelectStory(story)}
                       >
                         <div className="polaroid-inner">
+                          <span className="polaroid-tape" aria-hidden="true" />
                           <img
                             src={companionImg1}
                             alt={`${story.title} candid detail`}
@@ -517,6 +534,12 @@ export const CameraPathExperience: React.FC<CameraPathExperienceProps> = ({
                     role="region"
                     aria-label={`${story.title} wedding chronicle`}
                   >
+                    {/* Viewfinder corner pips */}
+                    <span className="corner-pip corner-tl" aria-hidden="true" />
+                    <span className="corner-pip corner-tr" aria-hidden="true" />
+                    <span className="corner-pip corner-bl" aria-hidden="true" />
+                    <span className="corner-pip corner-br" aria-hidden="true" />
+
                     {/* Glowing Edge Light Border */}
                     <div className="card-ambient-glow" />
 

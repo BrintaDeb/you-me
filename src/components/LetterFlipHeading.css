@@ -1,0 +1,108 @@
+.letter-flip-container {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  column-gap: clamp(12px, 2vw, 24px);
+  row-gap: 4px;
+  position: relative;
+  perspective: 900px;
+}
+
+.letter-flip-container.align-center {
+  justify-content: center;
+  text-align: center;
+}
+
+.letter-flip-container.align-left {
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.letter-flip-container.align-right {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+/* Cursive Signature Prefix ("Our", "Pick your", "Scripting") */
+.letter-flip-prefix {
+  font-family: var(--font-signature, 'Alex Brush', 'Cormorant', cursive);
+  font-size: clamp(2rem, 5.2vw, 3.8rem);
+  font-weight: 400;
+  line-height: 1;
+  color: var(--gm-wine, #8A1212);
+  display: inline-block;
+  opacity: 0;
+  transform: translateX(-18px) rotate(-3deg);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+}
+
+:is([data-theme="burgundy"], [data-theme="dark"]) .letter-flip-prefix {
+  color: var(--accent-gold, #D4AF37);
+  text-shadow: 0 0 16px rgba(212, 175, 55, 0.25);
+}
+
+.letter-flip-prefix.revealed {
+  opacity: 1;
+  transform: translateX(0) rotate(0deg);
+}
+
+/* Big Display Word ("STORIES", "SERVICES", "CELEBRATIONS", "MOMENTS") */
+.letter-flip-word {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-display-condensed, 'Antonio', 'Plus Jakarta Sans', sans-serif);
+  font-size: clamp(2.8rem, 8.5vw, 6.8rem);
+  font-weight: 700;
+  line-height: 0.88;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+:is([data-theme="burgundy"], [data-theme="dark"]) .letter-flip-word {
+  color: #FFFFFF;
+}
+
+.flip-letter-wrap {
+  display: inline-block;
+  perspective: 700px;
+  overflow: visible;
+}
+
+.flip-letter-wrap.space-char {
+  width: 0.3em;
+}
+
+.flip-letter-inner {
+  display: inline-block;
+  opacity: 0;
+  filter: blur(6px);
+  transform: translate3d(-35%, 0, 0) scale3d(0.85, 0.85, 1) rotateY(160deg);
+  transform-style: preserve-3d;
+  transition:
+    opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.65s ease-out,
+    transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, filter, opacity;
+}
+
+.letter-flip-word.revealed .flip-letter-inner {
+  opacity: 1;
+  filter: blur(0px);
+  transform: translate3d(0, 0, 0) scale3d(1, 1, 1) rotateY(0deg);
+}
+
+/* Reduced Motion Override */
+@media (prefers-reduced-motion: reduce) {
+  .letter-flip-prefix,
+  .flip-letter-inner {
+    opacity: 1 !important;
+    filter: none !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
